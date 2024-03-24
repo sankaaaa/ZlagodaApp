@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
-const Create = () => {
+const CreateEmployee = () => {
     const navigate = useNavigate();
     const[id_employee, setIdEmployee] = useState('');
     const[empl_surname, setEmplSurname] = useState('');
@@ -25,6 +25,8 @@ const Create = () => {
             setFormError("Please set all form fields correctly idinahui!");
             return;
         }
+
+        //ДОДАТИ ОКРЕМУ ПЕРЕВІРКУ НА НЕУНІКАЛЬНИЙ АЙДІШНИК ЄБУ ЯК
         const {data, error} = await supabase
             .from('employee')
             .insert([{id_employee, empl_surname, empl_name, empl_role, date_of_birth,
@@ -38,7 +40,7 @@ const Create = () => {
         else{
             console.log(data);
             setFormError(null);
-            navigate('/')
+            navigate('/Employees')
         }
     }
 
@@ -129,4 +131,4 @@ const Create = () => {
     )
 }
 
-export default Create
+export default CreateEmployee

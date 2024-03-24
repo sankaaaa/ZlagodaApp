@@ -10,7 +10,6 @@ const EditEmployeePopup = ({ employee, onClose }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Отриманий editedEmployee можна використовувати для подальшої обробки, наприклад, збереження змін в базі даних
         console.log("Edited employee:", editedEmployee);
         onClose();
     };

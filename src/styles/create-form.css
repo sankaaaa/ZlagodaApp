@@ -13,6 +13,8 @@ form {
 
 label {
     font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: -7px
 }
 
 input[type="text"],
@@ -22,6 +24,7 @@ input[type="date"] {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    height: 25px;
 }
 
 button {
@@ -32,6 +35,10 @@ button {
     border-radius: 4px;
     cursor: pointer;
     font-family: 'Poppins';
+    font-size: 20px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    height: 60px;
 }
 
 button:hover {

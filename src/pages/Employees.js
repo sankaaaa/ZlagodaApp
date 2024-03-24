@@ -7,7 +7,7 @@ import EmployeeTable from "../components/EmployeeTable";
 
 //styles
 import '../styles/links-stuff.css';
-const Home = () => {
+const Employees = () => {
     const [fetchError, setFetchError] = useState(null);
     const [employees, setEmployees] = useState(null);
 
@@ -40,7 +40,7 @@ const Home = () => {
             {employees && (
                 <div>
                     <div className="create-new-container">
-                        <Link to="/create" className="link-create-new">Create New Employee</Link>
+                        <Link to="/create-employee" className="link-create-new">Create New Employee</Link>
                     </div>
                     <EmployeeTable employees={employees} />
                 </div>
@@ -49,4 +49,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default Employees;

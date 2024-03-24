@@ -1,0 +1,17 @@
+.link-create-new {
+    color: #333333;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.create-new-container {
+    width: fit-content;
+    padding: 12px 10px 10px 10px;
+    margin-bottom: 10px;
+    border: solid 1px #333333;
+    border-radius: 3px;
+}
+
+.create-new-container:hover {
+    background-color: #ddd;
+}

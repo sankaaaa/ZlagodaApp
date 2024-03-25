@@ -2,31 +2,57 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
+
 const CreateEmployee = () => {
     const navigate = useNavigate();
-    const[id_employee, setIdEmployee] = useState('');
-    const[empl_surname, setEmplSurname] = useState('');
-    const[empl_name, setEmplName] = useState('');
-    const[empl_role, setEmplRole] = useState('');
-    const[date_of_birth, setDateOfBirth] = useState('');
-    const[date_of_start, setDateOfStart] = useState('');
-    const[salary, setSalary] = useState('');
-    const[phone_number, setPhoneNumber] = useState('');
-    const[city, setCity] = useState('');
-    const[street, setStreet] = useState('');
-    const[zip_code, setZipCode] = useState('');
+    const [id_employee, setIdEmployee] = useState('');
+    const [empl_surname, setEmplSurname] = useState('');
+    const [empl_name, setEmplName] = useState('');
+    const [empl_role, setEmplRole] = useState('');
+    const [date_of_birth, setDateOfBirth] = useState('');
+    const [date_of_start, setDateOfStart] = useState('');
+    const [salary, setSalary] = useState('');
+    const [phone_number, setPhoneNumber] = useState('');
+    const [city, setCity] = useState('');
+    const [street, setStreet] = useState('');
+    const [zip_code, setZipCode] = useState('');
 
-    const[formError, setFormError] = useState(null);
+    const [formError, setFormError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const today = new Date();
+        const birthDate = new Date(date_of_birth);
+        const age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        const isUnderage = age < 18 || (age === 18 && monthDiff < 0);
+
+        if (isUnderage) {
+            setFormError("Employee must be at least 18 years old to register.");
+            return;
+        }
+
+        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
+        const isSalaryValid = salary >= 0;
+
+        if (!isPhoneNumberValid) {
+            setFormError("Invalid phone number!");
+            return;
+        }
+
+        if (!isSalaryValid) {
+            setFormError("Invalid salary!");
+            return;
+        }
+
         if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
             || !date_of_start || !salary || !phone_number || !city || !street || !zip_code) {
             setFormError("Please set all form fields correctly!");
             return;
         }
 
-        const { data: existingEmployees, error: existingEmployeeError } = await supabase
+        const {data: existingEmployees, error: existingEmployeeError} = await supabase
             .from('employee')
             .select('id_employee')
             .eq('id_employee', id_employee);
@@ -42,10 +68,12 @@ const CreateEmployee = () => {
             return;
         }
 
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('employee')
-            .insert([{ id_employee, empl_surname, empl_name, empl_role, date_of_birth,
-                date_of_start, salary, phone_number, city, street, zip_code }]);
+            .insert([{
+                id_employee, empl_surname, empl_name, empl_role, date_of_birth,
+                date_of_start, salary, phone_number, city, street, zip_code
+            }]);
 
         if (error) {
             console.log(error);
@@ -66,7 +94,7 @@ const CreateEmployee = () => {
                     id="id_employee"
                     value={id_employee}
                     onChange={(e) => setIdEmployee(e.target.value)}
-                    />
+                />
                 <label htmlFor="empl_surname">Surname:</label>
                 <input
                     type="text"

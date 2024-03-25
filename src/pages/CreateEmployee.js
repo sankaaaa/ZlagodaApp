@@ -20,27 +20,40 @@ const CreateEmployee = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
+        if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
             || !date_of_start || !salary || !phone_number || !city || !street || !zip_code) {
-            setFormError("Please set all form fields correctly idinahui!");
+            setFormError("Please set all form fields correctly!");
             return;
         }
 
-        //ДОДАТИ ОКРЕМУ ПЕРЕВІРКУ НА НЕУНІКАЛЬНИЙ АЙДІШНИК ЄБУ ЯК
-        const {data, error} = await supabase
+        const { data: existingEmployees, error: existingEmployeeError } = await supabase
             .from('employee')
-            .insert([{id_employee, empl_surname, empl_name, empl_role, date_of_birth,
-            date_of_start, salary, phone_number, city, street, zip_code}]);
+            .select('id_employee')
+            .eq('id_employee', id_employee);
 
-        if(error) {
-            console.log(error);
-            setFormError("Please set all form fields correctly idinahui!");
+        if (existingEmployeeError) {
+            console.error(existingEmployeeError.message);
+            setFormError("An error occurred while checking for existing employee.");
+            return;
         }
 
-        else{
+        if (existingEmployees.length > 0) {
+            setFormError("Employee with the same ID already exists in the table!");
+            return;
+        }
+
+        const { data, error } = await supabase
+            .from('employee')
+            .insert([{ id_employee, empl_surname, empl_name, empl_role, date_of_birth,
+                date_of_start, salary, phone_number, city, street, zip_code }]);
+
+        if (error) {
+            console.log(error);
+            setFormError("Please set all form fields correctly!");
+        } else {
             console.log(data);
             setFormError(null);
-            navigate('/Employees')
+            navigate('/Employees');
         }
     }
 

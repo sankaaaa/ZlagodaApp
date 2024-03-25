@@ -27,3 +27,15 @@
     background-color: #ddd;
 }
 
+.edit-button {
+    height: 40px;
+    font-size: 15px;
+    margin: 15px 5px 15px 20px;
+    text-decoration: none;
+}
+
+a {
+    color: #333333;
+    text-decoration: none;
+    font-weight: bold;
+}

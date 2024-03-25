@@ -1,6 +1,7 @@
 import {useState} from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
+import {Link} from "react-router-dom";
 
 const EmployeeTable = ({ employees }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -46,17 +47,23 @@ const EmployeeTable = ({ employees }) => {
                     <th onClick={() => requestSort('empl_role')}>Role</th>
                     <th onClick={() => requestSort('salary')}>Salary</th>
                     <th onClick={() => requestSort('phone_number')}>Phone Number</th>
+                    <th>Edit</th>
                 </tr>
                 </thead>
                 <tbody>
                 {sortedEmployees.map(employee => (
-                    <tr key={employee.id_employee} onClick={() => handleRowClick(employee)}>
-                        <td>{employee.id_employee}</td>
+                    <tr key={employee.id_employee} onClick={() => handleRowClick(employee)} >
+                        <td>{employee.id_employee}.</td>
                         <td>{employee.empl_surname}</td>
                         <td>{employee.empl_name}</td>
                         <td>{employee.empl_role}</td>
                         <td>{employee.salary}</td>
                         <td>{employee.phone_number}</td>
+                        <td><button className="edit-button">
+                            <Link to={'/' + employee.id_employee}>
+                                Edit
+                            </Link>
+                        </button></td>
                     </tr>
                 ))}
                 </tbody>

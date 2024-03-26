@@ -9,6 +9,8 @@ import UpdateProduct from "./pages/UpdateProduct";
 
 import '../src/styles/links-stuff.css';
 import Categories from "./pages/Categories";
+import CreateCategory from "./pages/CreateCategory";
+import UpdateCategory from "./pages/UpdateCategory";
 
 function Navigation() {
     const location = useLocation();
@@ -41,6 +43,8 @@ function App() {
                 <Route path="/create-product" element={<CreateProduct/>}/>
                 <Route path="/products/:id_product" element={<UpdateProduct/>}/>
                 <Route path="/categories" element={<Categories/>}/>
+                <Route path="/create-category" element={<CreateCategory/>}/>
+                <Route path="/categories/:category_number" element={<UpdateCategory/>}/>
             </Routes>
         </BrowserRouter>
     );

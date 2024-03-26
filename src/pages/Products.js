@@ -2,11 +2,11 @@ import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
 
 //components
-import { Link } from "react-router-dom";
+import ProductsTable from "../components/ProductsTable";
 
 //styles
 import '../styles/links-stuff.css';
-import ProductsTable from "../components/ProductsTable";
+
 const Products = () => {
     const [fetchError, setFetchError] = useState(null);
     const [products, setProducts] = useState(null);
@@ -14,7 +14,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data, error } = await supabase
+                const {data, error} = await supabase
                     .from('product')
                     .select();
 
@@ -39,7 +39,7 @@ const Products = () => {
             {fetchError && <p>{fetchError}</p>}
             {products && (
                 <div>
-                    <ProductsTable products={products} />
+                    <ProductsTable products={products}/>
                 </div>
             )}
         </div>

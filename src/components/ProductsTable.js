@@ -32,10 +32,6 @@ const ProductsTable = ({products}) => {
         setSelectedProduct(product);
     };
 
-    const handleClosePopup = () => {
-        setSelectedProduct(null);
-    };
-
     const handleDelete = async (product) => {
         const {data, error} = await supabase
             .from('product')
@@ -70,7 +66,7 @@ const ProductsTable = ({products}) => {
                 <tbody>
                 {sortedProducts.map(product => (
                     <tr key={product.id_product}>
-                        <td style={{cursor: 'pointer', fontWeight: 'bold'}}
+                        <td style={{fontWeight: 'bold'}}
                             onClick={() => handleRowClick(product)}>{product.id_product}.
                         </td>
                         <td>{product.category_number}</td>
@@ -88,7 +84,6 @@ const ProductsTable = ({products}) => {
                 ))}
                 </tbody>
             </table>
-            {/*{selectedProduct && <Popup employee={selectedProduct} onClose={handleClosePopup}/>}*/}
         </div>
     );
 }

@@ -1,16 +1,18 @@
-import {useState} from "react";
+import { useState } from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const EmployeeTable = ({employees}) => {
-    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
+const EmployeeTable = ({ employees }) => {
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
+    const [searchSurname, setSearchSurname] = useState("");
 
     const sortedEmployees = employees
         .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
+        .filter(employee => searchSurname === "" || employee.empl_surname.toLowerCase().includes(searchSurname.toLowerCase()))
         .sort((a, b) => {
             if (sortConfig.key !== null) {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -28,7 +30,7 @@ const EmployeeTable = ({employees}) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({key, direction});
+        setSortConfig({ key, direction });
     };
 
     const handleRowClick = (employee) => {
@@ -40,7 +42,7 @@ const EmployeeTable = ({employees}) => {
     };
 
     const handleDelete = async (employee) => {
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('employee')
             .delete()
             .eq('id_employee', employee.id_employee)
@@ -57,11 +59,24 @@ const EmployeeTable = ({employees}) => {
         setShowOnlyCashiers(e.target.checked);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchSurname(e.target.value);
+    };
+
     return (
         <div>
             <div className="top-line">
                 <div className="create-new-container">
                     <Link to="/create-employee" className="link-create-new">Create New Employee</Link>
+                </div>
+                <div className="search-input">
+                    <label htmlFor="searchSurname">Search surname:</label>
+                    <input
+                        type="text"
+                        placeholder=""
+                        value={searchSurname}
+                        onChange={handleSearchChange}
+                    />
                 </div>
                 <div className="employee-checkbox">
                     <label>
@@ -89,7 +104,7 @@ const EmployeeTable = ({employees}) => {
                 <tbody>
                 {sortedEmployees.map(employee => (
                     <tr key={employee.id_employee}>
-                        <td style={{cursor: 'pointer', fontWeight: 'bold'}}
+                        <td style={{ cursor: 'pointer', fontWeight: 'bold' }}
                             onClick={() => handleRowClick(employee)}>{employee.id_employee}.
                         </td>
                         <td>{employee.empl_surname}</td>
@@ -109,7 +124,7 @@ const EmployeeTable = ({employees}) => {
                 ))}
                 </tbody>
             </table>
-            {selectedEmployee && <Popup employee={selectedEmployee} onClose={handleClosePopup}/>}
+            {selectedEmployee && <Popup employee={selectedEmployee} onClose={handleClosePopup} />}
         </div>
     );
 }

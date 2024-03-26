@@ -21,11 +21,17 @@ function Navigation() {
     return (
         <nav>
             <h1>Zlagoda</h1>
-            <div className="nav-links">
-                <Link to="/employees">Employees</Link>
-                <Link to="/products">Products</Link>
-                <Link to="/categories">Categories</Link>
+            <div className="fline">
+                <div className="nav-links">
+                    <Link to="/employees">Employees</Link>
+                    <Link to="/products">Products</Link>
+                    <Link to="/categories">Categories</Link>
+                </div>
+                <div className="logout">
+                    <Link to="/">Log out</Link>
+                </div>
             </div>
+
         </nav>
     );
 }

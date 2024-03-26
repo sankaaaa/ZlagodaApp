@@ -19,6 +19,19 @@
 nav {
     background-color: #333;
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.fline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout {
+    padding-top: 10px;
 }
 
 .nav-links {
@@ -26,6 +39,7 @@ nav {
     justify-content: center;
     gap: 50px;
     margin-top: 10px;
+    padding-left: 260px;
 }
 
 nav h1 {

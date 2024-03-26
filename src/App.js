@@ -13,6 +13,7 @@ import {useState} from "react";
 
 import '../src/styles/links-stuff.css';
 import Customers from "./pages/Customers";
+import CreateCustomer from "./pages/CreateCustomer";
 
 function Navigation({userRole}) {
     const location = useLocation();
@@ -57,6 +58,7 @@ function App() {
                 <Route path="/create-category" element={<CreateCategory/>}/>
                 <Route path="/categories/:category_number" element={<UpdateCategory/>}/>
                 <Route path="/customers" element={<Customers/>}/>
+                <Route path="/create-customer" element={<CreateCustomer/>}/>
             </Routes>
         </BrowserRouter>
     );

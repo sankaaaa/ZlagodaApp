@@ -86,7 +86,7 @@ const CreateEmployee = () => {
         } else {
             console.log(data);
             setFormError(null);
-            navigate('/Employees');
+            navigate('/employees');
         }
     }
 

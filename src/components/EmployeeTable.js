@@ -1,11 +1,11 @@
-import { useState } from "react";
+import {useState} from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const EmployeeTable = ({ employees }) => {
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+const EmployeeTable = ({employees}) => {
+    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedEmployee, setSelectedEmployee] = useState(null);
 
     const sortedEmployees = employees.sort((a, b) => {
@@ -25,7 +25,7 @@ const EmployeeTable = ({ employees }) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const handleRowClick = (employee) => {
@@ -37,15 +37,14 @@ const EmployeeTable = ({ employees }) => {
     };
 
     const handleDelete = async (employee) => {
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('employee')
             .delete()
             .eq('id_employee', employee.id_employee)
 
         if (error) {
             console.log(error)
-        }
-        else {
+        } else {
             console.log(data)
             window.location.reload();
         }
@@ -56,7 +55,7 @@ const EmployeeTable = ({ employees }) => {
             <table className="employee-table">
                 <thead>
                 <tr>
-                    <th onClick={() => requestSort('id_employee')} >ID</th>
+                    <th onClick={() => requestSort('id_employee')}>ID</th>
                     <th onClick={() => requestSort('empl_surname')}>Surname</th>
                     <th onClick={() => requestSort('empl_name')}>Name</th>
                     <th onClick={() => requestSort('empl_role')}>Role</th>
@@ -68,7 +67,9 @@ const EmployeeTable = ({ employees }) => {
                 <tbody>
                 {sortedEmployees.map(employee => (
                     <tr key={employee.id_employee}>
-                        <td style={{ cursor: 'pointer', fontWeight: 'bold'}} onClick={() => handleRowClick(employee)}>{employee.id_employee}.</td>
+                        <td style={{cursor: 'pointer', fontWeight: 'bold'}}
+                            onClick={() => handleRowClick(employee)}>{employee.id_employee}.
+                        </td>
                         <td>{employee.empl_surname}</td>
                         <td>{employee.empl_name}</td>
                         <td>{employee.empl_role}</td>
@@ -86,7 +87,7 @@ const EmployeeTable = ({ employees }) => {
                 ))}
                 </tbody>
             </table>
-            {selectedEmployee && <Popup employee={selectedEmployee} onClose={handleClosePopup} />}
+            {selectedEmployee && <Popup employee={selectedEmployee} onClose={handleClosePopup}/>}
         </div>
     );
 }

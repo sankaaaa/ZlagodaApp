@@ -19,17 +19,22 @@ const CreateEmployee = () => {
 
     const [formError, setFormError] = useState(null);
 
+    const calculateAge = (dateOfBirth) => {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const today = new Date();
-        const birthDate = new Date(date_of_birth);
-        const age = today.getFullYear() - birthDate.getFullYear();
-        const monthDiff = today.getMonth() - birthDate.getMonth();
-        const isUnderage = age < 18 || (age === 18 && monthDiff < 0);
-
-        if (isUnderage) {
-            setFormError("Employee must be at least 18 years old to register.");
+        const employeeAge = calculateAge(date_of_birth);
+        if (employeeAge < 18 || employeeAge > 100) {
+            setFormError("Employee must be at least 18 and maximum 100 years old!");
             return;
         }
 

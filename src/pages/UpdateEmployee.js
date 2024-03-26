@@ -1,9 +1,9 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import {useState, useEffect} from "react";
 import supabase from "../config/supabaseClient";
 
 const UpdateEmployee = () => {
-    const { id_employee } = useParams();
+    const {id_employee} = useParams();
     const navigate = useNavigate();
     const [formError, setFormError] = useState(null);
 
@@ -28,8 +28,8 @@ const UpdateEmployee = () => {
         }
 
         const employeeAge = calculateAge(date_of_birth);
-        if (employeeAge < 18) {
-            setFormError("Employee must be at least 18 years old!");
+        if (employeeAge < 18 || employeeAge > 100) {
+            setFormError("Employee must be at least 18 and maximum 100 years old!");
             return;
         }
 
@@ -44,7 +44,7 @@ const UpdateEmployee = () => {
             return;
         }
 
-        const { data, error } = await supabase
+        const {data, error} = await supabase
             .from('employee')
             .update({
                 empl_surname,
@@ -71,14 +71,14 @@ const UpdateEmployee = () => {
 
     useEffect(() => {
         const fetchEmployee = async () => {
-            const { data, error } = await supabase
+            const {data, error} = await supabase
                 .from('employee')
                 .select()
                 .eq('id_employee', id_employee)
                 .single();
 
             if (error) {
-                navigate('/employee', { replace: true });
+                navigate('/employee', {replace: true});
             } else {
                 setEmplSurname(data.empl_surname);
                 setEmplName(data.empl_name);
@@ -105,8 +105,6 @@ const UpdateEmployee = () => {
         }
         return age;
     };
-
-
 
     return (
         <div className="page update">

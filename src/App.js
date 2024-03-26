@@ -3,7 +3,7 @@ import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
 // pages
 import Employees from "./pages/Employees"
 import CreateEmployee from "./pages/CreateEmployee"
-import Update from "./pages/Update"
+import UpdateEmployee from "./pages/UpdateEmployee"
 import Login from "./pages/Login";
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
                 <Route path="/" element={<Login/>}/>
                 <Route path="/employees" element={<Employees/>}/>
                 <Route path="/create-employee" element={<CreateEmployee/>}/>
-                <Route path="/:id_employee" element={<Update/>}/>
+                <Route path="/:id_employee" element={<UpdateEmployee/>}/>
             </Routes>
         </BrowserRouter>
     );

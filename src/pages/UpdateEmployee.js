@@ -1,25 +1,25 @@
-import {useNavigate, useParams} from "react-router-dom";
-import {useState, useEffect} from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 import supabase from "../config/supabaseClient";
 
-const Update = () => {
-    const {id_employee} = useParams()
-    const navigate = useNavigate()
-    const[formError, setFormError] = useState(null);
+const UpdateEmployee = () => {
+    const { id_employee } = useParams();
+    const navigate = useNavigate();
+    const [formError, setFormError] = useState(null);
 
-    const[empl_surname, setEmplSurname] = useState('');
-    const[empl_name, setEmplName] = useState('');
-    const[empl_role, setEmplRole] = useState('');
-    const[date_of_birth, setDateOfBirth] = useState('');
-    const[date_of_start, setDateOfStart] = useState('');
-    const[salary, setSalary] = useState('');
-    const[phone_number, setPhoneNumber] = useState('');
-    const[city, setCity] = useState('');
-    const[street, setStreet] = useState('');
-    const[zip_code, setZipCode] = useState('');
+    const [empl_surname, setEmplSurname] = useState('');
+    const [empl_name, setEmplName] = useState('');
+    const [empl_role, setEmplRole] = useState('');
+    const [date_of_birth, setDateOfBirth] = useState('');
+    const [date_of_start, setDateOfStart] = useState('');
+    const [salary, setSalary] = useState('');
+    const [phone_number, setPhoneNumber] = useState('');
+    const [city, setCity] = useState('');
+    const [street, setStreet] = useState('');
+    const [zip_code, setZipCode] = useState('');
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
             || !date_of_start || !salary || !phone_number || !city || !street || !zip_code) {
@@ -27,47 +27,86 @@ const Update = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('employee')
-            .update({ id_employee, empl_surname, empl_name, empl_role, date_of_birth,
-                date_of_start, salary, phone_number, city, street, zip_code })
-            .eq('id_employee', id_employee)
+        const employeeAge = calculateAge(date_of_birth);
+        if (employeeAge < 18) {
+            setFormError("Employee must be at least 18 years old!");
+            return;
+        }
 
-        if(error){
-            console.log(error)
-            setFormError('Please fill in all fields correctly!')
+        if (salary < 0) {
+            setFormError("Salary cannot be negative!");
+            return;
         }
-        else {
-            setFormError(null)
-            navigate('/employees')
+        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
+
+        if (!isPhoneNumberValid) {
+            setFormError("Please enter a valid phone number!");
+            return;
         }
-    }
+
+        const { data, error } = await supabase
+            .from('employee')
+            .update({
+                empl_surname,
+                empl_name,
+                empl_role,
+                date_of_birth,
+                date_of_start,
+                salary,
+                phone_number,
+                city,
+                street,
+                zip_code
+            })
+            .eq('id_employee', id_employee);
+
+        if (error) {
+            console.log(error);
+            setFormError('Please fill in all fields correctly!');
+        } else {
+            setFormError(null);
+            navigate('/employees');
+        }
+    };
 
     useEffect(() => {
-        const fetchEmployee = async() => {
-            const {data, error} = await supabase.from('employee')
+        const fetchEmployee = async () => {
+            const { data, error } = await supabase
+                .from('employee')
                 .select()
                 .eq('id_employee', id_employee)
-                .single()
+                .single();
 
-            if(error) {
-                navigate('/employee', {replace: true})
+            if (error) {
+                navigate('/employee', { replace: true });
+            } else {
+                setEmplSurname(data.empl_surname);
+                setEmplName(data.empl_name);
+                setEmplRole(data.empl_role);
+                setSalary(data.salary);
+                setDateOfBirth(data.date_of_birth);
+                setDateOfStart(data.date_of_start);
+                setPhoneNumber(data.phone_number);
+                setCity(data.city);
+                setStreet(data.street);
+                setZipCode(data.zip_code);
             }
-            else {
-                setEmplSurname(data.empl_surname)
-                setEmplName(data.empl_name)
-                setEmplRole(data.empl_role)
-                setSalary(data.salary)
-                setDateOfBirth(data.date_of_birth)
-                setDateOfStart(data.date_of_start)
-                setPhoneNumber(data.phone_number)
-                setCity(data.city)
-                setStreet(data.street)
-                setZipCode(data.zip_code)
-            }
+        };
+        fetchEmployee();
+    }, [id_employee, navigate]);
+
+    const calculateAge = (dateOfBirth) => {
+        const today = new Date();
+        const birthDate = new Date(dateOfBirth);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
         }
-        fetchEmployee()
-    }, [id_employee, navigate])
+        return age;
+    };
+
+
 
     return (
         <div className="page update">
@@ -147,7 +186,7 @@ const Update = () => {
                 {formError && <p className="error">{formError}</p>}
             </form>
         </div>
-    )
+    );
 }
 
-export default Update
+export default UpdateEmployee;

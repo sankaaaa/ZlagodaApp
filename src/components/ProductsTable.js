@@ -1,13 +1,17 @@
-import {useState} from "react";
+import { useState } from "react";
 import '../styles/employee-table.css';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const ProductsTable = ({products}) => {
-    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
+const ProductsTable = ({ products }) => {
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [categoryFilter, setCategoryFilter] = useState('');
+    const [nameFilter, setNameFilter] = useState('');
 
     const sortedProducts = products
+        .filter(product => (!categoryFilter || parseInt(product.category_number) === parseInt(categoryFilter)) &&
+            (!nameFilter || product.product_name.toLowerCase().includes(nameFilter.toLowerCase())))
         .sort((a, b) => {
             if (sortConfig.key !== null) {
                 if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -25,7 +29,7 @@ const ProductsTable = ({products}) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({key, direction});
+        setSortConfig({ key, direction });
     };
 
     const handleRowClick = (product) => {
@@ -33,24 +37,50 @@ const ProductsTable = ({products}) => {
     };
 
     const handleDelete = async (product) => {
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('product')
             .delete()
-            .eq('id_product', product.id_product)
+            .eq('id_product', product.id_product);
 
         if (error) {
-            console.log(error)
+            console.log(error);
         } else {
-            console.log(data)
+            console.log(data);
             window.location.reload();
         }
-    }
+    };
+
+    const handleCategoryFilterChange = (e) => {
+        setCategoryFilter(e.target.value);
+    };
+
+    const handleNameFilterChange = (e) => {
+        setNameFilter(e.target.value);
+    };
 
     return (
         <div>
             <div className="top-line">
                 <div className="create-new-container">
                     <Link to="/create-product" className="link-create-new">Create New Product</Link>
+                </div>
+                <div>
+                    <label htmlFor="categoryFilter">Category Filter:</label>
+                    <input
+                        type="text"
+                        id="categoryFilter"
+                        value={categoryFilter}
+                        onChange={handleCategoryFilterChange}
+                    />
+                </div>
+                <div>
+                    <label htmlFor="nameFilter">Name Filter:</label>
+                    <input
+                        type="text"
+                        id="nameFilter"
+                        value={nameFilter}
+                        onChange={handleNameFilterChange}
+                    />
                 </div>
             </div>
             <table className="product-table">
@@ -66,7 +96,7 @@ const ProductsTable = ({products}) => {
                 <tbody>
                 {sortedProducts.map(product => (
                     <tr key={product.id_product}>
-                        <td style={{fontWeight: 'bold'}}
+                        <td style={{ fontWeight: 'bold' }}
                             onClick={() => handleRowClick(product)}>{product.id_product}.
                         </td>
                         <td>{product.category_number}</td>
@@ -74,9 +104,7 @@ const ProductsTable = ({products}) => {
                         <td>{product.characteristics}</td>
                         <td>
                             <button className="edit-button">
-                                <Link to={'/' + product.id_product}>
-                                    Edit
-                                </Link>
+                                <Link to={`/products/${product.id_product}`}>Edit</Link>
                             </button>
                             <button className="edit-button" onClick={() => handleDelete(product)}>Delete</button>
                         </td>
@@ -86,6 +114,6 @@ const ProductsTable = ({products}) => {
             </table>
         </div>
     );
-}
+};
 
 export default ProductsTable;

@@ -7,6 +7,7 @@ import UpdateEmployee from "./pages/UpdateEmployee"
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
+import UpdateProduct from "./pages/UpdateProduct";
 
 function App() {
     return (
@@ -23,7 +24,7 @@ function App() {
                 <Route path="/:id_employee" element={<UpdateEmployee/>}/>
                 <Route path="/products" element={<Products/>}/>
                 <Route path="/create-product" element={<CreateProduct/>}/>
-
+                <Route path="/products/:id_product" element={<UpdateProduct/>}/>
             </Routes>
         </BrowserRouter>
     );

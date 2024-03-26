@@ -1,7 +1,8 @@
-import {useState} from "react";
+import { useState } from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+import supabase from "../config/supabaseClient";
 
 const EmployeeTable = ({ employees }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
@@ -35,13 +36,27 @@ const EmployeeTable = ({ employees }) => {
         setSelectedEmployee(null);
     };
 
-    return (
+    const handleDelete = async (employee) => {
+        const { data, error } = await supabase
+            .from('employee')
+            .delete()
+            .eq('id_employee', employee.id_employee)
 
+        if (error) {
+            console.log(error)
+        }
+        else {
+            console.log(data)
+            window.location.reload();
+        }
+    }
+
+    return (
         <div>
             <table className="employee-table">
                 <thead>
                 <tr>
-                    <th onClick={() => requestSort('id_employee')}>ID</th>
+                    <th onClick={() => requestSort('id_employee')} >ID</th>
                     <th onClick={() => requestSort('empl_surname')}>Surname</th>
                     <th onClick={() => requestSort('empl_name')}>Name</th>
                     <th onClick={() => requestSort('empl_role')}>Role</th>
@@ -52,18 +67,21 @@ const EmployeeTable = ({ employees }) => {
                 </thead>
                 <tbody>
                 {sortedEmployees.map(employee => (
-                    <tr key={employee.id_employee} onClick={() => handleRowClick(employee)} >
-                        <td>{employee.id_employee}.</td>
+                    <tr key={employee.id_employee}>
+                        <td style={{ cursor: 'pointer', fontWeight: 'bold'}} onClick={() => handleRowClick(employee)}>{employee.id_employee}.</td>
                         <td>{employee.empl_surname}</td>
                         <td>{employee.empl_name}</td>
                         <td>{employee.empl_role}</td>
                         <td>{employee.salary}</td>
                         <td>{employee.phone_number}</td>
-                        <td><button className="edit-button">
-                            <Link to={'/' + employee.id_employee}>
-                                Edit
-                            </Link>
-                        </button></td>
+                        <td>
+                            <button className="edit-button">
+                                <Link to={'/' + employee.id_employee}>
+                                    Edit
+                                </Link>
+                            </button>
+                            <button className="edit-button" onClick={() => handleDelete(employee)}>Delete</button>
+                        </td>
                     </tr>
                 ))}
                 </tbody>

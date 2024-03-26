@@ -7,18 +7,21 @@ import supabase from "../config/supabaseClient";
 const EmployeeTable = ({employees}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
 
-    const sortedEmployees = employees.sort((a, b) => {
-        if (sortConfig.key !== null) {
-            if (a[sortConfig.key] < b[sortConfig.key]) {
-                return sortConfig.direction === 'ascending' ? -1 : 1;
+    const sortedEmployees = employees
+        .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
+        .sort((a, b) => {
+            if (sortConfig.key !== null) {
+                if (a[sortConfig.key] < b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? -1 : 1;
+                }
+                if (a[sortConfig.key] > b[sortConfig.key]) {
+                    return sortConfig.direction === 'ascending' ? 1 : -1;
+                }
             }
-            if (a[sortConfig.key] > b[sortConfig.key]) {
-                return sortConfig.direction === 'ascending' ? 1 : -1;
-            }
-        }
-        return 0;
-    });
+            return 0;
+        });
 
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -50,8 +53,27 @@ const EmployeeTable = ({employees}) => {
         }
     }
 
+    const handleShowOnlyCashiersChange = (e) => {
+        setShowOnlyCashiers(e.target.checked);
+    };
+
     return (
         <div>
+            <div className="top-line">
+                <div className="create-new-container">
+                    <Link to="/create-employee" className="link-create-new">Create New Employee</Link>
+                </div>
+                <div className="employee-checkbox">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={showOnlyCashiers}
+                            onChange={handleShowOnlyCashiersChange}
+                        />
+                        Show only cashiers
+                    </label>
+                </div>
+            </div>
             <table className="employee-table">
                 <thead>
                 <tr>

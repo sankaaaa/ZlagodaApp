@@ -40,3 +40,21 @@ a {
     text-decoration: none;
     font-weight: bold;
 }
+
+.employee-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-bottom: 10px;
+    top: -50px;
+}
+
+.employee-checkbox input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.top-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

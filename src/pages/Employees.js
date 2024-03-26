@@ -39,9 +39,6 @@ const Employees = () => {
             {fetchError && <p>{fetchError}</p>}
             {employees && (
                 <div>
-                    <div className="create-new-container">
-                        <Link to="/create-employee" className="link-create-new">Create New Employee</Link>
-                    </div>
                     <EmployeeTable employees={employees} />
                 </div>
             )}

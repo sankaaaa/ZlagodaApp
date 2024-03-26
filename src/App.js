@@ -1,4 +1,4 @@
-import {BrowserRouter, Routes, Route, Link, useLocation} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
 import Employees from "./pages/Employees";
 import CreateEmployee from "./pages/CreateEmployee";
 import UpdateEmployee from "./pages/UpdateEmployee";
@@ -9,13 +9,13 @@ import UpdateProduct from "./pages/UpdateProduct";
 import Categories from "./pages/Categories";
 import CreateCategory from "./pages/CreateCategory";
 import UpdateCategory from "./pages/UpdateCategory";
-import {useState} from "react";
+import { useState, useEffect } from "react";
 
 import '../src/styles/links-stuff.css';
 import Customers from "./pages/Customers";
 import CreateCustomer from "./pages/CreateCustomer";
 
-function Navigation({userRole}) {
+function Navigation({ userRole }) {
     const location = useLocation();
     if (location.pathname === "/") {
         return null;
@@ -43,22 +43,34 @@ function Navigation({userRole}) {
 function App() {
     const [userRole, setUserRole] = useState("");
 
+    useEffect(() => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            setUserRole(storedRole);
+        }
+    }, []);
+
+    const handleUserRole = (role) => {
+        setUserRole(role);
+        localStorage.setItem("userRole", role);
+    };
+
     return (
         <BrowserRouter>
-            <Navigation userRole={userRole}/>
+            <Navigation userRole={userRole} />
             <Routes>
-                <Route path="/" element={<Login handleUserRole={setUserRole}/>}/>
-                <Route path="/employees" element={<Employees/>}/>
-                <Route path="/create-employee" element={<CreateEmployee/>}/>
-                <Route path="/:id_employee" element={<UpdateEmployee/>}/>
-                <Route path="/products" element={<Products/>}/>
-                <Route path="/create-product" element={<CreateProduct/>}/>
-                <Route path="/products/:id_product" element={<UpdateProduct/>}/>
-                <Route path="/categories" element={<Categories/>}/>
-                <Route path="/create-category" element={<CreateCategory/>}/>
-                <Route path="/categories/:category_number" element={<UpdateCategory/>}/>
-                <Route path="/customers" element={<Customers/>}/>
-                <Route path="/create-customer" element={<CreateCustomer/>}/>
+                <Route path="/" element={<Login handleUserRole={handleUserRole} />} />
+                <Route path="/employees" element={<Employees />} />
+                <Route path="/create-employee" element={<CreateEmployee />} />
+                <Route path="/:id_employee" element={<UpdateEmployee />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/create-product" element={<CreateProduct />} />
+                <Route path="/products/:id_product" element={<UpdateProduct />} />
+                <Route path="/categories" element={<Categories />} />
+                <Route path="/create-category" element={<CreateCategory />} />
+                <Route path="/categories/:category_number" element={<UpdateCategory />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/create-customer" element={<CreateCustomer />} />
             </Routes>
         </BrowserRouter>
     );

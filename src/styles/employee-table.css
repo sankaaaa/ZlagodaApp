@@ -1,5 +1,6 @@
 .employee-table,
-.product-table {
+.product-table,
+.category-table {
     width: 100%;
     border-collapse: collapse;
 }
@@ -7,30 +8,36 @@
 .employee-table th,
 .employee-table td,
 .product-table th,
-.product-table td {
+.product-table td,
+.category-table th,
+.category-table td {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
 .employee-table th,
-.product-table th {
+.product-table th,
+.category-table th{
     background-color: #f2f2f2;
     cursor: pointer;
 }
 
 .employee-table th:hover,
-.product-table th:hover {
+.product-table th:hover,
+.category-table th:hover {
     background-color: #ddd;
 }
 
 .employee-table tr:nth-child(even),
-.product-table tr:nth-child(even) {
+.product-table tr:nth-child(even),
+.category-table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
 .employee-table tr:hover,
-.product-table tr:hover {
+.product-table tr:hover,
+.category-table tr:hover {
     background-color: #ddd;
 }
 
@@ -64,4 +71,18 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.cat-close {
+    position: relative;
+    top: 10px;
+    right: 0;
+    left: 295px;
+    cursor: pointer;
+    font-size: 30px;
+    color: #333;
+}
+
+.cat-close:hover {
+    color: red;
 }

@@ -1,22 +1,37 @@
-import {BrowserRouter, Routes, Route, Link} from "react-router-dom"
-
-// pages
-import Employees from "./pages/Employees"
-import CreateEmployee from "./pages/CreateEmployee"
-import UpdateEmployee from "./pages/UpdateEmployee"
+import {BrowserRouter, Routes, Route, Link, useLocation} from "react-router-dom";
+import Employees from "./pages/Employees";
+import CreateEmployee from "./pages/CreateEmployee";
+import UpdateEmployee from "./pages/UpdateEmployee";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import UpdateProduct from "./pages/UpdateProduct";
 
+import '../src/styles/links-stuff.css';
+import Categories from "./pages/Categories";
+
+function Navigation() {
+    const location = useLocation();
+    if (location.pathname === "/") {
+        return null;
+    }
+
+    return (
+        <nav>
+            <h1>Zlagoda</h1>
+            <div className="nav-links">
+                <Link to="/employees">Employees</Link>
+                <Link to="/products">Products</Link>
+                <Link to="/categories">Categories</Link>
+            </div>
+        </nav>
+    );
+}
+
 function App() {
     return (
         <BrowserRouter>
-            <nav>
-                <h1>Zlagoda</h1>
-                <Link to="/employees">Employees</Link>
-                <Link to="/products">Products</Link>
-            </nav>
+            <Navigation/>
             <Routes>
                 <Route path="/" element={<Login/>}/>
                 <Route path="/employees" element={<Employees/>}/>
@@ -25,6 +40,7 @@ function App() {
                 <Route path="/products" element={<Products/>}/>
                 <Route path="/create-product" element={<CreateProduct/>}/>
                 <Route path="/products/:id_product" element={<UpdateProduct/>}/>
+                <Route path="/categories" element={<Categories/>}/>
             </Routes>
         </BrowserRouter>
     );

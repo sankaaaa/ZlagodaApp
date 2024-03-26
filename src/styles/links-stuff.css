@@ -15,3 +15,29 @@
 .create-new-container:hover {
     background-color: #ddd;
 }
+
+nav {
+    background-color: #333;
+    padding: 10px;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    margin-top: 10px;
+}
+
+nav h1 {
+    color: white;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+}
+
+nav a:hover {
+    color: lightgray;
+}

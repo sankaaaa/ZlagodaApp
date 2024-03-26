@@ -2,47 +2,48 @@ import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
 
 //components
-import EmployeeTable from "../components/EmployeeTable";
 
 //styles
 import '../styles/links-stuff.css';
-const Employees = () => {
+import EmployeeTable from "../components/EmployeeTable";
+import CustomersTable from "../components/CustomersTable";
+const Customers = () => {
     const [fetchError, setFetchError] = useState(null);
-    const [employees, setEmployees] = useState(null);
+    const [customers, setCustomers] = useState(null);
 
     useEffect(() => {
-        const fetchEmployees = async () => {
+        const fetchCustomers = async () => {
             try {
                 const { data, error } = await supabase
-                    .from('employee')
+                    .from('customer_card')
                     .select();
 
                 if (error) {
-                    throw new Error('Could not fetch employees');
+                    throw new Error('Could not fetch customers');
                 }
 
-                setEmployees(data);
+                setCustomers(data);
                 setFetchError(null);
             } catch (error) {
                 setFetchError(error.message);
-                setEmployees(null);
+                setCustomers(null);
                 console.error(error);
             }
         };
 
-        fetchEmployees();
+        fetchCustomers();
     }, []);
 
     return (
         <div className="page home">
             {fetchError && <p>{fetchError}</p>}
-            {employees && (
+            {customers && (
                 <div>
-                    <EmployeeTable customers={employees} />
+                    <CustomersTable customers={customers} />
                 </div>
             )}
         </div>
     );
 };
 
-export default Employees;
+export default Customers;

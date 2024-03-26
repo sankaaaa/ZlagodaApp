@@ -6,14 +6,15 @@ import Login from "./pages/Login";
 import Products from "./pages/Products";
 import CreateProduct from "./pages/CreateProduct";
 import UpdateProduct from "./pages/UpdateProduct";
-
-import '../src/styles/links-stuff.css';
 import Categories from "./pages/Categories";
 import CreateCategory from "./pages/CreateCategory";
 import UpdateCategory from "./pages/UpdateCategory";
 import {useState} from "react";
 
-function Navigation({userRole}) { // Додав аргумент userRole
+import '../src/styles/links-stuff.css';
+import Customers from "./pages/Customers";
+
+function Navigation({userRole}) {
     const location = useLocation();
     if (location.pathname === "/") {
         return null;
@@ -27,9 +28,10 @@ function Navigation({userRole}) { // Додав аргумент userRole
                     <Link to="/employees">Employees</Link>
                     <Link to="/products">Products</Link>
                     <Link to="/categories">Categories</Link>
+                    <Link to="/customers">Customers</Link>
                 </div>
                 <div className="logout">
-                    <p>{userRole}</p> {/* Додав відображення ролі користувача */}
+                    <p>{userRole}</p>
                     <Link to="/">Log out</Link>
                 </div>
             </div>
@@ -38,13 +40,13 @@ function Navigation({userRole}) { // Додав аргумент userRole
 }
 
 function App() {
-    const [userRole, setUserRole] = useState(""); // Додав стан для ролі користувача
+    const [userRole, setUserRole] = useState("");
 
     return (
         <BrowserRouter>
-            <Navigation userRole={userRole}/> {/* Передав стан ролі користувача */}
+            <Navigation userRole={userRole}/>
             <Routes>
-                <Route path="/" element={<Login handleUserRole={setUserRole}/>}/> {/* Передав функцію handleUserRole */}
+                <Route path="/" element={<Login handleUserRole={setUserRole}/>}/>
                 <Route path="/employees" element={<Employees/>}/>
                 <Route path="/create-employee" element={<CreateEmployee/>}/>
                 <Route path="/:id_employee" element={<UpdateEmployee/>}/>
@@ -54,6 +56,7 @@ function App() {
                 <Route path="/categories" element={<Categories/>}/>
                 <Route path="/create-category" element={<CreateCategory/>}/>
                 <Route path="/categories/:category_number" element={<UpdateCategory/>}/>
+                <Route path="/customers" element={<Customers/>}/>
             </Routes>
         </BrowserRouter>
     );

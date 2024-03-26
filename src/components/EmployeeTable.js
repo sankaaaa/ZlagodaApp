@@ -4,13 +4,13 @@ import '../styles/employee-table.css';
 import { Link } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const EmployeeTable = ({ employees }) => {
+const EmployeeTable = ({ customers }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
     const [searchSurname, setSearchSurname] = useState("");
 
-    const sortedEmployees = employees
+    const sortedEmployees = customers
         .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
         .filter(employee => searchSurname === "" || employee.empl_surname.toLowerCase().includes(searchSurname.toLowerCase()))
         .sort((a, b) => {
@@ -124,7 +124,7 @@ const EmployeeTable = ({ employees }) => {
                 ))}
                 </tbody>
             </table>
-            {selectedEmployee && <Popup employee={selectedEmployee} onClose={handleClosePopup} />}
+            {selectedEmployee && <Popup customer={selectedEmployee} onClose={handleClosePopup} />}
         </div>
     );
 }

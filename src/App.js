@@ -11,8 +11,9 @@ import '../src/styles/links-stuff.css';
 import Categories from "./pages/Categories";
 import CreateCategory from "./pages/CreateCategory";
 import UpdateCategory from "./pages/UpdateCategory";
+import {useState} from "react";
 
-function Navigation() {
+function Navigation({userRole}) { // Додав аргумент userRole
     const location = useLocation();
     if (location.pathname === "/") {
         return null;
@@ -28,20 +29,22 @@ function Navigation() {
                     <Link to="/categories">Categories</Link>
                 </div>
                 <div className="logout">
+                    <p>{userRole}</p> {/* Додав відображення ролі користувача */}
                     <Link to="/">Log out</Link>
                 </div>
             </div>
-
         </nav>
     );
 }
 
 function App() {
+    const [userRole, setUserRole] = useState(""); // Додав стан для ролі користувача
+
     return (
         <BrowserRouter>
-            <Navigation/>
+            <Navigation userRole={userRole}/> {/* Передав стан ролі користувача */}
             <Routes>
-                <Route path="/" element={<Login/>}/>
+                <Route path="/" element={<Login handleUserRole={setUserRole}/>}/> {/* Передав функцію handleUserRole */}
                 <Route path="/employees" element={<Employees/>}/>
                 <Route path="/create-employee" element={<CreateEmployee/>}/>
                 <Route path="/:id_employee" element={<UpdateEmployee/>}/>

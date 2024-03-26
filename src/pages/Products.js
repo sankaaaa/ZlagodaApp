@@ -2,47 +2,48 @@ import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
 
 //components
-import EmployeeTable from "../components/EmployeeTable";
+import { Link } from "react-router-dom";
 
 //styles
 import '../styles/links-stuff.css';
-const Employees = () => {
+import ProductsTable from "../components/ProductsTable";
+const Products = () => {
     const [fetchError, setFetchError] = useState(null);
-    const [employees, setEmployees] = useState(null);
+    const [products, setProducts] = useState(null);
 
     useEffect(() => {
-        const fetchEmployees = async () => {
+        const fetchProducts = async () => {
             try {
                 const { data, error } = await supabase
-                    .from('employee')
+                    .from('product')
                     .select();
 
                 if (error) {
-                    throw new Error('Could not fetch employees');
+                    throw new Error('Could not fetch products');
                 }
 
-                setEmployees(data);
+                setProducts(data);
                 setFetchError(null);
             } catch (error) {
                 setFetchError(error.message);
-                setEmployees(null);
+                setProducts(null);
                 console.error(error);
             }
         };
 
-        fetchEmployees();
+        fetchProducts();
     }, []);
 
     return (
         <div className="page home">
             {fetchError && <p>{fetchError}</p>}
-            {employees && (
+            {products && (
                 <div>
-                    <EmployeeTable employees={employees} />
+                    <ProductsTable products={products} />
                 </div>
             )}
         </div>
     );
 };
 
-export default Employees;
+export default Products;

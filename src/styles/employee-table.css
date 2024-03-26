@@ -1,29 +1,36 @@
-.employee-table {
+.employee-table,
+.product-table {
     width: 100%;
     border-collapse: collapse;
 }
 
 .employee-table th,
-.employee-table td {
+.employee-table td,
+.product-table th,
+.product-table td {
     padding: 8px;
     border: 1px solid #ddd;
     text-align: left;
 }
 
-.employee-table th {
+.employee-table th,
+.product-table th {
     background-color: #f2f2f2;
     cursor: pointer;
 }
 
-.employee-table th:hover {
+.employee-table th:hover,
+.product-table th:hover {
     background-color: #ddd;
 }
 
-.employee-table tr:nth-child(even) {
+.employee-table tr:nth-child(even),
+.product-table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
-.employee-table tr:hover {
+.employee-table tr:hover,
+.product-table tr:hover {
     background-color: #ddd;
 }
 

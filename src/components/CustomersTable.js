@@ -97,7 +97,7 @@ const EmployeeTable = ({customers}) => {
                         <td>{customer.percent}</td>
                         <td>
                             <button className="edit-button">
-                                <Link to={'/' + customer.card_number}>
+                                <Link to={'/customers/' + customer.card_number}>
                                     Edit
                                 </Link>
                             </button>

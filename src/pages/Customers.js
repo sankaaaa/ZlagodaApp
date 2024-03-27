@@ -5,8 +5,8 @@ import {useEffect, useState} from 'react';
 
 //styles
 import '../styles/links-stuff.css';
-import EmployeeTable from "../components/EmployeeTable";
 import CustomersTable from "../components/CustomersTable";
+
 const Customers = () => {
     const [fetchError, setFetchError] = useState(null);
     const [customers, setCustomers] = useState(null);
@@ -14,7 +14,7 @@ const Customers = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const { data, error } = await supabase
+                const {data, error} = await supabase
                     .from('customer_card')
                     .select();
 
@@ -39,7 +39,7 @@ const Customers = () => {
             {fetchError && <p>{fetchError}</p>}
             {customers && (
                 <div>
-                    <CustomersTable customers={customers} />
+                    <CustomersTable customers={customers}/>
                 </div>
             )}
         </div>

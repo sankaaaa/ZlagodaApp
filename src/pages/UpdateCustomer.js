@@ -95,7 +95,7 @@ const UpdateCustomer = () => {
                 />
                 <label htmlFor="phone_number">Phone number:</label>
                 <input
-                    type="text"
+                    type="tel"
                     id="phone_number"
                     value={phone_number}
                     onChange={(e) => setPhoneNumber(e.target.value)}

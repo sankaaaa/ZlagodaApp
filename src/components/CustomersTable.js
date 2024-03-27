@@ -1,11 +1,10 @@
 import {useState} from "react";
-// import Popup from "./EmployeePopup";
-import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import PopupCust from "./CustomerPopup";
+import '../styles/employee-table.css'
 
-const EmployeeTable = ({customers}) => {
+const CustomersTable = ({customers}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCustomers, setSelectedCustomers] = useState(null);
     const [searchSurname, setSearchSurname] = useState("");
@@ -41,18 +40,21 @@ const EmployeeTable = ({customers}) => {
     };
 
     const handleDelete = async (customer) => {
+        const confirmed = window.confirm("Are you sure you want to delete this customer?");
+        if (!confirmed) return;
+
         const {data, error} = await supabase
             .from('customer_card')
             .delete()
-            .eq('card_number', customer.card_number)
+            .eq('card_number', customer.card_number);
 
         if (error) {
             console.log(error)
         } else {
-            console.log(data)
+            console.log("Customer deleted successfully:", data);
             window.location.reload();
         }
-    }
+    };
 
     const handleSearchChange = (e) => {
         setSearchSurname(e.target.value);
@@ -112,4 +114,4 @@ const EmployeeTable = ({customers}) => {
     );
 }
 
-export default EmployeeTable;
+export default CustomersTable;

@@ -86,3 +86,7 @@ a {
 .cat-close:hover {
     color: red;
 }
+
+.error-message {
+    color: red;
+}

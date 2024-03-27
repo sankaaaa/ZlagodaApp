@@ -1,4 +1,5 @@
-.popup {
+.popup,
+.popup-char {
     position: fixed;
     top: 0;
     left: 0;
@@ -20,7 +21,7 @@
     overflow-y: auto;
 }
 
-.close {
+.close, .close-ch {
     position: relative;
     top: 10px;
     right: 0;
@@ -30,6 +31,11 @@
     color: #333;
 }
 
-.close:hover {
+.close-ch {
+    left: -30px;
+}
+
+.close:hover,
+.close-ch:hover {
     color: red;
 }

@@ -15,6 +15,7 @@ import '../src/styles/links-stuff.css';
 import Customers from "./pages/Customers";
 import CreateCustomer from "./pages/CreateCustomer";
 import UpdateCustomer from "./pages/UpdateCustomer";
+import StoreProducts from "./pages/StoreProducts";
 
 function Navigation({userRole}) {
     const location = useLocation();
@@ -31,6 +32,8 @@ function Navigation({userRole}) {
                     <Link to="/products">Products</Link>
                     <Link to="/categories">Categories</Link>
                     <Link to="/customers">Customers</Link>
+                    <Link to="/store-products">Store products</Link>
+
                 </div>
                 <div className="logout">
                     <p>{userRole}</p>
@@ -73,6 +76,8 @@ function App() {
                 <Route path="/customers" element={<Customers/>}/>
                 <Route path="/create-customer" element={<CreateCustomer/>}/>
                 <Route path="/customers/:card_number" element={<UpdateCustomer/>}/>
+                <Route path="/store-products" element={<StoreProducts/>}/>
+
             </Routes>
         </BrowserRouter>
     );

@@ -90,3 +90,8 @@ a {
 .error-message {
     color: red;
 }
+
+.checkboxs {
+    display: flex;
+    flex-direction: column;
+}

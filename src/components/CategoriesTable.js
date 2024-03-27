@@ -48,6 +48,9 @@ const CategoriesTable = ({categories}) => {
     };
 
     const handleDelete = async (category) => {
+        const confirmed = window.confirm("Are you sure you want to delete this category?");
+        if (!confirmed) return;
+
         const {data, error} = await supabase
             .from('category')
             .delete()

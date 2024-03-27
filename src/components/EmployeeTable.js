@@ -42,6 +42,8 @@ const EmployeeTable = ({ customers }) => {
     };
 
     const handleDelete = async (employee) => {
+        const confirmed = window.confirm("Are you sure you want to delete this employee?");
+        if (!confirmed) return;
         const { data, error } = await supabase
             .from('employee')
             .delete()

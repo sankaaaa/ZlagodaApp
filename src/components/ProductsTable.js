@@ -37,6 +37,8 @@ const ProductsTable = ({ products }) => {
     };
 
     const handleDelete = async (product) => {
+        const confirmed = window.confirm("Are you sure you want to delete this product?");
+        if (!confirmed) return;
         const { data, error } = await supabase
             .from('product')
             .delete()

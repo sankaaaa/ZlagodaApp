@@ -14,6 +14,7 @@ const StoreProductsTable = ({storeProducts}) => {
     const [showNonPromotionalOnly, setShowNonPromotionalOnly] = useState(false);
     const [selectedProductCharacteristics, setSelectedProductCharacteristics] = useState(null);
     const [showCharacteristicsPopup, setShowCharacteristicsPopup] = useState(false);
+    const [searchUPC, setSearchUPC] = useState('');
 
     useEffect(() => {
         const fetchProductNames = async () => {
@@ -48,6 +49,9 @@ const StoreProductsTable = ({storeProducts}) => {
             } else {
                 return true;
             }
+        })
+        .filter(storeProduct => {
+            return storeProduct.upc.toLowerCase().includes(searchUPC.toLowerCase());
         })
         .sort((a, b) => {
             if (sortConfig.key !== null) {
@@ -127,6 +131,17 @@ const StoreProductsTable = ({storeProducts}) => {
                 </div>
             )}
             <div className="top-line">
+                <div className="create-new-container">
+                    <Link to="/create-store-product" className="link-create-new">Add product to store</Link>
+                </div>
+                <div className="search-box">
+                    <label htmlFor="searchUPC">Search by UPC:</label>
+                    <input
+                        type="text"
+                        value={searchUPC}
+                        onChange={(e) => setSearchUPC(e.target.value)}
+                    />
+                </div>
                 <div className="checkboxs">
                     <label>
                         <input
@@ -187,7 +202,6 @@ const StoreProductsTable = ({storeProducts}) => {
                 })}
                 </tbody>
             </table>
-
         </div>
     );
 };

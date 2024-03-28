@@ -6,9 +6,7 @@ import supabase from "../config/supabaseClient";
 
 const StoreProductsTable = ({storeProducts}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
-    const [selectedStoreProduct, setSelectedStoreProduct] = useState(null);
-    const [categoryFilter, setCategoryFilter] = useState('');
-    const [nameFilter, setNameFilter] = useState('');
+    const [setSelectedStoreProduct] = useState(null);
     const [productNames, setProductNames] = useState({});
     const [showPromotionalOnly, setShowPromotionalOnly] = useState(false);
     const [showNonPromotionalOnly, setShowNonPromotionalOnly] = useState(false);

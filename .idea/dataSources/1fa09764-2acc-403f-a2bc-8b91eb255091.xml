@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="postgres@aws-0-us-west-1.pooler.supabase.com">
+  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.49">
+    <root id="1"/>
+    <database id="2" parent="1" name="postgres">
+      <Comment>default administrative connection database</Comment>
+      <Current>1</Current>
+      <Grants>11||10|C|G
+11||-9223372036854775808|U|G
+11||10|U|G
+2200||6171|C|G
+2200||-9223372036854775808|U|G
+2200||10|U|G
+2200||6171|U|G
+2200||16478|U|G
+2200||16479|U|G
+2200||16480|U|G
+13155||10|C|G
+13155||-9223372036854775808|U|G
+13155||10|U|G
+16387||10|C|G
+16387||16595|C|G
+16387||10|U|G
+16387||16478|U|G
+16387||16479|U|G
+16387||16480|U|G
+16387||16595|U|G
+16488||10|C|G
+16488||16420|C|G
+16488||16535|C|G
+16488||16595|C|G
+16488||10|U|G
+16488||16420|U|G
+16488||16478|U|G
+16488||16479|U|G
+16488||16480|U|G
+16488||16535|U|G
+16488||16595|U|G
+16536||10|C|G
+16536||16420|C|G
+16536||16590|C|G
+16536||16595|C|G
+16536||10|U|G
+16536||16420|U|G
+16536||16478|U|G
+16536||16479|U|G
+16536||16480|U|G
+16536||16590|U|G
+16536||16595|U|G
+16599||16420|C|G
+16599||10|U|G
+16599||16420|U|G
+16607||16420|C|G
+16607||16420|U|G
+16607||16478|U|G
+16607||16479|U|G
+16607||16480|U|G
+16607||10|U|O
+16618||16420|C|G
+16618||16420|U|G
+16618||16478|U|G
+16618||16479|U|G
+16618||16480|U|G
+16618||10|U|O
+16645||16420|C|G
+16645||-9223372036854775808|U|G
+16645||16420|U|G
+16772||16420|C|G
+16772||16420|U|G
+16772||16732|U|G
+16949||16420|C|G
+16949||16732|C|G
+16949||16420|U|G
+16949||16732|U|G</Grants>
+      <IntrospectionStateNumber>1612</IntrospectionStateNumber>
+      <ObjectId>5</ObjectId>
+      <OwnerName>postgres</OwnerName>
+    </database>
+    <role id="3" parent="1" name="anon">
+      <Config>statement_timeout=3s</Config>
+      <ObjectId>16478</ObjectId>
+    </role>
+    <role id="4" parent="1" name="authenticated">
+      <Config>statement_timeout=8s</Config>
+      <ObjectId>16479</ObjectId>
+    </role>
+    <role id="5" parent="1" name="authenticator">
+      <CanLogin>1</CanLogin>
+      <Config>session_preload_libraries=safeupdate
+statement_timeout=8s
+lock_timeout=8s</Config>
+      <Inherit>0</Inherit>
+      <ObjectId>16481</ObjectId>
+      <RoleGrants>16478
+16479
+16480</RoleGrants>
+    </role>
+    <role id="6" parent="1" name="dashboard_user">
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>16595</ObjectId>
+      <Replication>1</Replication>
+    </role>
+    <role id="7" parent="1" name="pg_checkpoint">
+      <ObjectId>4544</ObjectId>
+    </role>
+    <role id="8" parent="1" name="pg_database_owner">
+      <ObjectId>6171</ObjectId>
+    </role>
+    <role id="9" parent="1" name="pg_execute_server_program">
+      <ObjectId>4571</ObjectId>
+    </role>
+    <role id="10" parent="1" name="pg_monitor">
+      <ObjectId>3373</ObjectId>
+      <RoleGrants>3374
+3375
+3377</RoleGrants>
+    </role>
+    <role id="11" parent="1" name="pg_read_all_data">
+      <ObjectId>6181</ObjectId>
+    </role>
+    <role id="12" parent="1" name="pg_read_all_settings">
+      <ObjectId>3374</ObjectId>
+    </role>
+    <role id="13" parent="1" name="pg_read_all_stats">
+      <ObjectId>3375</ObjectId>
+    </role>
+    <role id="14" parent="1" name="pg_read_server_files">
+      <ObjectId>4569</ObjectId>
+    </role>
+    <role id="15" parent="1" name="pg_signal_backend">
+      <ObjectId>4200</ObjectId>
+    </role>
+    <role id="16" parent="1" name="pg_stat_scan_tables">
+      <ObjectId>3377</ObjectId>
+    </role>
+    <role id="17" parent="1" name="pg_write_all_data">
+      <ObjectId>6182</ObjectId>
+    </role>
+    <role id="18" parent="1" name="pg_write_server_files">
+      <ObjectId>4570</ObjectId>
+    </role>
+    <role id="19" parent="1" name="pgbouncer">
+      <CanLogin>1</CanLogin>
+      <ObjectId>16384</ObjectId>
+    </role>
+    <role id="20" parent="1" name="pgsodium_keyholder">
+      <ObjectId>16733</ObjectId>
+      <RoleGrants>16732</RoleGrants>
+    </role>
+    <role id="21" parent="1" name="pgsodium_keyiduser">
+      <ObjectId>16732</ObjectId>
+    </role>
+    <role id="22" parent="1" name="pgsodium_keymaker">
+      <ObjectId>16734</ObjectId>
+      <RoleGrants>16732
+16733</RoleGrants>
+    </role>
+    <role id="23" parent="1" name="postgres">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <Config>search_path=&quot;\\$user&quot;, public, extensions</Config>
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>10</ObjectId>
+      <Replication>1</Replication>
+      <RoleGrants>16478
+16479
+16480
+16535
+16590
+16732!
+16733!
+16734!
+3373</RoleGrants>
+    </role>
+    <role id="24" parent="1" name="service_role">
+      <BypassRls>1</BypassRls>
+      <ObjectId>16480</ObjectId>
+      <RoleGrants>16733</RoleGrants>
+    </role>
+    <role id="25" parent="1" name="supabase_admin">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <Config>search_path=&quot;$user&quot;, public, auth, extensions</Config>
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>16420</ObjectId>
+      <Replication>1</Replication>
+      <SuperRole>1</SuperRole>
+    </role>
+    <role id="26" parent="1" name="supabase_auth_admin">
+      <CanLogin>1</CanLogin>
+      <Config>search_path=auth
+idle_in_transaction_session_timeout=60000</Config>
+      <CreateRole>1</CreateRole>
+      <Inherit>0</Inherit>
+      <ObjectId>16535</ObjectId>
+    </role>
+    <role id="27" parent="1" name="supabase_read_only_user">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <ObjectId>16422</ObjectId>
+      <RoleGrants>6181</RoleGrants>
+    </role>
+    <role id="28" parent="1" name="supabase_replication_admin">
+      <CanLogin>1</CanLogin>
+      <ObjectId>16421</ObjectId>
+      <Replication>1</Replication>
+    </role>
+    <role id="29" parent="1" name="supabase_storage_admin">
+      <CanLogin>1</CanLogin>
+      <Config>search_path=storage</Config>
+      <CreateRole>1</CreateRole>
+      <Inherit>0</Inherit>
+      <ObjectId>16590</ObjectId>
+      <RoleGrants>16481</RoleGrants>
+    </role>
+    <tablespace id="30" parent="1" name="pg_default">
+      <ObjectId>1663</ObjectId>
+      <StateNumber>1</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </tablespace>
+    <tablespace id="31" parent="1" name="pg_global">
+      <ObjectId>1664</ObjectId>
+      <StateNumber>1</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </tablespace>
+    <schema id="32" parent="2" name="auth">
+      <ObjectId>16488</ObjectId>
+      <StateNumber>859</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="33" parent="2" name="extensions">
+      <ObjectId>16387</ObjectId>
+      <StateNumber>841</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </schema>
+    <schema id="34" parent="2" name="graphql">
+      <ObjectId>16618</ObjectId>
+      <StateNumber>928</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="35" parent="2" name="graphql_public">
+      <ObjectId>16607</ObjectId>
+      <StateNumber>928</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="36" parent="2" name="information_schema">
+      <ObjectId>13155</ObjectId>
+      <StateNumber>523</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </schema>
+    <schema id="37" parent="2" name="pg_catalog">
+      <Comment>system catalog schema</Comment>
+      <ObjectId>11</ObjectId>
+      <StateNumber>517</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </schema>
+    <schema id="38" parent="2" name="pgbouncer">
+      <ObjectId>16385</ObjectId>
+      <StateNumber>726</StateNumber>
+      <OwnerName>pgbouncer</OwnerName>
+    </schema>
+    <schema id="39" parent="2" name="pgsodium">
+      <ObjectId>16645</ObjectId>
+      <StateNumber>911</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="40" parent="2" name="pgsodium_masks">
+      <ObjectId>16772</ObjectId>
+      <StateNumber>911</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="41" parent="2" name="public">
+      <Comment>standard public schema</Comment>
+      <Current>1</Current>
+      <IntrospectionStateNumber>1612</IntrospectionStateNumber>
+      <IntrospectionTimestamp>2024-03-29.15:24:49.546</IntrospectionTimestamp>
+      <LocalIntrospectionTimestamp>2024-03-29.13:25:07</LocalIntrospectionTimestamp>
+      <ObjectId>2200</ObjectId>
+      <StateNumber>749</StateNumber>
+      <OwnerName>pg_database_owner</OwnerName>
+    </schema>
+    <schema id="42" parent="2" name="realtime">
+      <ObjectId>16599</ObjectId>
+      <StateNumber>867</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="43" parent="2" name="storage">
+      <ObjectId>16536</ObjectId>
+      <StateNumber>842</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <schema id="44" parent="2" name="vault">
+      <ObjectId>16949</ObjectId>
+      <StateNumber>911</StateNumber>
+      <OwnerName>supabase_admin</OwnerName>
+    </schema>
+    <table id="45" parent="41" name="category">
+      <ObjectId>28762</ObjectId>
+      <StateNumber>1086</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="46" parent="41" name="check">
+      <ObjectId>28726</ObjectId>
+      <StateNumber>1080</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="47" parent="41" name="customer_card">
+      <ObjectId>28700</ObjectId>
+      <StateNumber>1080</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="48" parent="41" name="employee">
+      <ObjectId>28672</ObjectId>
+      <StateNumber>1080</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="49" parent="41" name="product">
+      <ObjectId>28788</ObjectId>
+      <StateNumber>1086</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="50" parent="41" name="sale">
+      <ObjectId>28854</ObjectId>
+      <StateNumber>1093</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="51" parent="41" name="store_product">
+      <ObjectId>28818</ObjectId>
+      <StateNumber>1089</StateNumber>
+      <AccessMethodId>2</AccessMethodId>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <column id="52" parent="45" name="category_number">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1083</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="53" parent="45" name="category_name">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1083</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="54" parent="45" name="category_pkey">
+      <ColNames>category_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28765</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1083</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="55" parent="45" name="category_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28766</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1083</StateNumber>
+      <UnderlyingIndexId>28765</UnderlyingIndexId>
+    </key>
+    <column id="56" parent="46" name="check_number">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="57" parent="46" name="id_employee">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="58" parent="46" name="card_number">
+      <DasType>varchar(13)|0s</DasType>
+      <Position>3</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="59" parent="46" name="print_date">
+      <DasType>timestamp|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="60" parent="46" name="sum_total">
+      <DasType>numeric(13,4 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1700</TypeId>
+    </column>
+    <column id="61" parent="46" name="vat">
+      <DasType>numeric(13,4 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>1080</StateNumber>
+      <TypeId>1700</TypeId>
+    </column>
+    <foreign-key id="62" parent="46" name="check_id_employee_fkey">
+      <ColNames>id_employee</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28731</ObjectId>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>1080</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28672</RefTableId>
+    </foreign-key>
+    <foreign-key id="63" parent="46" name="check_card_number_fkey">
+      <ColNames>card_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28736</ObjectId>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>1080</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28700</RefTableId>
+    </foreign-key>
+    <index id="64" parent="46" name="check_pkey">
+      <ColNames>check_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28729</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1080</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="65" parent="46" name="check_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28730</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1080</StateNumber>
+      <UnderlyingIndexId>28729</UnderlyingIndexId>
+    </key>
+    <column id="66" parent="47" name="card_number">
+      <DasType>varchar(13)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="67" parent="47" name="cust_surname">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="68" parent="47" name="cust_name">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="69" parent="47" name="cust_patronymic">
+      <DasType>varchar(50)|0s</DasType>
+      <Position>4</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="70" parent="47" name="phone_number">
+      <DasType>varchar(13)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="71" parent="47" name="city">
+      <DasType>varchar(50)|0s</DasType>
+      <Position>6</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="72" parent="47" name="street">
+      <DasType>varchar(50)|0s</DasType>
+      <Position>7</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="73" parent="47" name="zip_code">
+      <DasType>varchar(9)|0s</DasType>
+      <Position>8</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="74" parent="47" name="percent">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StateNumber>1076</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <index id="75" parent="47" name="customer_card_pkey">
+      <ColNames>card_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28703</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1076</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="76" parent="47" name="customer_card_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28704</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1076</StateNumber>
+      <UnderlyingIndexId>28703</UnderlyingIndexId>
+    </key>
+    <column id="77" parent="48" name="id_employee">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="78" parent="48" name="empl_surname">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="79" parent="48" name="empl_name">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="80" parent="48" name="empl_patronymic">
+      <DasType>varchar(50)|0s</DasType>
+      <Position>4</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="81" parent="48" name="empl_role">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="82" parent="48" name="salary">
+      <DasType>numeric(13,4 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1700</TypeId>
+    </column>
+    <column id="83" parent="48" name="date_of_birth">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="84" parent="48" name="date_of_start">
+      <DasType>date|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1082</TypeId>
+    </column>
+    <column id="85" parent="48" name="phone_number">
+      <DasType>varchar(13)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>9</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="86" parent="48" name="city">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>10</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="87" parent="48" name="street">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>11</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="88" parent="48" name="zip_code">
+      <DasType>varchar(9)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>12</Position>
+      <StateNumber>1073</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="89" parent="48" name="employee_pkey">
+      <ColNames>id_employee</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28675</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1073</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="90" parent="48" name="employee_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28676</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1073</StateNumber>
+      <UnderlyingIndexId>28675</UnderlyingIndexId>
+    </key>
+    <column id="91" parent="49" name="id_product">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1086</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="92" parent="49" name="category_number">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1086</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="93" parent="49" name="product_name">
+      <DasType>varchar(50)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>1086</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="94" parent="49" name="characteristics">
+      <DasType>varchar(100)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>1086</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <foreign-key id="95" parent="49" name="product_category_number_fkey">
+      <ColNames>category_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28793</ObjectId>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>1086</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28762</RefTableId>
+    </foreign-key>
+    <index id="96" parent="49" name="product_pkey">
+      <ColNames>id_product</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28791</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1086</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="97" parent="49" name="product_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28792</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1086</StateNumber>
+      <UnderlyingIndexId>28791</UnderlyingIndexId>
+    </key>
+    <column id="98" parent="50" name="upc">
+      <DasType>varchar(12)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1093</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="99" parent="50" name="check_number">
+      <DasType>varchar(10)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>1093</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="100" parent="50" name="product_number">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>1093</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="101" parent="50" name="selling_price">
+      <DasType>numeric(13,4 digit)|0s</DasType>
+      <Position>4</Position>
+      <StateNumber>1093</StateNumber>
+      <TypeId>1700</TypeId>
+    </column>
+    <foreign-key id="102" parent="50" name="sale_upc_fkey">
+      <ColNames>upc</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28859</ObjectId>
+      <StateNumber>1093</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28818</RefTableId>
+    </foreign-key>
+    <foreign-key id="103" parent="50" name="sale_check_number_fkey">
+      <ColNames>check_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28864</ObjectId>
+      <StateNumber>1093</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28726</RefTableId>
+    </foreign-key>
+    <index id="104" parent="50" name="sale_pkey">
+      <ColNames>upc
+check_number</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28857</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1093</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationIds>100
+100</CollationIds>
+      <CollationNames>default
+default</CollationNames>
+      <CollationParentNames>pg_catalog
+pg_catalog</CollationParentNames>
+    </index>
+    <key id="105" parent="50" name="sale_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28858</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1093</StateNumber>
+      <UnderlyingIndexId>28857</UnderlyingIndexId>
+    </key>
+    <column id="106" parent="51" name="upc">
+      <DasType>varchar(12)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="107" parent="51" name="upc_prom">
+      <DasType>varchar(12)|0s</DasType>
+      <Position>2</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="108" parent="51" name="id_product">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="109" parent="51" name="selling_price">
+      <DasType>numeric(13,4 digit)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>1700</TypeId>
+    </column>
+    <column id="110" parent="51" name="products_number">
+      <DasType>integer|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>23</TypeId>
+    </column>
+    <column id="111" parent="51" name="promotional_product">
+      <DasType>boolean|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>1089</StateNumber>
+      <TypeId>16</TypeId>
+    </column>
+    <foreign-key id="112" parent="51" name="store_product_upc_prom_fkey">
+      <ColNames>upc_prom</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28823</ObjectId>
+      <OnDelete>set-null</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>1089</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28818</RefTableId>
+    </foreign-key>
+    <foreign-key id="113" parent="51" name="store_product_id_product_fkey">
+      <ColNames>id_product</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28828</ObjectId>
+      <OnUpdate>cascade</OnUpdate>
+      <StateNumber>1089</StateNumber>
+      <RefKeyColPositions>1</RefKeyColPositions>
+      <RefTableId>28788</RefTableId>
+    </foreign-key>
+    <index id="114" parent="51" name="store_product_pkey">
+      <ColNames>upc</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28821</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1089</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="115" parent="51" name="store_product_pkey">
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>28822</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>1089</StateNumber>
+      <UnderlyingIndexId>28821</UnderlyingIndexId>
+    </key>
+  </database-model>
+</dataSource>

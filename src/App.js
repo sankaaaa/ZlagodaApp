@@ -17,6 +17,7 @@ import CreateCustomer from "./pages/CreateCustomer";
 import UpdateCustomer from "./pages/UpdateCustomer";
 import StoreProducts from "./pages/StoreProducts";
 import CreateStoreProduct from "./pages/CreateStoreProduct";
+import UpdateStoreProduct from "./pages/UpdateStoreProduct";
 
 function Navigation({userRole}) {
     const location = useLocation();
@@ -79,6 +80,8 @@ function App() {
                 <Route path="/customers/:card_number" element={<UpdateCustomer/>}/>
                 <Route path="/store-products" element={<StoreProducts/>}/>
                 <Route path="/create-store-product" element={<CreateStoreProduct/>}/>
+                <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>
+
             </Routes>
         </BrowserRouter>
     );

@@ -30,7 +30,7 @@ const Products = () => {
             {fetchError && <p>{fetchError}</p>}
             {products && (
                 <div>
-                    <ProductsTable products={products}/>
+                    <ProductsTable products={products} setProducts={setProducts} />
                 </div>
             )}
         </div>

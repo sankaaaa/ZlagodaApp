@@ -14,7 +14,18 @@ app.get('/product', (req, res) => {
             res.json(result);
         })
         .catch(error => {
-            res.status(500).json({ error: error.message });
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.delete('/product/:id', (req, res) => {
+    const productId = req.params.id;
+    db.none('DELETE FROM product WHERE id_product = $1', productId)
+        .then(() => {
+            res.json({message: 'Product deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
         });
 });
 

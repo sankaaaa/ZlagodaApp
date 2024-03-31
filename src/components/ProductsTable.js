@@ -1,10 +1,9 @@
-import { useState } from "react";
+import {useState} from "react";
 import '../styles/employee-table.css';
-import { Link } from "react-router-dom";
-import supabase from "../config/supabaseClient";
+import {Link} from "react-router-dom";
 
-const ProductsTable = ({ products }) => {
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+const ProductsTable = ({products, setProducts}) => {
+    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [categoryFilter, setCategoryFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
@@ -29,26 +28,27 @@ const ProductsTable = ({ products }) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const handleRowClick = (product) => {
         setSelectedProduct(product);
     };
 
-    const handleDelete = async (product) => {
+    const handleDelete = async (productId) => {
         const confirmed = window.confirm("Are you sure you want to delete this product?");
         if (!confirmed) return;
-        const { data, error } = await supabase
-            .from('product')
-            .delete()
-            .eq('id_product', product.id_product);
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data);
-            window.location.reload();
+        try {
+            const response = await fetch(`http://localhost:8081/product/${productId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete product');
+            }
+            const updatedProducts = products.filter(product => product.id_product !== productId);
+            setProducts(updatedProducts);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -98,7 +98,7 @@ const ProductsTable = ({ products }) => {
                 <tbody>
                 {sortedProducts.map(product => (
                     <tr key={product.id_product}>
-                        <td style={{ fontWeight: 'bold' }}
+                        <td style={{fontWeight: 'bold'}}
                             onClick={() => handleRowClick(product)}>{product.id_product}.
                         </td>
                         <td>{product.category_number}</td>
@@ -108,7 +108,8 @@ const ProductsTable = ({ products }) => {
                             <button className="edit-button">
                                 <Link to={`/products/${product.id_product}`}>Edit</Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(product)}>Delete</button>
+                            <button className="edit-button" onClick={() => handleDelete(product.id_product)}>Delete
+                            </button>
                         </td>
                     </tr>
                 ))}

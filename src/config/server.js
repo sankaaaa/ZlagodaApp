@@ -8,6 +8,7 @@ const cn = {
 };
 const db = pgp(cn);
 
+//ПРОДУКТИ
 app.get('/product', (req, res) => {
     db.any('SELECT * FROM product;')
         .then(result => {
@@ -41,8 +42,34 @@ app.delete('/product/:id', (req, res) => {
         });
 });
 
-const PORT = 8081
+//ПРАЦІВНИКИ
+app.get('/employee', (req, res) => {
+    db.any('SELECT * FROM employee;')
+        .then(result1 => {
+            res.json(result1);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const PORT = 8081
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     next();

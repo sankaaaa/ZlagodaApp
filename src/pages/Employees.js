@@ -13,14 +13,11 @@ const Employees = () => {
     useEffect(() => {
         const fetchEmployees = async () => {
             try {
-                const { data, error } = await supabase
-                    .from('employee')
-                    .select();
-
-                if (error) {
+                const response = await fetch('http://localhost:8081/employee');
+                if (!response.ok) {
                     throw new Error('Could not fetch employees');
                 }
-
+                const data = await response.json();
                 setEmployees(data);
                 setFetchError(null);
             } catch (error) {

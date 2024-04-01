@@ -65,15 +65,6 @@ app.get('/check', (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 const PORT = 8081
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');

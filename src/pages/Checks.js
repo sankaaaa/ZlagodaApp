@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
+
 const Checks = () => {
     const [fetchError, setFetchError] = useState(null);
     const [checks, setChecks] = useState(null);

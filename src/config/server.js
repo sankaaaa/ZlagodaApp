@@ -18,6 +18,18 @@ app.get('/product', (req, res) => {
         });
 });
 
+app.post('/product', express.json(), (req, res) => {
+    const {id_product, product_name, category_number, characteristics} = req.body;
+    db.any('INSERT INTO product (id_product, product_name, category_number, characteristics) VALUES ($1, $2, $3, $4)', [id_product, product_name, category_number, characteristics])
+        .then(() => {
+            res.json({message: 'Product added successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+
 app.delete('/product/:id', (req, res) => {
     const productId = req.params.id;
     db.none('DELETE FROM product WHERE id_product = $1', productId)

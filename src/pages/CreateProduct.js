@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
 const CreateProduct = () => {
@@ -24,37 +23,24 @@ const CreateProduct = () => {
             return;
         }
 
-        const {data: existingProducts, error: existingProductError} = await supabase
-            .from('product')
-            .select('id_product')
-            .eq('id_product', id_product);
+        try {
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id_product, category_number, product_name, characteristics})
+            };
 
-        if (existingProductError) {
-            console.error(existingProductError.message);
-            setFormError("An error occurred while checking for existing product.");
-            return;
-        }
+            const addResponse = await fetch('http://localhost:8081/product', requestOptions);
+            if (!addResponse.ok) {
+                throw new Error('Error adding product');
+            }
 
-        if (existingProducts.length > 0) {
-            setFormError("Product with the same ID already exists in the table!");
-            return;
-        }
-
-        const {data, error} = await supabase
-            .from('product')
-            .insert([{
-                id_product, product_name, category_number, characteristics
-            }]);
-
-        if (error) {
-            console.log(error);
-            setFormError("Please set all form fields correctly!");
-        } else {
-            console.log(data);
-            setFormError(null);
             navigate('/products');
+        } catch (error) {
+            console.error(error);
+            setFormError("Error adding product");
         }
-    }
+    };
 
     return (
         <div className="page create">

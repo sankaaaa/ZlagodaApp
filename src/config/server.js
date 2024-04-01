@@ -53,11 +53,16 @@ app.get('/employee', (req, res) => {
         });
 });
 
-
-
-
-
-
+//ЧЕКИ
+app.get('/check', (req, res) => {
+    db.any('SELECT * FROM "check";')
+        .then(result2 => {
+            res.json(result2);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 
 
 

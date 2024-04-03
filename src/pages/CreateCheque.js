@@ -15,6 +15,7 @@ const CreateCheque = () => {
     const [cashiers, setCashiers] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [products, setProducts] = useState([]);
+    const [productNames, setProductNames] = useState({});
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -56,6 +57,31 @@ const CreateCheque = () => {
 
         fetchCustomers();
     }, []);
+
+    useEffect(() => {
+        async function fetchProdNames() {
+            try {
+                const {data, error} = await supabase
+                    .from('product')
+                    .select('id_product, product_name');
+
+                if (error) {
+                    throw error;
+                }
+
+                const productNamesObject = {};
+                data.forEach(product => {
+                    productNamesObject[product.id_product] = product.product_name;
+                });
+                setProductNames(productNamesObject);
+            } catch (error) {
+                console.error('Error fetching product names:', error.message);
+            }
+        }
+
+        fetchProdNames();
+    }, []);
+
 
     useEffect(() => {
         async function fetchProducts() {
@@ -125,7 +151,6 @@ const CreateCheque = () => {
         setSelectedProducts(updatedProducts);
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -190,6 +215,7 @@ const CreateCheque = () => {
                         onChange={(e) => setCheckNumber(e.target.value)}
                     />
                 </div>
+
                 <div className="select-wrapper">
                     <label htmlFor="id_employee">ID employee:</label>
                     <select
@@ -203,6 +229,7 @@ const CreateCheque = () => {
                         ))}
                     </select>
                 </div>
+
                 <div className="select-wrapper">
                     <label htmlFor="card_number">Card number:</label>
                     <select
@@ -216,6 +243,7 @@ const CreateCheque = () => {
                         ))}
                     </select>
                 </div>
+
                 {selectedProducts.map((product, index) => (
                     <div key={index}>
                         <div className="select-wrapper p">
@@ -226,8 +254,8 @@ const CreateCheque = () => {
                                 onChange={(e) => handleProductChange(index, 'product', e.target.value)}
                             >
                                 <option value="">Select a product</option>
-                                {products.map(p => (
-                                    <option key={p} value={p}>{p}</option>
+                                {products.map(id => (
+                                    <option key={id} value={id}>{productNames[id]}</option>
                                 ))}
                             </select>
                             <label htmlFor={`quantity_${index}`}>Quantity:</label>
@@ -237,7 +265,8 @@ const CreateCheque = () => {
                                    value={product.quantity}
                                    onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                             />
-                            <button type="button" className="rem-b" onClick={() => handleRemoveProduct(index)}>❌</button>
+                            <button type="button" className="rem-b" onClick={() => handleRemoveProduct(index)}>❌
+                            </button>
                         </div>
                     </div>
                 ))}

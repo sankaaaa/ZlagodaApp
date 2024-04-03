@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import ChecksTable from "../components/ChecksTable";
 
 const Checks = () => {
     const [fetchError, setFetchError] = useState(null);
@@ -29,7 +30,7 @@ const Checks = () => {
             {fetchError && <p>{fetchError}</p>}
             {checks && (
                 <div>
-                    {/*<ProductsTable products={checks} setProducts={setChecks} />*/}
+                    <ChecksTable checks={checks} setChecks={setChecks} />
                 </div>
             )}
         </div>

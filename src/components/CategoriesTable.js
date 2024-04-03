@@ -31,11 +31,11 @@ const CategoriesTable = ({categories}) => {
 
     const handleRowClick = (category) => {
         setSelectedCategory(category);
-        fetchProducts(category.category_number);
+        fetchCategoriaes(category.category_number);
         setIsPopupOpen(true);
     };
 
-    const fetchProducts = async (categoryNumber) => {
+    const fetchCategoriaes = async (categoryNumber) => {
         const {data, error} = await supabase
             .from('product')
             .select()

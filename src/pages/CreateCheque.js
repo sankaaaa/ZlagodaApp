@@ -13,6 +13,7 @@ const CreateCheque = () => {
     const [totalSum, setTotalSum] = useState(0);
     const [formError, setFormError] = useState(null);
     const [cashiers, setCashiers] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -34,6 +35,26 @@ const CreateCheque = () => {
         }
 
         fetchCashiers();
+    }, []);
+
+    useEffect(() => {
+        async function fetchCustomers() {
+            try {
+                const {data, error} = await supabase
+                    .from('customer_card')
+                    .select('card_number');
+
+                if (error) {
+                    throw error;
+                }
+
+                setCustomers(data.map(customer => customer.card_number));
+            } catch (error) {
+                console.error('Error fetching customers:', error.message);
+            }
+        }
+
+        fetchCustomers();
     }, []);
 
     useEffect(() => {
@@ -89,10 +110,21 @@ const CreateCheque = () => {
     };
 
     const handleProductChange = (index, field, value) => {
+        if (field === 'quantity') {
+            if (value < 0) {
+                value = 0;
+            }
+        } else if (field === 'price') {
+            if (value < 0) {
+                value = 0;
+            }
+        }
+
         const updatedProducts = [...selectedProducts];
         updatedProducts[index][field] = value;
         setSelectedProducts(updatedProducts);
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -136,73 +168,95 @@ const CreateCheque = () => {
             setFormError("An error occurred while inserting the cheque.");
         }
     }
+    const handleRemoveProduct = (indexToRemove) => {
+        setSelectedProducts(prevProducts => {
+            const updatedProducts = prevProducts.filter((_, index) => index !== indexToRemove);
+            if (updatedProducts.length === 0) {
+                setTotalSum(0);
+            }
+            return updatedProducts;
+        });
+    };
 
     return (
         <div className="page create">
             <form onSubmit={handleSubmit}>
-                <label htmlFor="check_number">Cheque number:</label>
-                <input
-                    type="text"
-                    id="check_number"
-                    value={check_number}
-                    onChange={(e) => setCheckNumber(e.target.value)}
-                />
-                <label htmlFor="id_employee">ID employee:</label>
-                <select
-                    id="id_employee"
-                    value={id_employee}
-                    onChange={(e) => setIdEmployee(e.target.value)}
-                >
-                    <option value="">Select cashier</option>
-                    {cashiers.map(cashier => (
-                        <option key={cashier} value={cashier}>{cashier}</option>
-                    ))}
-                </select>
-                <label htmlFor="card_number">Card number:</label>
-                <input
-                    type="text"
-                    id="card_number"
-                    value={card_number}
-                    onChange={(e) => setCardNumber(e.target.value)}
-                />
-
+                <div className="select-wrapper">
+                    <label htmlFor="check_number">Cheque number:</label>
+                    <input
+                        type="text"
+                        id="check_number"
+                        value={check_number}
+                        onChange={(e) => setCheckNumber(e.target.value)}
+                    />
+                </div>
+                <div className="select-wrapper">
+                    <label htmlFor="id_employee">ID employee:</label>
+                    <select
+                        id="id_employee"
+                        value={id_employee}
+                        onChange={(e) => setIdEmployee(e.target.value)}
+                    >
+                        <option value="">Select cashier</option>
+                        {cashiers.map(cashier => (
+                            <option key={cashier} value={cashier}>{cashier}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="select-wrapper">
+                    <label htmlFor="card_number">Card number:</label>
+                    <select
+                        id="card_number"
+                        value={card_number}
+                        onChange={(e) => setCardNumber(e.target.value)}
+                    >
+                        <option value="">Select customer card</option>
+                        {customers.map(customer => (
+                            <option key={customer} value={customer}>{customer}</option>
+                        ))}
+                    </select>
+                </div>
                 {selectedProducts.map((product, index) => (
                     <div key={index}>
-                        <label htmlFor={`product_${index}`}>Product:</label>
-                        <select
-                            id={`product_${index}`}
-                            value={product.product}
-                            onChange={(e) => handleProductChange(index, 'product', e.target.value)}
-                        >
-                            <option value="">Select a product</option>
-                            {products.map(p => (
-                                <option key={p} value={p}>{p}</option>
-                            ))}
-                        </select>
-                        <label htmlFor={`quantity_${index}`}>Quantity:</label>
-                        <input
-                            type="number"
-                            id={`quantity_${index}`}
-                            value={product.quantity}
-                            onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
-                        />
+                        <div className="select-wrapper p">
+                            <label htmlFor={`product_${index}`}>Product:</label>
+                            <select
+                                id={`product_${index}`}
+                                value={product.product}
+                                onChange={(e) => handleProductChange(index, 'product', e.target.value)}
+                            >
+                                <option value="">Select a product</option>
+                                {products.map(p => (
+                                    <option key={p} value={p}>{p}</option>
+                                ))}
+                            </select>
+                            <label htmlFor={`quantity_${index}`}>Quantity:</label>
+                            <input className="q"
+                                   type="number"
+                                   id={`quantity_${index}`}
+                                   value={product.quantity}
+                                   onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                            />
+                            <button type="button" className="rem-b" onClick={() => handleRemoveProduct(index)}>❌</button>
+                        </div>
                     </div>
                 ))}
 
-                <button type="button" onClick={handleAddProduct}>Add Product</button>
-
-                <label htmlFor="total_sum">Total Sum:</label>
-                <input
-                    type="text"
-                    id="total_sum"
-                    value={totalSum}
-                    readOnly
-                />
-
+                <button type="button" onClick={handleAddProduct} className="add-prod-b">Add Product</button>
+                <div className="select-wrapper">
+                    <label htmlFor="total_sum">Total Sum:</label>
+                    <input
+                        type="text"
+                        id="total_sum"
+                        value={totalSum}
+                        readOnly
+                    />
+                </div>
                 <button>Add Cheque</button>
                 {formError && <p className="error">{formError}</p>}
             </form>
         </div>
+
     )
 }
 

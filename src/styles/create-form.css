@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap');
 
 .page.create {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
 }
 
@@ -48,4 +48,51 @@ button:hover {
 .error {
     color: red;
     margin-top: 5px;
+}
+
+.add-prod-b {
+    background-color: #49D12B;
+    width: 130px;
+    padding: 0;
+    font-size: 17px;
+    height: 40px
+}
+
+.add-prod-b:hover {
+    background-color: #41A92A;
+}
+
+.select-wrapper {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.select-wrapper.p {
+    border: #333333 solid 1px;
+    padding: 10px 25px 10px 5px;
+}
+
+.select-wrapper select {
+    height: 40px;
+    margin-left: 20px;
+    font-family: 'Poppins';
+    margin-right: 50px;
+    border-radius: 5px;
+}
+
+.rem-b {
+    width: 40px;
+    height: 40px;
+    font-size: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 0 100px;
+    background-color: white;
+}
+
+.select-wrapper .q {
+    margin-left: 15px;
 }

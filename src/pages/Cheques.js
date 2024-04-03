@@ -1,23 +1,24 @@
 import {useEffect, useState} from 'react';
-import ChecksTable from "../components/ChecksTable";
+import CategoriesTable from "../components/CategoriesTable";
+import ChequesTable from "../components/ChequesTable";
 
-const Checks = () => {
+const Cheques = () => {
     const [fetchError, setFetchError] = useState(null);
-    const [checks, setChecks] = useState(null);
+    const [cheques, setCheques] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://localhost:8081/check');
+                const response = await fetch('http://localhost:8081/cheque');
                 if (!response.ok) {
-                    throw new Error('Could not fetch checks');
+                    throw new Error('Could not fetch cheques');
                 }
                 const data = await response.json();
-                setChecks(data);
+                setCheques(data);
                 setFetchError(null);
             } catch (error) {
                 setFetchError(error.message);
-                setChecks(null);
+                setCheques(null);
                 console.error(error);
             }
         };
@@ -28,13 +29,13 @@ const Checks = () => {
     return (
         <div className="page home">
             {fetchError && <p>{fetchError}</p>}
-            {checks && (
+            {cheques && (
                 <div>
-                    <ChecksTable checks={checks} setChecks={setChecks} />
+                    <ChequesTable cheques={cheques}/>
                 </div>
             )}
         </div>
     );
 };
 
-export default Checks;
+export default Cheques;

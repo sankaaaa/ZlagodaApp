@@ -67,8 +67,8 @@ app.get('/employee', (req, res) => {
 });
 
 //ЧЕКИ
-app.get('/check', (req, res) => {
-    db.any('SELECT * FROM "check";')
+app.get('/cheque', (req, res) => {
+    db.any('SELECT * FROM cheque;')
         .then(result2 => {
             res.json(result2);
         })

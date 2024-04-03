@@ -18,7 +18,8 @@ import UpdateCustomer from "./pages/UpdateCustomer";
 import StoreProducts from "./pages/StoreProducts";
 import CreateStoreProduct from "./pages/CreateStoreProduct";
 import UpdateStoreProduct from "./pages/UpdateStoreProduct";
-import Checks from "./pages/Checks";
+import Cheques from "./pages/Cheques";
+import CreateCheque from "./pages/CreateCheque";
 
 function Navigation({userRole}) {
     const location = useLocation();
@@ -36,7 +37,7 @@ function Navigation({userRole}) {
                     <Link to="/categories">Categories</Link>
                     <Link to="/customers">Customers</Link>
                     <Link to="/store-products">Store products</Link>
-                    <Link to="/checks">Checks</Link>
+                    <Link to="/cheques">Cheques</Link>
 
                 </div>
                 <div className="logout">
@@ -83,7 +84,8 @@ function App() {
                 <Route path="/store-products" element={<StoreProducts/>}/>
                 <Route path="/create-store-product" element={<CreateStoreProduct/>}/>
                 <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>
-                <Route path="/checks" element={<Checks/>}/>
+                <Route path="/cheques" element={<Cheques/>}/>
+                <Route path="/create-cheque" element={<CreateCheque/>}/>
 
             </Routes>
         </BrowserRouter>

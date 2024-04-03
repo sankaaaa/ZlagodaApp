@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
@@ -9,8 +9,7 @@ const CreateCheque = () => {
     const [id_employee, setIdEmployee] = useState('');
     const [card_number, setCardNumber] = useState('');
     const [print_date, setPrintDate] = useState('');
-    const [selectedProduct, setSelectedProduct] = useState('');
-    const [quantity, setQuantity] = useState('');
+    const [selectedProducts, setSelectedProducts] = useState([{product: '', quantity: 1}]);
     const [totalSum, setTotalSum] = useState(0);
     const [formError, setFormError] = useState(null);
     const [cashiers, setCashiers] = useState([]);
@@ -19,7 +18,7 @@ const CreateCheque = () => {
     useEffect(() => {
         async function fetchCashiers() {
             try {
-                const { data, error } = await supabase
+                const {data, error} = await supabase
                     .from('employee')
                     .select('id_employee')
                     .eq('empl_role', 'cashier');
@@ -40,7 +39,7 @@ const CreateCheque = () => {
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const { data, error } = await supabase
+                const {data, error} = await supabase
                     .from('store_product')
                     .select('id_product');
 
@@ -58,33 +57,47 @@ const CreateCheque = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedProduct && quantity) {
-            async function fetchProductPrice() {
+        if (selectedProducts.length > 0 && products.length > 0) {
+            const fetchProductInfo = async () => {
                 try {
-                    const { data: productData, error } = await supabase
-                        .from('store_product')
-                        .select('selling_price')
-                        .eq('id_product', selectedProduct);
+                    const productData = await Promise.all(selectedProducts.map(async (product) => {
+                        const {data: productInfo, error} = await supabase
+                            .from('store_product')
+                            .select('selling_price')
+                            .eq('id_product', product.product)
+                            .single();
+                        if (error) throw error;
+                        return productInfo;
+                    }));
 
-                    if (error) {
-                        throw error;
-                    }
-
-                    const price = productData[0].selling_price;
-                    setTotalSum(parseFloat(price) * parseInt(quantity));
+                    const sum = productData.reduce((acc, curr, index) => {
+                        const price = curr ? curr.selling_price : 0;
+                        return acc + price * selectedProducts[index].quantity;
+                    }, 0);
+                    setTotalSum(sum);
                 } catch (error) {
                     console.error('Error fetching product price:', error.message);
                 }
-            }
+            };
 
-            fetchProductPrice();
+            fetchProductInfo();
         }
-    }, [selectedProduct, quantity]);
+    }, [selectedProducts, products]);
+
+    const handleAddProduct = () => {
+        setSelectedProducts([...selectedProducts, {product: '', quantity: 1}]);
+    };
+
+    const handleProductChange = (index, field, value) => {
+        const updatedProducts = [...selectedProducts];
+        updatedProducts[index][field] = value;
+        setSelectedProducts(updatedProducts);
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!check_number || !id_employee || !card_number || !totalSum) {
+        if (!check_number || !id_employee || !card_number || totalSum === 0) {
             setFormError("Please set all form fields correctly!");
             return;
         }
@@ -100,7 +113,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            const { data, error } = await supabase
+            const {data, error} = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
@@ -123,7 +136,6 @@ const CreateCheque = () => {
             setFormError("An error occurred while inserting the cheque.");
         }
     }
-
 
     return (
         <div className="page create">
@@ -154,24 +166,31 @@ const CreateCheque = () => {
                     onChange={(e) => setCardNumber(e.target.value)}
                 />
 
-                <label htmlFor="selected_product">Select a product:</label>
-                <select
-                    id="selected_product"
-                    value={selectedProduct}
-                    onChange={(e) => setSelectedProduct(e.target.value)}
-                >
-                    <option value="">Select a product</option>
-                    {products.map(product => (
-                        <option key={product} value={product}>{product}</option>
-                    ))}
-                </select>
-                <label htmlFor="quantity">Quantity:</label>
-                <input
-                    type="number"
-                    id="quantity"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                />
+                {selectedProducts.map((product, index) => (
+                    <div key={index}>
+                        <label htmlFor={`product_${index}`}>Product:</label>
+                        <select
+                            id={`product_${index}`}
+                            value={product.product}
+                            onChange={(e) => handleProductChange(index, 'product', e.target.value)}
+                        >
+                            <option value="">Select a product</option>
+                            {products.map(p => (
+                                <option key={p} value={p}>{p}</option>
+                            ))}
+                        </select>
+                        <label htmlFor={`quantity_${index}`}>Quantity:</label>
+                        <input
+                            type="number"
+                            id={`quantity_${index}`}
+                            value={product.quantity}
+                            onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                        />
+                    </div>
+                ))}
+
+                <button type="button" onClick={handleAddProduct}>Add Product</button>
+
                 <label htmlFor="total_sum">Total Sum:</label>
                 <input
                     type="text"
@@ -179,6 +198,7 @@ const CreateCheque = () => {
                     value={totalSum}
                     readOnly
                 />
+
                 <button>Add Cheque</button>
                 {formError && <p className="error">{formError}</p>}
             </form>

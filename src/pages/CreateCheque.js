@@ -84,19 +84,29 @@ const CreateCheque = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!check_number || !id_employee || !card_number || !print_date || !totalSum) {
+        if (!check_number || !id_employee || !card_number || !totalSum) {
             setFormError("Please set all form fields correctly!");
             return;
         }
 
         try {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const hours = String(currentDate.getHours()).padStart(2, '0');
+            const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+            const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+            const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
             const { data, error } = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
                     id_employee,
                     card_number,
-                    print_date,
+                    print_date: formattedDate,
                     sum_total: totalSum,
                     vat: totalSum * 0.2,
                 }]);
@@ -113,6 +123,7 @@ const CreateCheque = () => {
             setFormError("An error occurred while inserting the cheque.");
         }
     }
+
 
     return (
         <div className="page create">
@@ -142,13 +153,7 @@ const CreateCheque = () => {
                     value={card_number}
                     onChange={(e) => setCardNumber(e.target.value)}
                 />
-                <label htmlFor="print_date">Print date:</label>
-                <input
-                    type="datetime-local"
-                    id="print_date"
-                    value={print_date}
-                    onChange={(e) => setPrintDate(e.target.value)}
-                />
+
                 <label htmlFor="selected_product">Select a product:</label>
                 <select
                     id="selected_product"

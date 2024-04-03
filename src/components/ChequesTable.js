@@ -7,7 +7,6 @@ const ChequesTable = ({cheques}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCheque, setSelectedCheque] = useState(null);
     const [chequeList, setChequeList] = useState([]);
-    // const [isPopupOpen, setIsPopupOpen] = useState(false);
 
     const sortedCategories = cheques.sort((a, b) => {
         if (sortConfig.key !== null) {
@@ -66,19 +65,6 @@ const ChequesTable = ({cheques}) => {
 
     return (
         <div className="cat-table">
-            {/*{isPopupOpen && (*/}
-            {/*    <div className="popup">*/}
-            {/*        <div className="popup-content">*/}
-            {/*            <span className="cat-close" onClick={() => setIsPopupOpen(false)}>&times;</span>*/}
-            {/*            <h2>Products in Category {selectedCheque.category_number}</h2>*/}
-            {/*            <ul>*/}
-            {/*                {chequeList.map(product => (*/}
-            {/*                    <li key={product.id_product}>{product.product_name}</li>*/}
-            {/*                ))}*/}
-            {/*            </ul>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*)}*/}
             <div className="top-line">
                 <div className="create-new-container">
                     <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
@@ -104,7 +90,8 @@ const ChequesTable = ({cheques}) => {
                         </td>
                         <td>{cheque.id_employee}</td>
                         <td>{cheque.card_number}</td>
-                        <td>{cheque.print_date}</td>
+                        <td>{new Date(cheque.print_date).toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false})}</td>
+
                         <td>{cheque.sum_total}</td>
                         <td>{cheque.vat}</td>
                         <td>

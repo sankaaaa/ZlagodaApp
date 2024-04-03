@@ -25,9 +25,8 @@ const CreateCheque = () => {
                     .select('id_employee')
                     .eq('empl_role', 'cashier');
 
-                if (error) {
+                if (error)
                     throw error;
-                }
 
                 setCashiers(data.map(cashier => cashier.id_employee));
             } catch (error) {
@@ -45,9 +44,8 @@ const CreateCheque = () => {
                     .from('customer_card')
                     .select('card_number');
 
-                if (error) {
+                if (error)
                     throw error;
-                }
 
                 setCustomers(data.map(customer => customer.card_number));
             } catch (error) {
@@ -65,9 +63,8 @@ const CreateCheque = () => {
                     .from('product')
                     .select('id_product, product_name');
 
-                if (error) {
+                if (error)
                     throw error;
-                }
 
                 const productNamesObject = {};
                 data.forEach(product => {
@@ -90,9 +87,8 @@ const CreateCheque = () => {
                     .from('store_product')
                     .select('id_product');
 
-                if (error) {
+                if (error)
                     throw error;
-                }
 
                 setProducts(data.map(product => product.id_product));
             } catch (error) {
@@ -113,7 +109,9 @@ const CreateCheque = () => {
                             .select('selling_price')
                             .eq('id_product', product.product)
                             .single();
-                        if (error) throw error;
+                        if (error)
+                            throw error;
+
                         return productInfo;
                     }));
 
@@ -137,13 +135,12 @@ const CreateCheque = () => {
 
     const handleProductChange = (index, field, value) => {
         if (field === 'quantity') {
-            if (value < 0) {
+            if (value < 0)
                 value = 0;
-            }
-        } else if (field === 'price') {
-            if (value < 0) {
+        }
+        else if (field === 'price') {
+            if (value < 0)
                 value = 0;
-            }
         }
 
         const updatedProducts = [...selectedProducts];
@@ -181,9 +178,8 @@ const CreateCheque = () => {
                     vat: totalSum * 0.2,
                 }]);
 
-            if (error) {
+            if (error)
                 throw error;
-            }
 
             console.log(data);
             setFormError(null);
@@ -196,9 +192,8 @@ const CreateCheque = () => {
     const handleRemoveProduct = (indexToRemove) => {
         setSelectedProducts(prevProducts => {
             const updatedProducts = prevProducts.filter((_, index) => index !== indexToRemove);
-            if (updatedProducts.length === 0) {
+            if (updatedProducts.length === 0)
                 setTotalSum(0);
-            }
             return updatedProducts;
         });
     };

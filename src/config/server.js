@@ -30,6 +30,19 @@ app.post('/product', express.json(), (req, res) => {
         });
 });
 
+app.put('/products/:id', (req, res) => {
+    const productNumber = req.params.id;
+    const {product_id, product_name, category_number, characteristics} = req.body;
+    db.none('UPDATE product SET product_id=$1, product_name=$2, category_number=$3, characteristics=$4 WHERE product_id=$5;',
+        [product_id, product_name, category_number, characteristics, productNumber])
+
+        .then(() => {
+        res.json({message: 'Product updated successfully'});
+    })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        })
+});
 
 app.delete('/product/:id', (req, res) => {
     const productId = req.params.id;

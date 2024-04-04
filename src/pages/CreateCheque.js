@@ -8,7 +8,6 @@ const CreateCheque = () => {
     const [check_number, setCheckNumber] = useState('');
     const [id_employee, setIdEmployee] = useState('');
     const [card_number, setCardNumber] = useState('');
-    const [print_date, setPrintDate] = useState('');
     const [selectedProducts, setSelectedProducts] = useState([{product: '', quantity: 1}]);
     const [totalSum, setTotalSum] = useState(0);
     const [formError, setFormError] = useState(null);
@@ -137,8 +136,7 @@ const CreateCheque = () => {
         if (field === 'quantity') {
             if (value < 0)
                 value = 0;
-        }
-        else if (field === 'price') {
+        } else if (field === 'price') {
             if (value < 0)
                 value = 0;
         }
@@ -260,7 +258,7 @@ const CreateCheque = () => {
                                    value={product.quantity}
                                    onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
                             />
-                            <button type="button" className="rem-b" onClick={() => handleRemoveProduct(index)}>❌
+                            <button type="button" className="rem-b" onClick={() => handleRemoveProduct(index)}>✖️
                             </button>
                         </div>
                     </div>
@@ -280,7 +278,6 @@ const CreateCheque = () => {
                 {formError && <p className="error">{formError}</p>}
             </form>
         </div>
-
     )
 }
 

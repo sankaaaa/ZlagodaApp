@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap');
 
 .page.create {
-    max-width: 700px;
+    max-width: 800px;
     margin: 0 auto;
 }
 
@@ -51,7 +51,7 @@ button:hover {
 }
 
 .add-prod-b {
-    background-color: #49D12B;
+    background-color: #FB6D48;
     width: 130px;
     padding: 0;
     font-size: 17px;
@@ -59,7 +59,7 @@ button:hover {
 }
 
 .add-prod-b:hover {
-    background-color: #41A92A;
+    background-color: #C14E30;
 }
 
 .select-wrapper {
@@ -70,8 +70,7 @@ button:hover {
 }
 
 .select-wrapper.p {
-    border: #333333 solid 1px;
-    padding: 10px 25px 10px 5px;
+    padding: 10px 25px 10px 0;
 }
 
 .select-wrapper select {
@@ -89,10 +88,21 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 0 60px;
+    margin: 0 0 0 90px;
     background-color: white;
+}
+
+.rem-b:hover {
+    background-color: #C4C8C3;
 }
 
 .select-wrapper .q {
     margin-left: 15px;
+}
+
+input#check_number,
+input#total_sum {
+    max-width: 40%;
+    margin-left: 20px;
+    margin-top: 20px;
 }

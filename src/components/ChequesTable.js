@@ -90,8 +90,17 @@ const ChequesTable = ({cheques}) => {
                         </td>
                         <td>{cheque.id_employee}</td>
                         <td>{cheque.card_number}</td>
-                        <td>{new Date(cheque.print_date).toLocaleString('en-US', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true})}</td>
-
+                        <td>
+                            {new Date(cheque.print_date).toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                                hour12: true
+                            }).replace(/\//g, '.').replace(',', '')}
+                        </td>
                         <td>{cheque.sum_total}</td>
                         <td>{cheque.vat}</td>
                         <td>

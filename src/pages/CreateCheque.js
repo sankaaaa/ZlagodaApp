@@ -1,5 +1,5 @@
-import {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
@@ -8,18 +8,19 @@ const CreateCheque = () => {
     const [check_number, setCheckNumber] = useState('');
     const [id_employee, setIdEmployee] = useState('');
     const [card_number, setCardNumber] = useState('');
-    const [selectedProducts, setSelectedProducts] = useState([{product: '', quantity: 1}]);
+    const [selectedProducts, setSelectedProducts] = useState([{ product: '', quantity: 1 }]);
     const [totalSum, setTotalSum] = useState(0);
     const [formError, setFormError] = useState(null);
     const [cashiers, setCashiers] = useState([]);
     const [customers, setCustomers] = useState([]);
     const [products, setProducts] = useState([]);
     const [productNames, setProductNames] = useState({});
+    let [hasDiscountProduct, setHasDiscountProduct] = useState(false);
 
     useEffect(() => {
         async function fetchCashiers() {
             try {
-                const {data, error} = await supabase
+                const { data, error } = await supabase
                     .from('employee')
                     .select('id_employee')
                     .eq('empl_role', 'cashier');
@@ -39,7 +40,7 @@ const CreateCheque = () => {
     useEffect(() => {
         async function fetchCustomers() {
             try {
-                const {data, error} = await supabase
+                const { data, error } = await supabase
                     .from('customer_card')
                     .select('card_number');
 
@@ -58,7 +59,7 @@ const CreateCheque = () => {
     useEffect(() => {
         async function fetchProdNames() {
             try {
-                const {data, error} = await supabase
+                const { data, error } = await supabase
                     .from('product')
                     .select('id_product, product_name');
 
@@ -78,11 +79,10 @@ const CreateCheque = () => {
         fetchProdNames();
     }, []);
 
-
     useEffect(() => {
         async function fetchProducts() {
             try {
-                const {data, error} = await supabase
+                const { data, error } = await supabase
                     .from('store_product')
                     .select('id_product');
 
@@ -102,8 +102,10 @@ const CreateCheque = () => {
         if (selectedProducts.length > 0 && products.length > 0) {
             const fetchProductInfo = async () => {
                 try {
+                    let hasDiscount = false; // Оголошуємо змінну, що відстежує наявність продукту зі знижкою
+
                     const productData = await Promise.all(selectedProducts.map(async (product) => {
-                        const {data: productInfo, error} = await supabase
+                        const { data: productInfo, error } = await supabase
                             .from('store_product')
                             .select('selling_price, promotional_product')
                             .eq('id_product', product.product)
@@ -111,11 +113,21 @@ const CreateCheque = () => {
                         if (error)
                             throw error;
 
+                        if (productInfo.promotional_product)
+                            hasDiscount = true;
+
                         return productInfo;
                     }));
 
+                    setHasDiscountProduct(hasDiscount);
+
                     const sum = productData.reduce((acc, curr, index) => {
-                        const price = curr.promotional_product ? curr.selling_price * 0.8 : curr.selling_price;
+                        let price;
+                        if (curr.promotional_product) {
+                            price = curr.selling_price * 0.8;
+                        } else {
+                            price = curr.selling_price;
+                        }
                         return acc + price * selectedProducts[index].quantity;
                     }, 0);
                     setTotalSum(parseFloat(sum.toFixed(2)));
@@ -130,7 +142,7 @@ const CreateCheque = () => {
 
 
     const handleAddProduct = () => {
-        setSelectedProducts([...selectedProducts, {product: '', quantity: 1}]);
+        setSelectedProducts([...selectedProducts, { product: '', quantity: 1 }]);
     };
 
     const handleProductChange = (index, field, value) => {
@@ -166,7 +178,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            const {data, error} = await supabase
+            const { data, error } = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
@@ -188,6 +200,7 @@ const CreateCheque = () => {
             setFormError("An error occurred while inserting the cheque.");
         }
     }
+
     const handleRemoveProduct = (indexToRemove) => {
         setSelectedProducts(prevProducts => {
             const updatedProducts = prevProducts.filter((_, index) => index !== indexToRemove);
@@ -275,6 +288,7 @@ const CreateCheque = () => {
                         readOnly
                     />
                 </div>
+                {hasDiscountProduct && <p>There is a promotional product</p>}
                 <button>Add Cheque</button>
                 {formError && <p className="error">{formError}</p>}
             </form>

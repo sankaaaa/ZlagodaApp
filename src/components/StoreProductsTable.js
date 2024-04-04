@@ -186,7 +186,7 @@ const StoreProductsTable = ({storeProducts}) => {
                             <td style={{cursor: 'pointer'}}
                                 onClick={() => handleProductNameClick(storeProduct)}>{productNames[storeProduct.id_product]}</td>
                             <td>{storeProduct.products_number}</td>
-                            <td>{storeProduct.selling_price} (PDV: {pdv})</td>
+                            <td>{storeProduct.selling_price} (VAT: {pdv})</td>
                             <td>{storeProduct.promotional_product ? `yes: ${promotionalPrice}` : 'no'}</td>
                             <td>
                                 <button className="edit-button">

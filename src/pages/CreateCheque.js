@@ -105,7 +105,7 @@ const CreateCheque = () => {
                     const productData = await Promise.all(selectedProducts.map(async (product) => {
                         const {data: productInfo, error} = await supabase
                             .from('store_product')
-                            .select('selling_price')
+                            .select('selling_price, promotional_product')
                             .eq('id_product', product.product)
                             .single();
                         if (error)
@@ -115,10 +115,10 @@ const CreateCheque = () => {
                     }));
 
                     const sum = productData.reduce((acc, curr, index) => {
-                        const price = curr ? curr.selling_price : 0;
+                        const price = curr.promotional_product ? curr.selling_price * 0.8 : curr.selling_price;
                         return acc + price * selectedProducts[index].quantity;
                     }, 0);
-                    setTotalSum(sum);
+                    setTotalSum(parseFloat(sum.toFixed(2)));
                 } catch (error) {
                     console.error('Error fetching product price:', error.message);
                 }
@@ -127,6 +127,7 @@ const CreateCheque = () => {
             fetchProductInfo();
         }
     }, [selectedProducts, products]);
+
 
     const handleAddProduct = () => {
         setSelectedProducts([...selectedProducts, {product: '', quantity: 1}]);

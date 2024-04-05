@@ -147,12 +147,13 @@ const ChequesTable = ({cheques}) => {
                         value={startDate}
                         onChange={handleStartDateChange}
                     />
+                    <label>-</label>
                     <input
                         type="date"
                         value={endDate}
                         onChange={handleEndDateChange}
                     />
-                    <button onClick={handleApplyFilters}>Apply</button>
+                    <button className="applyb" onClick={handleApplyFilters}>Apply</button>
                 </div>
             </div>
             {filterApplied && <div>Filtered Results: {filteredCount}</div>}

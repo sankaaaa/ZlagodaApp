@@ -18,7 +18,7 @@
 
 .employee-table th,
 .product-table th,
-.category-table th{
+.category-table th {
     background-color: #f2f2f2;
     cursor: pointer;
 }
@@ -47,7 +47,8 @@
     margin: 15px 5px 15px 20px;
     color: #333333;
     text-decoration: none;
-    font-weight: bold;}
+    font-weight: bold;
+}
 
 a {
     color: #333333;
@@ -94,4 +95,32 @@ a {
 .checkboxs {
     display: flex;
     flex-direction: column;
+}
+
+.filter-container {
+    display: flex;
+    align-items: center;
+}
+
+.filter-container select {
+    height: 40px;
+    font-family: 'Poppins';
+    margin-right: 30px;
+    border-radius: 5px;
+}
+
+.filter-container input {
+    height: 40px;
+    font-family: 'Poppins';
+    border-radius: 5px;
+}
+
+.applyb {
+    margin-left: 20px;
+    height: 40px;
+    align-items: center;
+    margin-top: 30px;
+    font-family: 'Poppins';
+    font-size: 15px;
+
 }

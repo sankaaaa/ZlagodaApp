@@ -33,6 +33,14 @@ const UpdateEmployee = () => {
             return;
         }
 
+        const startDate = new Date(date_of_start);
+        const ageAtStartDate = calculateAge(date_of_birth);
+        const today = new Date();
+        if (startDate < new Date(today.setFullYear(today.getFullYear() - ageAtStartDate + 18))) {
+            setFormError("Start date cannot be before the employee turns 18 years old!");
+            return;
+        }
+
         if (salary < 0) {
             setFormError("Salary cannot be negative!");
             return;

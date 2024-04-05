@@ -86,7 +86,6 @@ function App() {
                 <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>
                 <Route path="/cheques" element={<Cheques/>}/>
                 <Route path="/create-cheque" element={<CreateCheque/>}/>
-
             </Routes>
         </BrowserRouter>
     );

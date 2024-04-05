@@ -162,10 +162,31 @@ const CreateCheque = () => {
         setSelectedProducts([...selectedProducts, {product: '', quantity: 1}]);
     };
 
-    const handleProductChange = (index, field, value) => {
+    const handleProductChange = async (index, field, value) => {
         if (field === 'quantity') {
             if (value < 0)
                 value = 0;
+            const productId = selectedProducts[index].product;
+
+            try {
+                const {data: storeProductData, error} = await supabase
+                    .from('store_product')
+                    .select('products_number')
+                    .eq('id_product', productId)
+                    .single();
+
+                if (error) {
+                    throw error;
+                }
+
+                const availableQuantity = storeProductData.products_number || 0;
+                if (value > availableQuantity) {
+                    alert(`The quantity of selected product (${value}) exceeds the available quantity in the store (${availableQuantity}). Please select a smaller quantity.`);
+                    return;
+                }
+            } catch (error) {
+                console.error('Error fetching store product data:', error.message);
+            }
         } else if (field === 'price') {
             if (value < 0)
                 value = 0;

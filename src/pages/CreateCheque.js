@@ -195,7 +195,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            const {data, error} = await supabase
+            const {data: insertedCheque, error: chequeError} = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
@@ -206,10 +206,15 @@ const CreateCheque = () => {
                     vat: totalSum * 0.2,
                 }]);
 
-            if (error)
-                throw error;
+            if (chequeError)
+                throw chequeError;
 
-            console.log(data);
+            for (const selectedProduct of selectedProducts) {
+                const {product, quantity} = selectedProduct;
+                await handleUpdateStoreProduct(product, quantity);
+            }
+
+            console.log(insertedCheque);
             setFormError(null);
             navigate('/cheques');
         } catch (error) {
@@ -225,6 +230,35 @@ const CreateCheque = () => {
                 setTotalSum(0);
             return updatedProducts;
         });
+    };
+
+    const handleUpdateStoreProduct = async (productId, quantity) => {
+        try {
+            const {data: productData, error: productError} = await supabase
+                .from('store_product')
+                .select('products_number')
+                .eq('id_product', productId)
+                .single();
+
+            if (productError)
+                throw productError;
+
+            const currentQuantity = productData.products_number;
+            const updatedQuantity = currentQuantity - quantity;
+
+            const {data, error} = await supabase
+                .from('store_product')
+                .update({products_number: updatedQuantity})
+                .eq('id_product', productId);
+
+            if (error) {
+                throw error;
+            }
+
+            console.log(data);
+        } catch (error) {
+            console.error('Error updating store product quantity:', error.message);
+        }
     };
 
     return (

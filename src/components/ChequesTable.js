@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
@@ -7,6 +7,37 @@ const ChequesTable = ({cheques}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCheque, setSelectedCheque] = useState(null);
     const [chequeList, setChequeList] = useState([]);
+    const [selectedCashier, setSelectedCashier] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [filteredCheques, setFilteredCheques] = useState(cheques);
+    const [cashiers, setCashiers] = useState([]);
+    const [filteredCount, setFilteredCount] = useState(0);
+    const [filterApplied, setFilterApplied] = useState(false);
+
+    useEffect(() => {
+        async function fetchCashiers() {
+            try {
+                const {data, error} = await supabase
+                    .from('employee')
+                    .select('id_employee')
+                    .eq('empl_role', 'cashier');
+
+                if (error)
+                    throw error;
+
+                setCashiers(data.map(cashier => cashier.id_employee));
+            } catch (error) {
+                console.error('Error fetching cashiers:', error.message);
+            }
+        }
+
+        fetchCashiers();
+    }, []);
+
+    useEffect(() => {
+        setFilteredCount(filteredCheques.length);
+    }, [filteredCheques]);
 
     const sortedCategories = cheques.sort((a, b) => {
         if (sortConfig.key !== null) {
@@ -32,6 +63,38 @@ const ChequesTable = ({cheques}) => {
         setSelectedCheque(cheque);
         fetchCheques(cheque.check_number);
         // setIsPopupOpen(true);
+    };
+
+    const handleCashierChange = (e) => {
+        setSelectedCashier(e.target.value);
+    };
+
+    const handleStartDateChange = (e) => {
+        setStartDate(e.target.value);
+    };
+
+    const handleEndDateChange = (e) => {
+        setEndDate(e.target.value);
+    };
+
+    const handleApplyFilters = () => {
+        let filteredResults = cheques;
+
+        if (selectedCashier !== '') {
+            filteredResults = filteredResults.filter(cheque => cheque.id_employee === selectedCashier);
+        }
+
+        if (startDate !== '' && endDate !== '') {
+            const startDateObj = new Date(startDate);
+            const endDateObj = new Date(endDate);
+            filteredResults = filteredResults.filter(cheque => {
+                const chequeDate = new Date(cheque.print_date);
+                return chequeDate >= startDateObj && chequeDate <= endDateObj;
+            });
+        }
+
+        setFilteredCheques(filteredResults);
+        setFilterApplied(true);
     };
 
     const fetchCheques = async (chequeNumber) => {
@@ -69,7 +132,30 @@ const ChequesTable = ({cheques}) => {
                 <div className="create-new-container">
                     <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
                 </div>
+                <div className="filter-container">
+                    <select
+                        value={selectedCashier}
+                        onChange={handleCashierChange}
+                    >
+                        <option value="">All Cashiers</option>
+                        {cashiers.map(cashier => (
+                            <option key={cashier} value={cashier}>{cashier}</option>
+                        ))}
+                    </select>
+                    <input
+                        type="date"
+                        value={startDate}
+                        onChange={handleStartDateChange}
+                    />
+                    <input
+                        type="date"
+                        value={endDate}
+                        onChange={handleEndDateChange}
+                    />
+                    <button onClick={handleApplyFilters}>Apply</button>
+                </div>
             </div>
+            {filterApplied && <div>Filtered Results: {filteredCount}</div>}
             <table className="category-table">
                 <thead>
                 <tr>
@@ -83,7 +169,7 @@ const ChequesTable = ({cheques}) => {
                 </tr>
                 </thead>
                 <tbody>
-                {sortedCategories.map(cheque => (
+                {filteredCheques.map(cheque => (
                     <tr key={cheque.check_number}>
                         <td style={{fontWeight: 'bold', cursor: 'pointer'}} onClick={() => handleRowClick(cheque)}>
                             {cheque.check_number}.

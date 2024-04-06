@@ -20,6 +20,7 @@ import CreateStoreProduct from "./pages/CreateStoreProduct";
 import UpdateStoreProduct from "./pages/UpdateStoreProduct";
 import Cheques from "./pages/Cheques";
 import CreateCheque from "./pages/CreateCheque";
+import Sales from "./pages/Sales";
 
 function Navigation({userRole}) {
     const location = useLocation();
@@ -38,7 +39,7 @@ function Navigation({userRole}) {
                     <Link to="/customers">Customers</Link>
                     <Link to="/store-products">Store products</Link>
                     <Link to="/cheques">Cheques</Link>
-
+                    <Link to="/sales">Sales</Link>
                 </div>
                 <div className="logout">
                     <p>{userRole}</p>
@@ -86,6 +87,7 @@ function App() {
                 <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>
                 <Route path="/cheques" element={<Cheques/>}/>
                 <Route path="/create-cheque" element={<CreateCheque/>}/>
+                <Route path="/sales" element={<Sales/>}/>
             </Routes>
         </BrowserRouter>
     );

@@ -216,6 +216,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
+            // Inserting cheque into 'cheque' table
             const {data: insertedCheque, error: chequeError} = await supabase
                 .from('cheque')
                 .insert([{
@@ -232,10 +233,33 @@ const CreateCheque = () => {
 
             for (const selectedProduct of selectedProducts) {
                 const {product, quantity} = selectedProduct;
-                await handleUpdateStoreProduct(product, quantity);
+                const {data: productInfo, error: productError} = await supabase
+                    .from('store_product')
+                    .select('upc, selling_price')
+                    .eq('id_product', product)
+                    .single();
+
+                if (productError) {
+                    console.error('Error fetching product info:', productError.message);
+                    continue;
+                }
+
+                if (!productInfo) {
+                    console.error(`Product with id ${product} not found.`);
+                    continue;
+                }
+
+                await supabase
+                    .from('sale')
+                    .insert([{
+                        upc: productInfo.upc,
+                        check_number,
+                        product_number: quantity,
+                        selling_price: productInfo.selling_price,
+                    }]);
             }
 
-            console.log(insertedCheque);
+
             setFormError(null);
             navigate('/cheques');
         } catch (error) {

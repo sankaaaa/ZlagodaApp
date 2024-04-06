@@ -37,8 +37,8 @@ app.put('/products/:id', (req, res) => {
         [product_id, product_name, category_number, characteristics, productNumber])
 
         .then(() => {
-        res.json({message: 'Product updated successfully'});
-    })
+            res.json({message: 'Product updated successfully'});
+        })
         .catch(error => {
             res.status(500).json({error: error.message});
         })
@@ -77,6 +77,15 @@ app.get('/cheque', (req, res) => {
         });
 });
 
+app.get('/sale', (req, res) => {
+    db.any('SELECT * FROM sale;')
+        .then(result3 => {
+            res.json(result3);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 
 const PORT = 8081
 app.use((req, res, next) => {

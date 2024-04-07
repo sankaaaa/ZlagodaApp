@@ -14,6 +14,7 @@ const ChequesTable = ({cheques}) => {
     const [cashiers, setCashiers] = useState([]);
     const [filteredCount, setFilteredCount] = useState(0);
     const [filterApplied, setFilterApplied] = useState(false);
+    const [totalSales, setTotalSales] = useState({});
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -39,6 +40,24 @@ const ChequesTable = ({cheques}) => {
         setFilteredCount(filteredCheques.length);
     }, [filteredCheques]);
 
+    useEffect(() => {
+        const calculateTotalSales = () => {
+            const salesByCashier = {};
+
+            filteredCheques.forEach(cheque => {
+                const cashierId = cheque.id_employee;
+                if (!salesByCashier[cashierId]) {
+                    salesByCashier[cashierId] = 0;
+                }
+                salesByCashier[cashierId] += parseFloat(cheque.sum_total);
+            });
+
+            setTotalSales(salesByCashier);
+        };
+
+        calculateTotalSales();
+    }, [filteredCheques]);
+
     const sortedCategories = cheques.sort((a, b) => {
         if (sortConfig.key !== null) {
             if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -62,7 +81,6 @@ const ChequesTable = ({cheques}) => {
     const handleRowClick = (cheque) => {
         setSelectedCheque(cheque);
         fetchCheques(cheque.check_number);
-        // setIsPopupOpen(true);
     };
 
     const handleCashierChange = (e) => {
@@ -157,6 +175,10 @@ const ChequesTable = ({cheques}) => {
                 </div>
             </div>
             {filterApplied && <div>Filtered Results: {filteredCount}</div>}
+            {filterApplied && Object.keys(totalSales).map(cashierId => (
+                <div key={cashierId}>Загальна сума проданих товарів для
+                    касира {cashierId}: {totalSales[cashierId]}</div>
+            ))}
             <table className="category-table">
                 <thead>
                 <tr>

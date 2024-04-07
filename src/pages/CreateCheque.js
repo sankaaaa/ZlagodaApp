@@ -216,7 +216,6 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            // Inserting cheque into 'cheque' table
             const {data: insertedCheque, error: chequeError} = await supabase
                 .from('cheque')
                 .insert([{
@@ -233,6 +232,7 @@ const CreateCheque = () => {
 
             for (const selectedProduct of selectedProducts) {
                 const {product, quantity} = selectedProduct;
+                await handleUpdateStoreProduct(product, quantity);
                 const {data: productInfo, error: productError} = await supabase
                     .from('store_product')
                     .select('upc, selling_price')
@@ -380,7 +380,7 @@ const CreateCheque = () => {
                 <div className="select-wrapper">
                     <label htmlFor="total_sum">Total Sum:</label>
                     <input
-                        type="text"
+                        type="number"
                         id="total_sum"
                         value={totalSum}
                         readOnly

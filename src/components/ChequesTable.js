@@ -15,6 +15,7 @@ const ChequesTable = ({cheques}) => {
     const [filteredCount, setFilteredCount] = useState(0);
     const [filterApplied, setFilterApplied] = useState(false);
     const [totalSales, setTotalSales] = useState({});
+    const [allCashiersSelected, setAllCashiersSelected] = useState(false); // Додано стан
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -113,6 +114,7 @@ const ChequesTable = ({cheques}) => {
 
         setFilteredCheques(filteredResults);
         setFilterApplied(true);
+        setAllCashiersSelected(selectedCashier === '');
     };
 
     const fetchCheques = async (chequeNumber) => {
@@ -175,10 +177,19 @@ const ChequesTable = ({cheques}) => {
                 </div>
             </div>
             {filterApplied && <div>Filtered Results: {filteredCount}</div>}
-            {filterApplied && Object.keys(totalSales).map(cashierId => (
-                <div key={cashierId}>Загальна сума проданих товарів для
-                    касира {cashierId}: {totalSales[cashierId]}</div>
-            ))}
+            {filterApplied && (
+                <div>
+                    {allCashiersSelected ? (
+                        <div>Total sum of saled products for all
+                            cashiers: {Object.values(totalSales).reduce((acc, curr) => acc + curr, 0).toFixed(2)}</div>
+                    ) : (
+                        Object.keys(totalSales).map(cashierId => (
+                            <div key={cashierId}>Total sum of saled products for
+                                cashier {cashierId}: {totalSales[cashierId].toFixed(2)}</div>
+                        ))
+                    )}
+                </div>
+            )}
             <table className="category-table">
                 <thead>
                 <tr>

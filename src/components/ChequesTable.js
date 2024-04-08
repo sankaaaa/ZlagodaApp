@@ -235,7 +235,7 @@ const ChequesTable = ({cheques}) => {
                     <th onClick={() => requestSort('print_date')}>Print date</th>
                     <th onClick={() => requestSort('sum_total')}>Sum total</th>
                     <th onClick={() => requestSort('vat')}>VAT</th>
-                    <th>Edit</th>
+                    <th>Delete</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -260,9 +260,6 @@ const ChequesTable = ({cheques}) => {
                         <td>{cheque.sum_total}</td>
                         <td>{cheque.vat}</td>
                         <td>
-                            <button className="edit-button">
-                                <Link to={`/cheques/${cheque.check_number}`}>Edit</Link>
-                            </button>
                             <button className="edit-button" onClick={() => handleDelete(cheque)}>Delete</button>
                         </td>
                     </tr>

@@ -15,7 +15,8 @@ const ChequesTable = ({cheques}) => {
     const [filteredCount, setFilteredCount] = useState(0);
     const [filterApplied, setFilterApplied] = useState(false);
     const [totalSales, setTotalSales] = useState({});
-    const [allCashiersSelected, setAllCashiersSelected] = useState(false); // Додано стан
+    const [allCashiersSelected, setAllCashiersSelected] = useState(false);
+    const [totalUnitsSold, setTotalUnitsSold] = useState(0);
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -59,6 +60,27 @@ const ChequesTable = ({cheques}) => {
         calculateTotalSales();
     }, [filteredCheques]);
 
+    useEffect(() => {
+        const calculateTotalUnitsSold = async () => {
+            let totalUnits = 0;
+            for (const cheque of filteredCheques) {
+                const {data, error} = await supabase
+                    .from('sale')
+                    .select('product_number')
+                    .eq('check_number', cheque.check_number);
+                if (error) {
+                    console.error('Error fetching sales:', error.message);
+                    continue;
+                }
+                totalUnits += data.reduce((acc, curr) => acc + curr.product_number, 0);
+            }
+            setTotalUnitsSold(totalUnits);
+        };
+
+        calculateTotalUnitsSold();
+    }, [filteredCheques, startDate, endDate]);
+
+
     const sortedCategories = cheques.sort((a, b) => {
         if (sortConfig.key !== null) {
             if (a[sortConfig.key] < b[sortConfig.key]) {
@@ -96,9 +118,8 @@ const ChequesTable = ({cheques}) => {
         setEndDate(e.target.value);
     };
 
-    const handleApplyFilters = () => {
-        let filteredResults = cheques;
-
+    const handleApplyFilters = async () => {
+        let filteredResults = [...cheques];
         if (selectedCashier !== '') {
             filteredResults = filteredResults.filter(cheque => cheque.id_employee === selectedCashier);
         }
@@ -115,6 +136,20 @@ const ChequesTable = ({cheques}) => {
         setFilteredCheques(filteredResults);
         setFilterApplied(true);
         setAllCashiersSelected(selectedCashier === '');
+
+        let totalUnits = 0;
+        for (const cheque of filteredResults) {
+            const {data, error} = await supabase
+                .from('sale')
+                .select('product_number')
+                .eq('check_number', cheque.check_number);
+            if (error) {
+                console.error('Error fetching sales:', error.message);
+                continue;
+            }
+            totalUnits += data.reduce((acc, curr) => acc + curr.product_number, 0);
+        }
+        setTotalUnitsSold(totalUnits);
     };
 
     const fetchCheques = async (chequeNumber) => {
@@ -188,6 +223,7 @@ const ChequesTable = ({cheques}) => {
                                 cashier {cashierId}: {totalSales[cashierId].toFixed(2)}</div>
                         ))
                     )}
+                    <div>Total units sold: {totalUnitsSold}</div>
                 </div>
             )}
             <table className="category-table">

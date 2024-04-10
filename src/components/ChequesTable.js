@@ -2,6 +2,7 @@ import {useState, useEffect} from "react";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
+import Popup from "./CheckPopup";
 
 const ChequesTable = ({cheques}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
@@ -17,6 +18,7 @@ const ChequesTable = ({cheques}) => {
     const [totalSales, setTotalSales] = useState({});
     const [allCashiersSelected, setAllCashiersSelected] = useState(false);
     const [totalUnitsSold, setTotalUnitsSold] = useState(0);
+    const [showPopup, setShowPopup] = useState(false);
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -101,9 +103,14 @@ const ChequesTable = ({cheques}) => {
         setSortConfig({key, direction});
     };
 
-    const handleRowClick = (cheque) => {
+    const handleRowClick = async (cheque) => {
         setSelectedCheque(cheque);
-        fetchCheques(cheque.check_number);
+        setShowPopup(true);
+        await fetchCheques(cheque.check_number);
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
     };
 
     const handleCashierChange = (e) => {
@@ -266,6 +273,9 @@ const ChequesTable = ({cheques}) => {
                 ))}
                 </tbody>
             </table>
+            {showPopup && (
+                <Popup cheque={selectedCheque} chequeList={chequeList} onClose={handleClosePopup}/>
+            )}
         </div>
     );
 };

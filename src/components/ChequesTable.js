@@ -83,24 +83,24 @@ const ChequesTable = ({cheques}) => {
     }, [filteredCheques, startDate, endDate]);
 
 
-    const sortedCategories = cheques.sort((a, b) => {
-        if (sortConfig.key !== null) {
-            if (a[sortConfig.key] < b[sortConfig.key]) {
-                return sortConfig.direction === 'ascending' ? -1 : 1;
-            }
-            if (a[sortConfig.key] > b[sortConfig.key]) {
-                return sortConfig.direction === 'ascending' ? 1 : -1;
-            }
-        }
-        return 0;
-    });
-
     const requestSort = (key) => {
         let direction = 'ascending';
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
         setSortConfig({key, direction});
+
+        const sortedCheques = [...filteredCheques].sort((a, b) => {
+            if (a[key] < b[key]) {
+                return direction === 'ascending' ? -1 : 1;
+            }
+            if (a[key] > b[key]) {
+                return direction === 'ascending' ? 1 : -1;
+            }
+            return 0;
+        });
+
+        setFilteredCheques(sortedCheques);
     };
 
     const handleRowClick = async (cheque) => {
@@ -254,7 +254,7 @@ const ChequesTable = ({cheques}) => {
                         <td>{cheque.id_employee}</td>
                         <td>{cheque.card_number}</td>
                         <td>
-                            {new Date(cheque.print_date).toLocaleString('en-US', {
+                            {new Date(cheque.print_date).toLocaleString('en-GB', {
                                 year: 'numeric',
                                 month: '2-digit',
                                 day: '2-digit',
@@ -264,8 +264,9 @@ const ChequesTable = ({cheques}) => {
                                 hour12: true
                             }).replace(/\//g, '.').replace(',', '')}
                         </td>
-                        <td>{cheque.sum_total}</td>
-                        <td>{cheque.vat}</td>
+                        <td>{parseFloat(cheque.sum_total).toFixed(2)}</td>
+                        <td>{parseFloat(cheque.vat).toFixed(2)}</td>
+
                         <td>
                             <button className="edit-button" onClick={() => handleDelete(cheque)}>Delete</button>
                         </td>

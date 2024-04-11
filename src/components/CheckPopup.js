@@ -28,7 +28,7 @@ const Popup = ({cheque, onClose}) => {
 
                     if (productError) {
                         console.error('Error fetching store_product:', productError.message);
-                        return {...item, productName: "Unknown"}; // Set a default name
+                        return {...item, productName: "Unknown"};
                     } else {
                         const {data: productDetails, error: detailsError} = await supabase
                             .from('product')

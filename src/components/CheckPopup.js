@@ -22,7 +22,7 @@ const Popup = ({cheque, onClose}) => {
                 const productsWithNames = await Promise.all(data.map(async (item) => {
                     const {data: productData, error: productError} = await supabase
                         .from('store_product')
-                        .select('id_product')
+                        .select('id_product, selling_price, promotional_product')
                         .eq('upc', item.upc)
                         .single();
 
@@ -38,9 +38,10 @@ const Popup = ({cheque, onClose}) => {
 
                         if (detailsError) {
                             console.error('Error fetching product details:', detailsError.message);
-                            return {...item, productName: "Unknown"}; // Set a default name
+                            return {...item, productName: "Unknown"};
                         } else {
-                            return {...item, productName: productDetails.product_name};
+                            const price = productData.promotional_product ? productData.selling_price * 0.8 : productData.selling_price;
+                            return {...item, productName: productDetails.product_name, price};
                         }
                     }
                 }));
@@ -75,7 +76,7 @@ const Popup = ({cheque, onClose}) => {
                 <ul>
                     {chequeProducts.map((item, index) => (
                         <li key={index}>
-                            Product: {item.productName}, Quantity: {item.product_number}, Price: {item.selling_price}
+                            Product: {item.productName}, Quantity: {item.product_number}, Price: {item.price.toFixed(2)}
                         </li>
                     ))}
                 </ul>

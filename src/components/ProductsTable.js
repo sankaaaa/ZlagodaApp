@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 
 const ProductsTable = ({products, setProducts}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
-    const [selectedProduct, setSelectedProduct] = useState(null);
+    const [setSelectedProduct] = useState(null);
     const [categoryFilter, setCategoryFilter] = useState('');
     const [nameFilter, setNameFilter] = useState('');
 

@@ -60,6 +60,27 @@ app.get('/employee', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/employee/:id_employee', (req, res) => {
+    const categoryNumber = req.params.id_employee;
+    db.any('SELECT * FROM employee WHERE id_employee = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.post('/employee', express.json(), (req, res) => {
+    const {id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code} = req.body;
+    db.any('INSERT INTO employee (id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
+        [id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code])
+        .then(() => {
+            res.json({message: 'Employee added successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.delete('/employee/:id', (req, res) => {
     const emplID = req.params.id;
     db.none('DELETE FROM employee WHERE id_employee = $1', emplID)

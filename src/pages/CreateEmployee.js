@@ -73,20 +73,23 @@ const CreateEmployee = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('employee')
-            .insert([{
-                id_employee, empl_surname, empl_name, empl_role, date_of_birth,
-                date_of_start, salary, phone_number, city, street, zip_code
-            }]);
+        try {
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id_employee, empl_surname, empl_name, empl_role, date_of_birth, date_of_start,
+                    salary, phone_number, city, street, zip_code})
+            };
 
-        if (error) {
-            console.log(error);
-            setFormError("Please set all form fields correctly!");
-        } else {
-            console.log(data);
-            setFormError(null);
+            const addResponse = await fetch('http://localhost:8081/employee', requestOptions);
+            if (!addResponse.ok) {
+                throw new Error('Error adding employee');
+            }
+
             navigate('/employees');
+        } catch (error) {
+            console.error(error);
+            setFormError("Error adding employee");
         }
     }
 

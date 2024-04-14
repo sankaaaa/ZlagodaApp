@@ -1,9 +1,8 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 
-const CategoriesTable = ({categories}) => {
+const CategoriesTable = ({categories, setCategories}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [productList, setProductList] = useState([]);
@@ -31,36 +30,37 @@ const CategoriesTable = ({categories}) => {
 
     const handleRowClick = (category) => {
         setSelectedCategory(category);
-        fetchCategoriaes(category.category_number);
+        fetchCategories(category.category_number);
         setIsPopupOpen(true);
     };
 
-    const fetchCategoriaes = async (categoryNumber) => {
-        const {data, error} = await supabase
-            .from('product')
-            .select()
-            .eq('category_number', categoryNumber);
-        if (error) {
-            console.log(error);
-        } else {
+    const fetchCategories = async (categoryNumber) => {
+        try {
+            const response = await fetch(`http://localhost:8081/category/${categoryNumber}`);
+            if (!response.ok)
+                throw new Error('Could not fetch categories');
+            const data = await response.json();
             setProductList(data);
+            console.log(data)
+        } catch (error) {
+            console.error(error);
         }
     };
 
-    const handleDelete = async (category) => {
+    const handleDelete = async (catNumber) => {
         const confirmed = window.confirm("Are you sure you want to delete this category?");
         if (!confirmed) return;
-
-        const {data, error} = await supabase
-            .from('category')
-            .delete()
-            .eq('category_number', category.category_number);
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data);
-            window.location.reload();
+        try {
+            const response = await fetch(`http://localhost:8081/category/${catNumber}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete category');
+            }
+            const updatedCats = categories.filter(category => category.category_number !== catNumber);
+            setCategories(updatedCats);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -103,7 +103,9 @@ const CategoriesTable = ({categories}) => {
                             <button className="edit-button">
                                 <Link to={`/categories/${category.category_number}`}>Edit</Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(category)}>Delete</button>
+                            <button className="edit-button"
+                                    onClick={() => handleDelete(category.category_number)}>Delete
+                            </button>
                         </td>
                     </tr>
                 ))}

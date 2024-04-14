@@ -1,9 +1,4 @@
-import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
-
-//components
-
-//styles
 import '../styles/links-stuff.css';
 import CategoriesTable from "../components/CategoriesTable";
 
@@ -14,14 +9,10 @@ const Categories = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const {data, error} = await supabase
-                    .from('category')
-                    .select();
-
-                if (error) {
+                const response = await fetch('http://localhost:8081/category');
+                if (!response.ok)
                     throw new Error('Could not fetch categories');
-                }
-
+                const data = await response.json();
                 setCategories(data);
                 setFetchError(null);
             } catch (error) {
@@ -39,7 +30,7 @@ const Categories = () => {
             {fetchError && <p>{fetchError}</p>}
             {categories && (
                 <div>
-                    <CategoriesTable categories={categories}/>
+                    <CategoriesTable categories={categories} setCategories={setCategories}/>
                 </div>
             )}
         </div>

@@ -8,7 +8,7 @@ const cn = {
 };
 const db = pgp(cn);
 
-//ПРОДУКТИ
+//ПРОДУКТИ-------------------------------------------------------------------------------------------------------------
 app.get('/product', (req, res) => {
     db.any('SELECT * FROM product;')
         .then(result => {
@@ -55,7 +55,7 @@ app.delete('/product/:id', (req, res) => {
         });
 });
 
-//ПРАЦІВНИКИ
+//ПРАЦІВНИКИ-----------------------------------------------------------------------------------------------------------
 app.get('/employee', (req, res) => {
     db.any('SELECT * FROM employee;')
         .then(result1 => {
@@ -77,7 +77,40 @@ app.delete('/employee/:id', (req, res) => {
         });
 });
 
-//ЧЕКИ
+//КАТЕГОРІЇ------------------------------------------------------------------------------------------------------------
+app.get('/category', (req, res) => {
+    db.any('SELECT * FROM category;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.get('/category/:category_number', (req, res) => {
+    const categoryNumber = req.params.category_number;
+    db.any('SELECT * FROM product WHERE category_number = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.delete('/category/:id', (req, res) => {
+    const catNum = req.params.id;
+    db.none('DELETE FROM category WHERE category_number = $1', catNum)
+        .then(() => {
+            res.json({message: 'Category deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+//ЧЕКИ-----------------------------------------------------------------------------------------------------------------
 app.get('/cheque', (req, res) => {
     db.any('SELECT * FROM cheque;')
         .then(result2 => {

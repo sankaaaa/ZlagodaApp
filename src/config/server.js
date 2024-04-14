@@ -176,7 +176,7 @@ app.delete('/cheque/:id', (req, res) => {
         });
 });
 
-//СЕЙЛИ-----------------------------------------------------------------------------------------------------------------
+//--СЕЙЛИ-----------------------------------------------------------------------------------------------------------------
 app.get('/sale', (req, res) => {
     db.any('SELECT * FROM sale;')
         .then(result3 => {
@@ -186,6 +186,17 @@ app.get('/sale', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.delete('/sale/:upc/:checkNumber', (req, res) => {
+    const {upc, checkNumber} = req.params;
+    db.none('DELETE FROM sale WHERE upc = $1 AND check_number = $2', [upc, checkNumber])
+        .then(() => {
+            res.json({message: 'Sale deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
 
 const PORT = 8081
 app.use((req, res, next) => {

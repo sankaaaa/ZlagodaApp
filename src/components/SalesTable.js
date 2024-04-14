@@ -1,10 +1,8 @@
 import {useState} from "react";
 import '../styles/employee-table.css';
-import {Link} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 
 const SalesTable = ({sales, setSales}) => {
-    const [selectedSale, setSelectedSale] = useState(null);
+    const [setSelectedSale] = useState(null);
 
     const handleRowClick = (sale) => {
         setSelectedSale(sale);
@@ -15,19 +13,15 @@ const SalesTable = ({sales, setSales}) => {
         if (!confirmed) return;
 
         try {
-            const {data, error} = await supabase
-                .from('sale')
-                .delete()
-                .eq('upc', upc)
-                .eq('check_number', checkNumber);
-
-            if (error) {
-                console.error(error);
-            } else {
-                console.log(data);
-                const updatedSales = sales.filter(sale => !(sale.upc === upc && sale.check_number === checkNumber));
-                setSales(updatedSales);
+            const response = await fetch(`http://localhost:8081/sale/${upc}/${checkNumber}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                // noinspection ExceptionCaughtLocallyJS
+                throw new Error('Could not delete sale');
             }
+            const updatedSales = sales.filter(sale => !(sale.upc === upc && sale.check_number === checkNumber));
+            setSales(updatedSales);
         } catch (error) {
             console.error('Error deleting sale:', error.message);
         }

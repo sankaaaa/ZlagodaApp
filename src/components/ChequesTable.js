@@ -266,7 +266,6 @@ const ChequesTable = ({cheques}) => {
                         </td>
                         <td>{parseFloat(cheque.sum_total).toFixed(2)}</td>
                         <td>{parseFloat(cheque.vat).toFixed(2)}</td>
-
                         <td>
                             <button className="edit-button" onClick={() => handleDelete(cheque)}>Delete</button>
                         </td>

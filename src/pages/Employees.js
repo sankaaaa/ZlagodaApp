@@ -1,4 +1,3 @@
-import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
 
 //components
@@ -35,7 +34,7 @@ const Employees = () => {
             {fetchError && <p>{fetchError}</p>}
             {employees && (
                 <div>
-                    <EmployeeTable customers={employees} />
+                    <EmployeeTable employees={employees} setEmployees={setEmployees}/>
                 </div>
             )}
         </div>

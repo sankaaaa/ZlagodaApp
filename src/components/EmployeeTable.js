@@ -2,15 +2,14 @@ import { useState } from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
 import { Link } from "react-router-dom";
-import supabase from "../config/supabaseClient";
 
-const EmployeeTable = ({ customers }) => {
+const EmployeeTable = ({ employees, setEmployees }) => {
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
     const [searchSurname, setSearchSurname] = useState("");
 
-    const sortedEmployees = customers
+    const sortedEmployees = employees
         .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
         .filter(employee => searchSurname === "" || employee.empl_surname.toLowerCase().includes(searchSurname.toLowerCase()))
         .sort((a, b) => {
@@ -41,21 +40,22 @@ const EmployeeTable = ({ customers }) => {
         setSelectedEmployee(null);
     };
 
-    const handleDelete = async (employee) => {
+    const handleDelete = async (emplId) => {
         const confirmed = window.confirm("Are you sure you want to delete this employee?");
         if (!confirmed) return;
-        const { data, error } = await supabase
-            .from('employee')
-            .delete()
-            .eq('id_employee', employee.id_employee)
-
-        if (error) {
-            console.log(error)
-        } else {
-            console.log(data)
-            window.location.reload();
+        try {
+            const response = await fetch(`http://localhost:8081/employee/${emplId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete employee');
+            }
+            const updatedEmpl = employees.filter(employee => employee.id_employee !== emplId);
+            setEmployees(updatedEmpl);
+        } catch (error) {
+            console.error(error);
         }
-    }
+    };
 
     const handleShowOnlyCashiersChange = (e) => {
         setShowOnlyCashiers(e.target.checked);
@@ -120,7 +120,7 @@ const EmployeeTable = ({ customers }) => {
                                     Edit
                                 </Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(employee)}>Delete</button>
+                            <button className="edit-button" onClick={() => handleDelete(employee.id_employee)}>Delete</button>
                         </td>
                     </tr>
                 ))}

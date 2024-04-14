@@ -66,6 +66,17 @@ app.get('/employee', (req, res) => {
         });
 });
 
+app.delete('/employee/:id', (req, res) => {
+    const emplID = req.params.id;
+    db.none('DELETE FROM employee WHERE id_employee = $1', emplID)
+        .then(() => {
+            res.json({message: 'Employee deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
 //ЧЕКИ
 app.get('/cheque', (req, res) => {
     db.any('SELECT * FROM cheque;')

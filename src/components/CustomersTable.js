@@ -1,10 +1,9 @@
 import {useState} from "react";
 import {Link} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 import PopupCust from "./CustomerPopup";
 import '../styles/employee-table.css'
 
-const CustomersTable = ({customers}) => {
+const CustomersTable = ({customers, setCustomers}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCustomers, setSelectedCustomers] = useState(null);
     const [searchSurname, setSearchSurname] = useState("");
@@ -39,20 +38,21 @@ const CustomersTable = ({customers}) => {
         setSelectedCustomers(null);
     };
 
-    const handleDelete = async (customer) => {
+    const handleDelete = async (customerId) => {
         const confirmed = window.confirm("Are you sure you want to delete this customer?");
         if (!confirmed) return;
 
-        const {data, error} = await supabase
-            .from('customer_card')
-            .delete()
-            .eq('card_number', customer.card_number);
-
-        if (error) {
-            console.log(error)
-        } else {
-            console.log("Customer deleted successfully:", data);
-            window.location.reload();
+        try {
+            const response = await fetch(`http://localhost:8081/customer_card/${customerId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete product');
+            }
+            const updatedProducts = customers.filter(customer => customer.card_number !== customerId);
+            setCustomers(updatedProducts);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -103,7 +103,8 @@ const CustomersTable = ({customers}) => {
                                     Edit
                                 </Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(customer)}>Delete</button>
+                            <button className="edit-button" onClick={() => handleDelete(customer.card_number)}>Delete
+                            </button>
                         </td>
                     </tr>
                 ))}

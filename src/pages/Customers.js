@@ -1,9 +1,4 @@
-import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
-
-//components
-
-//styles
 import '../styles/links-stuff.css';
 import CustomersTable from "../components/CustomersTable";
 
@@ -14,14 +9,11 @@ const Customers = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const {data, error} = await supabase
-                    .from('customer_card')
-                    .select();
-
-                if (error) {
+                const response = await fetch('http://localhost:8081/customer_card');
+                if (!response.ok) {
                     throw new Error('Could not fetch customers');
                 }
-
+                const data = await response.json();
                 setCustomers(data);
                 setFetchError(null);
             } catch (error) {
@@ -39,7 +31,7 @@ const Customers = () => {
             {fetchError && <p>{fetchError}</p>}
             {customers && (
                 <div>
-                    <CustomersTable customers={customers}/>
+                    <CustomersTable customers={customers} setCustomers={setCustomers}/>
                 </div>
             )}
         </div>

@@ -155,6 +155,26 @@ app.get('/cheque', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/cheque/:check_number', (req, res) => {
+    const categoryNumber = req.params.check_number;
+    db.any('SELECT * FROM product WHERE check_number = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.delete('/cheque/:id', (req, res) => {
+    const catNum = req.params.id;
+    db.none('DELETE FROM cheque WHERE check_number = $1', catNum)
+        .then(() => {
+            res.json({message: 'Cheque deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 
 //СЕЙЛИ-----------------------------------------------------------------------------------------------------------------
 app.get('/sale', (req, res) => {

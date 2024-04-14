@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import Popup from "./CheckPopup";
 
-const ChequesTable = ({cheques}) => {
+const ChequesTable = ({cheques, setCheques}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCheque, setSelectedCheque] = useState(null);
     const [chequeList, setChequeList] = useState([]);
@@ -160,31 +160,33 @@ const ChequesTable = ({cheques}) => {
     };
 
     const fetchCheques = async (chequeNumber) => {
-        const {data, error} = await supabase
-            .from('cheque')
-            .select()
-            .eq('check_number', chequeNumber);
-        if (error) {
-            console.log(error);
-        } else {
+        try {
+            const response = await fetch(`http://localhost:8081/cheque/${chequeNumber}`);
+            if (!response.ok)
+                throw new Error('Could not fetch cheques');
+            const data = await response.json();
             setChequeList(data);
+            console.log(data)
+        } catch (error) {
+            console.error(error);
         }
     };
 
-    const handleDelete = async (cheque) => {
+    const handleDelete = async (chequeNum) => {
         const confirmed = window.confirm("Are you sure you want to delete this cheque?");
         if (!confirmed) return;
-
-        const {data, error} = await supabase
-            .from('cheque')
-            .delete()
-            .eq('check_number', cheque.check_number);
-
-        if (error) {
-            console.log(error);
-        } else {
-            console.log(data);
+        try {
+            const response = await fetch(`http://localhost:8081/cheque/${chequeNum}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete cheque');
+            }
+            const updatedProducts = cheques.filter(cheque => cheque.check_number !== chequeNum);
+            setCheques(updatedProducts);
             window.location.reload();
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -267,7 +269,7 @@ const ChequesTable = ({cheques}) => {
                         <td>{parseFloat(cheque.sum_total).toFixed(2)}</td>
                         <td>{parseFloat(cheque.vat).toFixed(2)}</td>
                         <td>
-                            <button className="edit-button" onClick={() => handleDelete(cheque)}>Delete</button>
+                            <button className="edit-button" onClick={() => handleDelete(cheque.check_number)}>Delete</button>
                         </td>
                     </tr>
                 ))}

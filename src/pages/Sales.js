@@ -1,6 +1,4 @@
 import {useEffect, useState} from 'react';
-import CategoriesTable from "../components/CategoriesTable";
-import ChequesTable from "../components/ChequesTable";
 import SalesTable from "../components/SalesTable";
 
 const Sales = () => {

@@ -1,5 +1,4 @@
 import {useEffect, useState} from 'react';
-import CategoriesTable from "../components/CategoriesTable";
 import ChequesTable from "../components/ChequesTable";
 
 const Cheques = () => {
@@ -31,7 +30,7 @@ const Cheques = () => {
             {fetchError && <p>{fetchError}</p>}
             {cheques && (
                 <div>
-                    <ChequesTable cheques={cheques}/>
+                    <ChequesTable cheques={cheques} setCheques={setCheques}/>
                 </div>
             )}
         </div>

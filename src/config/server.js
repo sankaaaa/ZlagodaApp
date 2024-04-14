@@ -123,6 +123,28 @@ app.delete('/customer_card/:id', (req, res) => {
         });
 });
 
+//СТОР ПРОДУКТИ---------------------------------------------------------------------------------------------------------
+app.get('/store_product', (req, res) => {
+    db.any('SELECT * FROM store_product;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.delete('/store_product/:id', (req, res) => {
+    const catNum = req.params.id;
+    db.none('DELETE FROM store_product WHERE upc = $1', catNum)
+        .then(() => {
+            res.json({message: 'Store product deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
 //ЧЕКИ-----------------------------------------------------------------------------------------------------------------
 app.get('/cheque', (req, res) => {
     db.any('SELECT * FROM cheque;')
@@ -133,6 +155,8 @@ app.get('/cheque', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+
+//СЕЙЛИ-----------------------------------------------------------------------------------------------------------------
 app.get('/sale', (req, res) => {
     db.any('SELECT * FROM sale;')
         .then(result3 => {

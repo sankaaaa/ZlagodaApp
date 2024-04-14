@@ -4,7 +4,7 @@ import '../styles/employee-popup.css';
 import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const StoreProductsTable = ({storeProducts}) => {
+const StoreProductsTable = ({storeProducts, setStoreProducts}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [setSelectedStoreProduct] = useState(null);
     const [productNames, setProductNames] = useState({});
@@ -86,19 +86,20 @@ const StoreProductsTable = ({storeProducts}) => {
         setSelectedStoreProduct(storeProduct);
     };
 
-    const handleDelete = async (storeProduct) => {
-        const confirmed = window.confirm("Are you sure you want to delete this product?");
+    const handleDelete = async (storeProductId) => {
+        const confirmed = window.confirm("Are you sure you want to delete this store product?");
         if (!confirmed) return;
-        const {data, error} = await supabase
-            .from('store_product')
-            .delete()
-            .eq('upc', storeProduct.upc);
-
-        if (error) {
-            console.error("Error deleting product:", error.message);
-        } else {
-            console.log(data);
-            window.location.reload();
+        try {
+            const response = await fetch(`http://localhost:8081/store_product/${storeProductId}`, {
+                method: 'DELETE',
+            });
+            if (!response.ok) {
+                throw new Error('Could not delete store product');
+            }
+            const updatedProducts = storeProducts.filter(sproduct => sproduct.upc !== storeProductId);
+            setStoreProducts(updatedProducts);
+        } catch (error) {
+            console.error(error);
         }
     }
 
@@ -192,7 +193,7 @@ const StoreProductsTable = ({storeProducts}) => {
                                 <button className="edit-button">
                                     <Link to={`/store-products/${storeProduct.upc}`}>Edit</Link>
                                 </button>
-                                <button className="edit-button" onClick={() => handleDelete(storeProduct)}>Delete
+                                <button className="edit-button" onClick={() => handleDelete(storeProduct.upc)}>Delete
                                 </button>
                             </td>
                         </tr>

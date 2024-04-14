@@ -1,9 +1,4 @@
-import supabase from "../config/supabaseClient";
 import {useEffect, useState} from 'react';
-
-//components
-
-//styles
 import '../styles/links-stuff.css';
 import StoreProductsTable from "../components/StoreProductsTable";
 
@@ -14,14 +9,11 @@ const StoreProducts = () => {
     useEffect(() => {
         const fetchStoreProducts = async () => {
             try {
-                const {data, error} = await supabase
-                    .from('store_product')
-                    .select();
-
-                if (error) {
+                const response = await fetch('http://localhost:8081/store_product');
+                if (!response.ok) {
                     throw new Error('Could not fetch store products');
                 }
-
+                const data = await response.json();
                 setStoreProducts(data);
                 setFetchError(null);
             } catch (error) {
@@ -39,7 +31,7 @@ const StoreProducts = () => {
             {fetchError && <p>{fetchError}</p>}
             {storeProducts && (
                 <div>
-                    <StoreProductsTable storeProducts={storeProducts}/>
+                    <StoreProductsTable storeProducts={storeProducts} setStoreProducts={setStoreProducts}/>
                 </div>
             )}
         </div>

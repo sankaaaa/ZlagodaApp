@@ -4,8 +4,13 @@ import SalesTable from "../components/SalesTable";
 const Sales = () => {
     const [fetchError, setFetchError] = useState(null);
     const [sales, setSales] = useState(null);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            setUserRole(storedRole);
+        }
         const fetchSales = async () => {
             try {
                 const response = await fetch('http://localhost:8081/sale');
@@ -30,7 +35,7 @@ const Sales = () => {
             {fetchError && <p>{fetchError}</p>}
             {sales && (
                 <div>
-                    <SalesTable sales={sales} setSales={setSales}/>
+                    <SalesTable sales={sales} setSales={setSales} userRole={userRole}/>
                 </div>
             )}
         </div>

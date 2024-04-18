@@ -146,7 +146,7 @@ const CreateCheque = () => {
                         return acc + price * selectedProducts[index].quantity;
                     }, 0);
 
-                    const totalSumWithDiscount = sum * customerPercent;
+                    const totalSumWithDiscount = sum - (sum * customerPercent);
 
                     setTotalSum(parseFloat(totalSumWithDiscount.toFixed(2)));
                 } catch (error) {

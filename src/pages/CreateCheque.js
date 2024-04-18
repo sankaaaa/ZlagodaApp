@@ -26,6 +26,7 @@ const CreateCheque = () => {
                     .eq('empl_role', 'cashier');
 
                 if (error)
+                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setCashiers(data.map(cashier => cashier.id_employee));
@@ -45,6 +46,7 @@ const CreateCheque = () => {
                     .select('card_number');
 
                 if (error)
+                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setCustomers(data.map(customer => customer.card_number));
@@ -64,6 +66,7 @@ const CreateCheque = () => {
                     .select('id_product, product_name');
 
                 if (error)
+                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 const productNamesObject = {};
@@ -87,6 +90,7 @@ const CreateCheque = () => {
                     .select('id_product');
 
                 if (error)
+                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setProducts(data.map(product => product.id_product));
@@ -113,6 +117,7 @@ const CreateCheque = () => {
                         .single();
 
                     if (customerError)
+                        // noinspection ExceptionCaughtLocallyJS
                         throw customerError;
 
                     const customerPercent = customerData.percent / 100;
@@ -176,6 +181,7 @@ const CreateCheque = () => {
                     .single();
 
                 if (error) {
+                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
                 }
 
@@ -216,7 +222,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            const {data: insertedCheque, error: chequeError} = await supabase
+            const {data:insertedCheque, error: chequeError} = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
@@ -228,6 +234,7 @@ const CreateCheque = () => {
                 }]);
 
             if (chequeError)
+                // noinspection ExceptionCaughtLocallyJS
                 throw chequeError;
 
             for (const selectedProduct of selectedProducts) {
@@ -258,8 +265,6 @@ const CreateCheque = () => {
                         selling_price: productInfo.selling_price,
                     }]);
             }
-
-
             setFormError(null);
             navigate('/cheques');
         } catch (error) {
@@ -286,6 +291,7 @@ const CreateCheque = () => {
                 .single();
 
             if (productError)
+                // noinspection ExceptionCaughtLocallyJS
                 throw productError;
 
             const currentQuantity = productData.products_number;
@@ -297,6 +303,7 @@ const CreateCheque = () => {
                 .eq('id_product', productId);
 
             if (error) {
+                // noinspection ExceptionCaughtLocallyJS
                 throw error;
             }
 

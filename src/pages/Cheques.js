@@ -4,9 +4,13 @@ import ChequesTable from "../components/ChequesTable";
 const Cheques = () => {
     const [fetchError, setFetchError] = useState(null);
     const [cheques, setCheques] = useState(null);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            setUserRole(storedRole);
+        }        const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:8081/cheque');
                 if (!response.ok) {
@@ -30,7 +34,7 @@ const Cheques = () => {
             {fetchError && <p>{fetchError}</p>}
             {cheques && (
                 <div>
-                    <ChequesTable cheques={cheques} setCheques={setCheques}/>
+                    <ChequesTable cheques={cheques} setCheques={setCheques} userRole={userRole}/>
                 </div>
             )}
         </div>

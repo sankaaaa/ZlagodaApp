@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import Popup from "./CheckPopup";
 
-const ChequesTable = ({cheques, setCheques}) => {
+const ChequesTable = ({cheques, setCheques, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCheque, setSelectedCheque] = useState(null);
     const [chequeList, setChequeList] = useState([]);
@@ -193,8 +193,10 @@ const ChequesTable = ({cheques, setCheques}) => {
     return (
         <div className="cat-table">
             <div className="top-line">
-                <div className="create-new-container">
+                <div className="create-new-container" style={{display: userRole === "Manager" ? "none" : "block"}}>
+                    {userRole === "Cashier" && (
                     <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
+                    )}
                 </div>
                 <div className="filter-container">
                     <select
@@ -269,7 +271,11 @@ const ChequesTable = ({cheques, setCheques}) => {
                         <td>{parseFloat(cheque.sum_total).toFixed(2)}</td>
                         <td>{parseFloat(cheque.vat).toFixed(2)}</td>
                         <td>
-                            <button className="edit-button" onClick={() => handleDelete(cheque.check_number)}>Delete</button>
+                            {userRole === "Manager" ? (
+                                <button className="edit-button" onClick={() => handleDelete(cheque.check_number)}>Delete</button>
+                            ) : (
+                                <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>Delete</button>
+                            )}
                         </td>
                     </tr>
                 ))}

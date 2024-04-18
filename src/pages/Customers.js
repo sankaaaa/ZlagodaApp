@@ -5,8 +5,13 @@ import CustomersTable from "../components/CustomersTable";
 const Customers = () => {
     const [fetchError, setFetchError] = useState(null);
     const [customers, setCustomers] = useState(null);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            setUserRole(storedRole);
+        }
         const fetchCustomers = async () => {
             try {
                 const response = await fetch('http://localhost:8081/customer_card');
@@ -31,7 +36,7 @@ const Customers = () => {
             {fetchError && <p>{fetchError}</p>}
             {customers && (
                 <div>
-                    <CustomersTable customers={customers} setCustomers={setCustomers}/>
+                    <CustomersTable customers={customers} setCustomers={setCustomers} userRole={userRole}/>
                 </div>
             )}
         </div>

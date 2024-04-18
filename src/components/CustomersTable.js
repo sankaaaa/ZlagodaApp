@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import PopupCust from "./CustomerPopup";
 import '../styles/employee-table.css'
 
-const CustomersTable = ({customers, setCustomers}) => {
+const CustomersTable = ({customers, setCustomers, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCustomers, setSelectedCustomers] = useState(null);
     const [searchSurname, setSearchSurname] = useState("");
@@ -103,9 +103,17 @@ const CustomersTable = ({customers, setCustomers}) => {
                                     Edit
                                 </Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(customer.card_number)}>Delete
-                            </button>
+                            {userRole !== "Manager" ? (
+                                <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>
+                                    Delete
+                                </button>
+                            ) : (
+                                <button className="edit-button" onClick={() => handleDelete(customer.card_number)}>
+                                    Delete
+                                </button>
+                            )}
                         </td>
+
                     </tr>
                 ))}
                 </tbody>

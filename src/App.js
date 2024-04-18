@@ -11,7 +11,7 @@ import CreateCategory from "./pages/CreateCategory";
 import UpdateCategory from "./pages/UpdateCategory";
 import {useState, useEffect} from "react";
 
-import '../src/styles/links-stuff.css';
+import "../src/styles/links-stuff.css";
 import Customers from "./pages/Customers";
 import CreateCustomer from "./pages/CreateCustomer";
 import UpdateCustomer from "./pages/UpdateCustomer";
@@ -33,7 +33,7 @@ function Navigation({userRole}) {
             <h1>Zlagoda</h1>
             <div className="fline">
                 <div className="nav-links">
-                    <Link to="/employees">Employees</Link>
+                    {userRole !== "Cashier" && <Link to="/employees">Employees</Link>}
                     <Link to="/products">Products</Link>
                     <Link to="/categories">Categories</Link>
                     <Link to="/customers">Customers</Link>
@@ -70,23 +70,23 @@ function App() {
             <Navigation userRole={userRole}/>
             <Routes>
                 <Route path="/" element={<Login handleUserRole={handleUserRole}/>}/>
-                <Route path="/employees" element={<Employees/>}/>
-                <Route path="/create-employee" element={<CreateEmployee/>}/>
-                <Route path="/:id_employee" element={<UpdateEmployee/>}/>
+                {userRole !== "Cashier" && <Route path="/employees" element={<Employees/>}/>}
+                {userRole !== "Cashier" && <Route path="/create-employee" element={<CreateEmployee/>}/>}
+                {userRole !== "Cashier" && <Route path="/:id_employee" element={<UpdateEmployee/>}/>}
                 <Route path="/products" element={<Products/>}/>
-                <Route path="/create-product" element={<CreateProduct/>}/>
-                <Route path="/products/:id_product" element={<UpdateProduct/>}/>
+                {userRole !== "Cashier" && <Route path="/create-product" element={<CreateProduct/>}/>}
+                {userRole !== "Cashier" && <Route path="/products/:id_product" element={<UpdateProduct/>}/>}
                 <Route path="/categories" element={<Categories/>}/>
-                <Route path="/create-category" element={<CreateCategory/>}/>
-                <Route path="/categories/:category_number" element={<UpdateCategory/>}/>
+                {userRole !== "Cashier" && <Route path="/create-category" element={<CreateCategory/>}/>}
+                {userRole !== "Cashier" && <Route path="/categories/:category_number" element={<UpdateCategory/>}/>}
                 <Route path="/customers" element={<Customers/>}/>
-                <Route path="/create-customer" element={<CreateCustomer/>}/>
+                {userRole !== "Cashier" && <Route path="/create-customer" element={<CreateCustomer/>}/>}
                 <Route path="/customers/:card_number" element={<UpdateCustomer/>}/>
                 <Route path="/store-products" element={<StoreProducts/>}/>
-                <Route path="/create-store-product" element={<CreateStoreProduct/>}/>
-                <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>
+                {userRole !== "Cashier" && <Route path="/create-store-product" element={<CreateStoreProduct/>}/>}
+                {userRole !== "Cashier" && <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>}
                 <Route path="/cheques" element={<Cheques/>}/>
-                <Route path="/create-cheque" element={<CreateCheque/>}/>
+                {userRole !== "Manager" && <Route path="/create-cheque" element={<CreateCheque/>}/>}
                 <Route path="/sales" element={<Sales/>}/>
             </Routes>
         </BrowserRouter>

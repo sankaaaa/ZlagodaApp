@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import ProductsTable from "../components/ProductsTable";
 
 const Products = () => {
     const [fetchError, setFetchError] = useState(null);
     const [products, setProducts] = useState(null);
+    const [userRole, setUserRole] = useState("");
 
     useEffect(() => {
+        const storedRole = localStorage.getItem("userRole");
+        if (storedRole) {
+            setUserRole(storedRole);
+        }
+
         const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:8081/product');
@@ -30,7 +36,7 @@ const Products = () => {
             {fetchError && <p>{fetchError}</p>}
             {products && (
                 <div>
-                    <ProductsTable products={products} setProducts={setProducts} />
+                    <ProductsTable products={products} setProducts={setProducts} userRole={userRole}/>
                 </div>
             )}
         </div>

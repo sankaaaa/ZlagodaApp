@@ -13,6 +13,9 @@ const Login = ({handleUserRole}) => {
         if (username === "zlagoda" && password === "12345") {
             handleUserRole("Manager");
             navigate("/employees");
+        } else if (username === "cashier" && password === "98765") {
+            handleUserRole("Cashier");
+            navigate("/products");
         } else {
             setError("Invalid username or password.");
         }

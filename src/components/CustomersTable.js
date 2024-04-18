@@ -113,7 +113,6 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
                                 </button>
                             )}
                         </td>
-
                     </tr>
                 ))}
                 </tbody>

@@ -4,7 +4,7 @@ import '../styles/employee-popup.css';
 import {Link} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 
-const StoreProductsTable = ({storeProducts, setStoreProducts}) => {
+const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [setSelectedStoreProduct] = useState(null);
     const [productNames, setProductNames] = useState({});
@@ -130,8 +130,10 @@ const StoreProductsTable = ({storeProducts, setStoreProducts}) => {
                 </div>
             )}
             <div className="top-line">
-                <div className="create-new-container">
-                    <Link to="/create-store-product" className="link-create-new">Add product to store</Link>
+                <div className="create-new-container" style={{display: userRole === "Cashier" ? "none" : "block"}}>
+                    {userRole === "Manager" && (
+                        <Link to="/create-store-product" className="link-create-new">Add product to store</Link>
+                    )}
                 </div>
                 <div className="search-box">
                     <label htmlFor="searchUPC">Search by UPC:</label>
@@ -190,12 +192,27 @@ const StoreProductsTable = ({storeProducts, setStoreProducts}) => {
                             <td>{storeProduct.selling_price} (VAT: {pdv})</td>
                             <td>{storeProduct.promotional_product ? `yes: ${promotionalPrice}` : 'no'}</td>
                             <td>
-                                <button className="edit-button">
-                                    <Link to={`/store-products/${storeProduct.upc}`}>Edit</Link>
-                                </button>
-                                <button className="edit-button" onClick={() => handleDelete(storeProduct.upc)}>Delete
-                                </button>
+                                {userRole === "Manager" ? (
+                                    <>
+                                        <button className="edit-button">
+                                            <Link to={`/store-products/${storeProduct.upc}`}>Edit</Link>
+                                        </button>
+                                        <button className="edit-button"
+                                                onClick={() => handleDelete(storeProduct.upc)}>Delete
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button className="edit-button" disabled style={{backgroundColor: "#BF863D"}}>
+                                            Edit
+                                        </button>
+                                        <button className="edit-button" disabled style={{backgroundColor: "#BF863D"}}>
+                                            Delete
+                                        </button>
+                                    </>
+                                )}
                             </td>
+
                         </tr>
                     );
                 })}

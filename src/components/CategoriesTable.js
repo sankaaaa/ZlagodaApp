@@ -2,7 +2,7 @@ import {useState, useEffect} from "react";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
 
-const CategoriesTable = ({categories, setCategories}) => {
+const CategoriesTable = ({categories, setCategories, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [productList, setProductList] = useState([]);
@@ -80,8 +80,10 @@ const CategoriesTable = ({categories, setCategories}) => {
                 </div>
             )}
             <div className="top-line">
-                <div className="create-new-container">
-                    <Link to="/create-category" className="link-create-new">Create New Category</Link>
+                <div className="create-new-container" style={{display: userRole === "Cashier" ? "none" : "block"}}>
+                    {userRole === "Manager" && (
+                        <Link to="/create-category" className="link-create-new">Create New Category</Link>
+                    )}
                 </div>
             </div>
             <table className="category-table">
@@ -100,12 +102,26 @@ const CategoriesTable = ({categories, setCategories}) => {
                         </td>
                         <td>{category.category_name}</td>
                         <td>
-                            <button className="edit-button">
-                                <Link to={`/categories/${category.category_number}`}>Edit</Link>
-                            </button>
-                            <button className="edit-button"
-                                    onClick={() => handleDelete(category.category_number)}>Delete
-                            </button>
+                            {userRole === "Manager" ? (
+                                <>
+                                    <button className="edit-button">
+                                        <Link to={`/categories/${category.category_number}`}>Edit</Link>
+                                    </button>
+                                    <button className="edit-button"
+                                            onClick={() => handleDelete(category.category_number)}>
+                                        Delete
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button className="edit-button" disabled style={{backgroundColor: "#BF863D"}}>
+                                        Edit
+                                    </button>
+                                    <button className="edit-button" disabled style={{backgroundColor: "#BF863D"}}>
+                                        Delete
+                                    </button>
+                                </>
+                            )}
                         </td>
                     </tr>
                 ))}

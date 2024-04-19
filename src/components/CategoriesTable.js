@@ -80,8 +80,8 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
                 </div>
             )}
             <div className="top-line">
-                <div className="create-new-container" style={{display: userRole === "Cashier" ? "none" : "block"}}>
-                    {userRole === "Manager" && (
+                <div className="create-new-container" style={{display: userRole === "cashier" ? "none" : "block"}}>
+                    {userRole === "manager" && (
                         <Link to="/create-category" className="link-create-new">Create New Category</Link>
                     )}
                 </div>
@@ -102,7 +102,7 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
                         </td>
                         <td>{category.category_name}</td>
                         <td>
-                            {userRole === "Manager" ? (
+                            {userRole === "manager" ? (
                                 <>
                                     <button className="edit-button">
                                         <Link to={`/categories/${category.category_number}`}>Edit</Link>

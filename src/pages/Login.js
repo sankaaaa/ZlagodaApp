@@ -1,21 +1,46 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import passwords from "./passwords.json";
+import supabase from "../config/supabaseClient";
 import '../styles/login-form.css';
 
-const Login = ({handleUserRole}) => {
+const Login = ({ handleUserRole }) => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (username === "zlagoda" && password === "12345") {
-            handleUserRole("Manager");
-            navigate("/employees");
-        } else if (username === "cashier" && password === "98765") {
-            handleUserRole("Cashier");
-            navigate("/products");
+
+        // Знаходимо користувача у файлі passwords.json
+        const user = passwords.find(user => user.username === username && user.password === password);
+
+        if (user) {
+            try {
+                // Отримуємо дані про користувача з бази даних
+                const { data: employee, error } = await supabase
+                    .from('employee')
+                    .select('empl_role')
+                    .eq('id_employee', username)
+                    .single();
+
+                if (error) throw error;
+
+                if (employee) {
+                    const { empl_role } = employee;
+                    const userRole = empl_role;
+
+                    handleUserRole(userRole);
+                    localStorage.setItem("userRole", userRole);
+                    navigate("/products");
+                } else {
+                    setError("Invalid username or password.");
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error.message);
+                setError("Error fetching user data. Please try again later.");
+            }
         } else {
             setError("Invalid username or password.");
         }

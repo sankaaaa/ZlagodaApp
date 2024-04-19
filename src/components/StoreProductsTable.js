@@ -130,8 +130,8 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                 </div>
             )}
             <div className="top-line">
-                <div className="create-new-container" style={{display: userRole === "Cashier" ? "none" : "block"}}>
-                    {userRole === "Manager" && (
+                <div className="create-new-container" style={{display: userRole === "cashier" ? "none" : "block"}}>
+                    {userRole === "manager" && (
                         <Link to="/create-store-product" className="link-create-new">Add product to store</Link>
                     )}
                 </div>
@@ -192,7 +192,7 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                             <td>{storeProduct.selling_price} (VAT: {pdv})</td>
                             <td>{storeProduct.promotional_product ? `yes: ${promotionalPrice}` : 'no'}</td>
                             <td>
-                                {userRole === "Manager" ? (
+                                {userRole === "manager" ? (
                                     <>
                                         <button className="edit-button">
                                             <Link to={`/store-products/${storeProduct.upc}`}>Edit</Link>

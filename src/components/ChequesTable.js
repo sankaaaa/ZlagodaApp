@@ -193,8 +193,8 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
     return (
         <div className="cat-table">
             <div className="top-line">
-                <div className="create-new-container" style={{display: userRole === "Manager" ? "none" : "block"}}>
-                    {userRole === "Cashier" && (
+                <div className="create-new-container" style={{display: userRole === "manager" ? "none" : "block"}}>
+                    {userRole === "cashier" && (
                     <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
                     )}
                 </div>
@@ -271,7 +271,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                         <td>{parseFloat(cheque.sum_total).toFixed(2)}</td>
                         <td>{parseFloat(cheque.vat).toFixed(2)}</td>
                         <td>
-                            {userRole === "Manager" ? (
+                            {userRole === "manager" ? (
                                 <button className="edit-button" onClick={() => handleDelete(cheque.check_number)}>Delete</button>
                             ) : (
                                 <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>Delete</button>

@@ -66,8 +66,8 @@ const ProductsTable = ({products, setProducts, userRole}) => {
     return (
         <div>
             <div className="top-line">
-                <div className="create-new-container" style={{display: userRole === "Cashier" ? "none" : "block"}}>
-                    {userRole === "Manager" && (
+                <div className="create-new-container" style={{display: userRole === "cashier" ? "none" : "block"}}>
+                    {userRole === "manager" && (
                         <Link to="/create-product" className="link-create-new">
                             Create New Product
                         </Link>
@@ -103,7 +103,7 @@ const ProductsTable = ({products, setProducts, userRole}) => {
                         <td>{product.category_number}</td>
                         <td>{product.product_name}</td>
                         <td>{product.characteristics}</td>
-                        {userRole === "Manager" ? (
+                        {userRole === "manager" ? (
                             <td>
                                 <button className="edit-button">
                                     <Link to={`/products/${product.id_product}`}>Edit</Link>

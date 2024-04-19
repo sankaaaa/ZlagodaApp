@@ -39,7 +39,7 @@ const SalesTable = ({sales, setSales, userRole}) => {
                         <td>{sale.product_number}</td>
                         <td>{sale.selling_price}</td>
                         <td>
-                            {userRole === "Manager" ? (
+                            {userRole === "manager" ? (
                                 <button className="edit-button"
                                         onClick={() => handleDelete(sale.upc, sale.check_number)}>Delete</button>
                             ) : (

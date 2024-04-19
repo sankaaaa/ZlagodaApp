@@ -103,7 +103,7 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
                                     Edit
                                 </Link>
                             </button>
-                            {userRole !== "Manager" ? (
+                            {userRole !== "manager" ? (
                                 <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>
                                     Delete
                                 </button>

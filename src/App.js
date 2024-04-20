@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {BrowserRouter, Routes, Route, Link, useLocation} from "react-router-dom";
 import Employees from "./pages/Employees";
 import CreateEmployee from "./pages/CreateEmployee";
 import UpdateEmployee from "./pages/UpdateEmployee";
@@ -22,7 +22,7 @@ import CreateCheque from "./pages/CreateCheque";
 import Sales from "./pages/Sales";
 import MyPage from "./pages/MyPage";
 
-function Navigation({ userRole }) {
+function Navigation({userRole}) {
     const location = useLocation();
     if (location.pathname === "/") {
         return null;
@@ -72,28 +72,28 @@ function App() {
 
     return (
         <BrowserRouter>
-            <Navigation userRole={userRole} />
+            <Navigation userRole={userRole}/>
             <Routes>
-                <Route path="/" element={<Login handleUserRole={handleUserRole} />} />
-                {userRole !== "cashier" && <Route path="/employees" element={<Employees />} />}
-                {userRole !== "cashier" && <Route path="/create-employee" element={<CreateEmployee />} />}
-                {userRole !== "cashier" && <Route path="/:id_employee" element={<UpdateEmployee />} />}
-                <Route path="/products" element={<Products />} />
-                {userRole !== "cashier" && <Route path="/create-product" element={<CreateProduct />} />}
-                {userRole !== "cashier" && <Route path="/products/:id_product" element={<UpdateProduct />} />}
-                <Route path="/categories" element={<Categories />} />
-                {userRole !== "cashier" && <Route path="/create-category" element={<CreateCategory />} />}
-                {userRole !== "cashier" && <Route path="/categories/:category_number" element={<UpdateCategory />} />}
-                <Route path="/customers" element={<Customers />} />
-                {userRole !== "cashier" && <Route path="/create-customer" element={<CreateCustomer />} />}
-                <Route path="/customers/:card_number" element={<UpdateCustomer />} />
-                <Route path="/store-products" element={<StoreProducts />} />
-                {userRole !== "cashier" && <Route path="/create-store-product" element={<CreateStoreProduct />} />}
-                {userRole !== "cashier" && <Route path="/store-products/:upc" element={<UpdateStoreProduct />} />}
-                <Route path="/cheques" element={<Cheques />} />
-                {userRole !== "manager" && <Route path="/create-cheque" element={<CreateCheque />} />}
-                <Route path="/sales" element={<Sales />} />
-                <Route path="/my-page" element={<MyPage username={username} />} />
+                <Route path="/" element={<Login handleUserRole={handleUserRole}/>}/>
+                {userRole !== "cashier" && <Route path="/employees" element={<Employees/>}/>}
+                {userRole !== "cashier" && <Route path="/create-employee" element={<CreateEmployee/>}/>}
+                {userRole !== "cashier" && <Route path="/:id_employee" element={<UpdateEmployee/>}/>}
+                <Route path="/products" element={<Products/>}/>
+                {userRole !== "cashier" && <Route path="/create-product" element={<CreateProduct/>}/>}
+                {userRole !== "cashier" && <Route path="/products/:id_product" element={<UpdateProduct/>}/>}
+                <Route path="/categories" element={<Categories/>}/>
+                {userRole !== "cashier" && <Route path="/create-category" element={<CreateCategory/>}/>}
+                {userRole !== "cashier" && <Route path="/categories/:category_number" element={<UpdateCategory/>}/>}
+                <Route path="/customers" element={<Customers/>}/>
+                {userRole !== "cashier" && <Route path="/create-customer" element={<CreateCustomer/>}/>}
+                <Route path="/customers/:card_number" element={<UpdateCustomer/>}/>
+                <Route path="/store-products" element={<StoreProducts/>}/>
+                {userRole !== "cashier" && <Route path="/create-store-product" element={<CreateStoreProduct/>}/>}
+                {userRole !== "cashier" && <Route path="/store-products/:upc" element={<UpdateStoreProduct/>}/>}
+                <Route path="/cheques" element={<Cheques/>}/>
+                {userRole !== "manager" && <Route path="/create-cheque" element={<CreateCheque/>}/>}
+                <Route path="/sales" element={<Sales/>}/>
+                <Route path="/my-page" element={<MyPage username={username}/>}/>
             </Routes>
         </BrowserRouter>
     );

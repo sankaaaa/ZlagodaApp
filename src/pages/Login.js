@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import supabase from "../config/supabaseClient";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import "../styles/login-form.css";
 
-const Login = ({ handleUserRole }) => {
+const Login = ({handleUserRole}) => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -13,16 +12,13 @@ const Login = ({ handleUserRole }) => {
         e.preventDefault();
 
         try {
-            const { data: employee, error } = await supabase
-                .from("employee")
-                .select("empl_role")
-                .eq("id_employee", username)
-                .single();
-
-            if (error) throw error;
-
-            if (employee && employee.empl_role) {
-                const userRole = employee.empl_role;
+            const response = await fetch(`http://localhost:8081/employee/${username}`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch user data");
+            }
+            const data = await response.json();
+            if (data.length > 0) {
+                const userRole = data[0].empl_role;
 
                 handleUserRole(userRole);
                 localStorage.setItem("userRole", userRole);

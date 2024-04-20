@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import "../styles/create-form.css";
-import supabase from "../config/supabaseClient";
 
 const MyPage = () => {
     const [employeeData, setEmployeeData] = useState(null);
@@ -10,25 +9,20 @@ const MyPage = () => {
     const [successMessage] = useState("");
 
     const username = localStorage.getItem("userLogin");
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data: employee, error } = await supabase
-                    .from("employee")
-                    .select("*")
-                    .eq("id_employee", username)
-                    .single();
-
-                if (error) throw error;
-
-                setEmployeeData(employee);
+                const response = await fetch(`http://localhost:8081/employee/${username}`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user data");
+                }
+                const data = await response.json();
+                setEmployeeData(data[0]);
             } catch (error) {
                 console.error("Error fetching employee data:", error.message);
                 setError("Error fetching employee data. Please try again later.");
             }
         };
-
         fetchData();
     }, [username]);
 

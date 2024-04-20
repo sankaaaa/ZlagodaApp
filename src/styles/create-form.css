@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800&family=VT323&display=swap');
 
-.page.create {
+.page.create,
+.my-page-container {
     max-width: 800px;
     margin: 0 auto;
+}
+
+.my-page-container {
+    margin-left: 280px;
+    margin-top: 50px;
 }
 
 form {

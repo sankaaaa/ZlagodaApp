@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import passwords from "./passwords.json";
 import supabase from "../config/supabaseClient";
-import '../styles/login-form.css';
+import "../styles/login-form.css";
 
 const Login = ({ handleUserRole }) => {
     const navigate = useNavigate();
@@ -13,36 +12,28 @@ const Login = ({ handleUserRole }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Знаходимо користувача у файлі passwords.json
-        const user = passwords.find(user => user.username === username && user.password === password);
+        try {
+            const { data: employee, error } = await supabase
+                .from("employee")
+                .select("empl_role")
+                .eq("id_employee", username)
+                .single();
 
-        if (user) {
-            try {
-                // Отримуємо дані про користувача з бази даних
-                const { data: employee, error } = await supabase
-                    .from('employee')
-                    .select('empl_role')
-                    .eq('id_employee', username)
-                    .single();
+            if (error) throw error;
 
-                if (error) throw error;
+            if (employee && employee.empl_role) {
+                const userRole = employee.empl_role;
 
-                if (employee) {
-                    const { empl_role } = employee;
-                    const userRole = empl_role;
-
-                    handleUserRole(userRole);
-                    localStorage.setItem("userRole", userRole);
-                    navigate("/products");
-                } else {
-                    setError("Invalid username or password.");
-                }
-            } catch (error) {
-                console.error("Error fetching user data:", error.message);
-                setError("Error fetching user data. Please try again later.");
+                handleUserRole(userRole);
+                localStorage.setItem("userRole", userRole);
+                localStorage.setItem("userLogin", username);
+                navigate("/products");
+            } else {
+                setError("Invalid username or password.");
             }
-        } else {
-            setError("Invalid username or password.");
+        } catch (error) {
+            console.error("Error fetching user data:", error.message);
+            setError("Error fetching user data. Please try again later.");
         }
     };
 
@@ -65,7 +56,9 @@ const Login = ({ handleUserRole }) => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <button className="button-login" type="submit">Login</button>
+                    <button className="button-login" type="submit">
+                        Login
+                    </button>
                     {error && <p className="error">{error}</p>}
                 </form>
             </div>

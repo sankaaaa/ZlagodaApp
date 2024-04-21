@@ -5,7 +5,32 @@ const cn = {
     connectionString: 'postgres://postgres.qlyuxputrdmikamgcowo:Prka20152020!@aws-0-us-west-1.pooler.supabase.com:5432/postgres',
 };
 const db = pgp(cn);
-
+//КАСТОМНІ ЗАПИТИ------------------------------------------------------------------------------------------------------
+//1 - повертає всі чеки, айді касирів яких НЕ ДОРІВНЮЮТЬ айді користувача, залогіненого в систему, і загальна сума <=15
+app.get('/cheque/user/:username', (req, res) => {
+    const username = req.params.username;
+    db.any(
+        `SELECT *
+         FROM cheque
+         WHERE id_employee NOT IN (
+             SELECT id_employee
+             FROM employee
+             WHERE id_employee = $1
+         )
+         AND sum_total NOT IN (
+             SELECT sum_total
+             FROM cheque
+             WHERE sum_total >= 15
+         );`,
+        [username]
+    )
+        .then(result1 => {
+            res.json(result1);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+})
 //ПРОДУКТИ-------------------------------------------------------------------------------------------------------------
 app.get('/product', (req, res) => {
     db.any('SELECT * FROM product;')
@@ -71,7 +96,19 @@ app.get('/employee/:id_employee', (req, res) => {
         });
 });
 app.post('/employee', express.json(), (req, res) => {
-    const {id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code} = req.body;
+    const {
+        id_employee,
+        empl_surname,
+        empl_name,
+        empl_role,
+        salary,
+        date_of_birth,
+        date_of_start,
+        phone_number,
+        city,
+        street,
+        zip_code
+    } = req.body;
     db.any('INSERT INTO employee (id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)',
         [id_employee, empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code])
         .then(() => {

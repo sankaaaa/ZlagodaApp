@@ -19,6 +19,32 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
     const [allCashiersSelected, setAllCashiersSelected] = useState(false);
     const [totalUnitsSold, setTotalUnitsSold] = useState(0);
     const [showPopup, setShowPopup] = useState(false);
+    const [employees, setEmployees] = useState([]);
+    const [fetchEmployeesEnabled, setFetchEmployeesEnabled] = useState(false);
+    const userId = localStorage.getItem("userLogin");
+
+    const handleFetchEmployeesToggle = async () => {
+        setFetchEmployeesEnabled(!fetchEmployeesEnabled);
+    };
+
+    useEffect(() => {
+        async function fetchEmployees() {
+            if (fetchEmployeesEnabled) {
+                try {
+                    const response = await fetch(`http://localhost:8081/cheque/user/${userId}`);
+                    if (!response.ok)
+                        throw new Error('Could not fetch employees');
+                    const data = await response.json();
+                    console.log(data)
+                    setEmployees(data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+
+        fetchEmployees();
+    }, [fetchEmployeesEnabled, userId]);
 
     useEffect(() => {
         async function fetchCashiers() {
@@ -80,8 +106,55 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
         };
 
         calculateTotalUnitsSold();
-    }, [filteredCheques, startDate, endDate]);
+    }, [filteredCheques, startDate, endDate, fetchEmployeesEnabled]);
 
+    useEffect(() => {
+        const applyFilters = async () => {
+            let filteredResults = [...cheques];
+
+            if (fetchEmployeesEnabled) {
+                filteredResults = filteredResults.filter(cheque => {
+                    return employees.find(employee => employee.id_employee === cheque.id_employee);
+                });
+
+                filteredResults = filteredResults.filter(cheque => parseFloat(cheque.sum_total) < 15);
+            } else {
+                if (selectedCashier !== '') {
+                    filteredResults = filteredResults.filter(cheque => cheque.id_employee === selectedCashier);
+                }
+
+                if (startDate !== '' && endDate !== '') {
+                    const startDateObj = new Date(startDate);
+                    const endDateObj = new Date(endDate);
+                    filteredResults = filteredResults.filter(cheque => {
+                        const chequeDate = new Date(cheque.print_date);
+                        return chequeDate >= startDateObj && chequeDate <= endDateObj;
+                    });
+                }
+            }
+
+            setFilteredCheques(filteredResults);
+            setFilterApplied(true);
+            setAllCashiersSelected(selectedCashier === '');
+
+            let totalUnits = 0;
+            for (const cheque of filteredResults) {
+                const {data, error} = await supabase
+                    .from('sale')
+                    .select('product_number')
+                    .eq('check_number', cheque.check_number);
+                if (error) {
+                    console.error('Error fetching sales:', error.message);
+                    continue;
+                }
+                totalUnits += data.reduce((acc, curr) => acc + curr.product_number, 0);
+            }
+            setTotalUnitsSold(totalUnits);
+        };
+
+
+        applyFilters();
+    }, [fetchEmployeesEnabled, selectedCashier, startDate, endDate, employees]);
 
     const requestSort = (key) => {
         let direction = 'ascending';
@@ -193,9 +266,19 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
     return (
         <div className="cat-table">
             <div className="top-line">
+                <div className="fetch-employees-toggle">
+                    <label>
+                        <p>View cashiers with sum total less than 15 (not me)</p>
+                        <input
+                            type="checkbox"
+                            checked={fetchEmployeesEnabled}
+                            onChange={handleFetchEmployeesToggle}
+                        />
+                    </label>
+                </div>
                 <div className="create-new-container" style={{display: userRole === "manager" ? "none" : "block"}}>
                     {userRole === "cashier" && (
-                    <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
+                        <Link to="/create-cheque" className="link-create-new">Create New Cheque</Link>
                     )}
                 </div>
                 <div className="filter-container">
@@ -272,9 +355,11 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                         <td>{parseFloat(cheque.vat).toFixed(2)}</td>
                         <td>
                             {userRole === "manager" ? (
-                                <button className="edit-button" onClick={() => handleDelete(cheque.check_number)}>Delete</button>
+                                <button className="edit-button"
+                                        onClick={() => handleDelete(cheque.check_number)}>Delete</button>
                             ) : (
-                                <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>Delete</button>
+                                <button className="edit-button" disabled
+                                        style={{backgroundColor: "#BF863D"}}>Delete</button>
                             )}
                         </td>
                     </tr>

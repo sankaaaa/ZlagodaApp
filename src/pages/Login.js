@@ -21,11 +21,17 @@ const Login = ({handleUserRole}) => {
                 const userRole = data[0].empl_role;
 
                 handleUserRole(userRole);
-                localStorage.setItem("userRole", userRole);
-                localStorage.setItem("userLogin", username);
-                navigate("/products");
-            } else {
-                setError("Invalid username or password.");
+                const storedPasswords = JSON.parse(localStorage.getItem("passwordsData"));
+                const storedPassword = storedPasswords[username];
+
+                if (storedPassword === password) {
+                    localStorage.setItem("userRole", userRole);
+                    localStorage.setItem("userLogin", username);
+
+                    navigate("/products");
+                } else {
+                    setError("Invalid username or password.");
+                }
             }
         } catch (error) {
             console.error("Error fetching user data:", error.message);

@@ -1,10 +1,10 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const EmployeeTable = ({employees, setEmployees}) => {
-    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
+const EmployeeTable = ({ employees, setEmployees }) => {
+    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
     const [searchSurname, setSearchSurname] = useState("");
@@ -36,7 +36,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({key, direction});
+        setSortConfig({ key, direction });
     };
 
     const handleRowClick = (employee) => {
@@ -77,9 +77,12 @@ const EmployeeTable = ({employees, setEmployees}) => {
         setSearchSurname(e.target.value);
     };
 
-    // Функція для форматування заробітної плати з урахуванням двох знаків після коми
+    const handlePrint = () => {
+        window.print();
+    };
+
     const formatSalary = (salary) => {
-        return new Intl.NumberFormat(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(salary);
+        return new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(salary);
     };
 
     return (
@@ -107,6 +110,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                         Show only cashiers
                     </label>
                 </div>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
             {formError && <p className="error">{formError}</p>}
             <table className="employee-table">
@@ -124,7 +128,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                 <tbody>
                 {sortedEmployees.map(employee => (
                     <tr key={employee.id_employee}>
-                        <td style={{cursor: 'pointer', fontWeight: 'bold'}}
+                        <td style={{ cursor: 'pointer', fontWeight: 'bold' }}
                             onClick={() => handleRowClick(employee)}>{employee.id_employee}.
                         </td>
                         <td>{employee.empl_surname}</td>
@@ -142,7 +146,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                                 className="edit-button"
                                 onClick={() => handleDelete(employee.id_employee)}
                                 disabled={employee.id_employee === userLogin}
-                                style={employee.id_employee === userLogin ? {backgroundColor: "#BF863D"} : {}}
+                                style={employee.id_employee === userLogin ? { backgroundColor: "#BF863D" } : {}}
                             >
                                 Delete
                             </button>
@@ -151,7 +155,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                 ))}
                 </tbody>
             </table>
-            {selectedEmployee && <Popup customer={selectedEmployee} onClose={handleClosePopup}/>}
+            {selectedEmployee && <Popup customer={selectedEmployee} onClose={handleClosePopup} />}
         </div>
     );
 }

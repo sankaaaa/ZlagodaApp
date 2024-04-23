@@ -44,7 +44,7 @@ const UpdateEmployee = () => {
             setFormError("Salary cannot be negative!");
             return;
         }
-        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
+        const isPhoneNumberValid = phone_number.length === 13 && /^\+?[0-9]{12}$/.test(phone_number);
 
         if (!isPhoneNumberValid) {
             setFormError("Please enter a valid phone number!");
@@ -129,12 +129,14 @@ const UpdateEmployee = () => {
                     onChange={(e) => setEmplName(e.target.value)}
                 />
                 <label htmlFor="empl_role">Role:</label>
-                <input
-                    type="text"
+                <select
                     id="empl_role"
                     value={empl_role}
                     onChange={(e) => setEmplRole(e.target.value)}
-                />
+                >
+                    <option value="cashier">Cashier</option>
+                    <option value="manager">Manager</option>
+                </select>
                 <label htmlFor="date_of_birth">Date of birth:</label>
                 <input
                     type="date"

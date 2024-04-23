@@ -77,6 +77,11 @@ const EmployeeTable = ({employees, setEmployees}) => {
         setSearchSurname(e.target.value);
     };
 
+    // Функція для форматування заробітної плати з урахуванням двох знаків після коми
+    const formatSalary = (salary) => {
+        return new Intl.NumberFormat(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(salary);
+    };
+
     return (
         <div>
             <div className="top-line">
@@ -125,7 +130,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                         <td>{employee.empl_surname}</td>
                         <td>{employee.empl_name}</td>
                         <td>{employee.empl_role}</td>
-                        <td>{employee.salary}</td>
+                        <td>{formatSalary(employee.salary) + '$'}</td>
                         <td>{employee.phone_number}</td>
                         <td>
                             <button className="edit-button">

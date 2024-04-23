@@ -16,7 +16,6 @@ const CreateEmployee = () => {
     const [street, setStreet] = useState('');
     const [zip_code, setZipCode] = useState('');
     const [password, setPassword] = useState('');
-
     const [formError, setFormError] = useState(null);
 
     const calculateAge = (dateOfBirth) => {
@@ -53,7 +52,6 @@ const CreateEmployee = () => {
             return;
         }
 
-        // Перевірка, чи date_of_start не раніше, ніж 18 років після date_of_birth
         const dateOfBirth = new Date(date_of_birth);
         const minDateOfStart = new Date(dateOfBirth.getFullYear() + 18, dateOfBirth.getMonth(), dateOfBirth.getDate());
         const selectedDateOfStart = new Date(date_of_start);

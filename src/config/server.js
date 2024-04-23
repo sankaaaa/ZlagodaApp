@@ -27,6 +27,24 @@ app.get('/cheque/user/:username', (req, res) => {
             res.status(500).json({error: error.message});
         });
 })
+
+app.get('/employee/workers', (req, res) => {
+    db.any(
+        `SELECT e.city, COUNT(*) AS num_employees
+         FROM employee AS e
+                  JOIN cheque AS c ON e.id_employee = c.id_employee
+         WHERE e.salary >= 1000
+           AND c.sum_total > 1
+         GROUP BY e.city;`
+    )
+        .then(result1 => {
+            res.json(result1);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
 //ПРОДУКТИ-------------------------------------------------------------------------------------------------------------
 app.get('/product', (req, res) => {
     db.any('SELECT * FROM product;')

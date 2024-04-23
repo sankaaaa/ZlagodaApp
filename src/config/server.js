@@ -81,6 +81,30 @@ app.get('/employee', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+
+app.put('/employee/:id_employee', express.json(), (req, res) => {
+    const {
+        empl_surname,
+        empl_name,
+        empl_role,
+        salary,
+        date_of_birth,
+        date_of_start,
+        phone_number,
+        city,
+        street,
+        zip_code
+    } = req.body;
+    const {id_employee} = req.params;
+    db.none('UPDATE employee SET empl_surname = $1, empl_name = $2, empl_role = $3, salary = $4, date_of_birth = $5, date_of_start = $6, phone_number = $7, city = $8, street = $9, zip_code = $10 WHERE id_employee = $11',
+        [empl_surname, empl_name, empl_role, salary, date_of_birth, date_of_start, phone_number, city, street, zip_code, id_employee])
+        .then(() => {
+            res.json({message: 'Employee updated successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.get('/employee/:id_employee', (req, res) => {
     const categoryNumber = req.params.id_employee;
     db.any('SELECT * FROM employee WHERE id_employee = $1;', [categoryNumber])

@@ -1,6 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
-import supabase from "../config/supabaseClient";
 
 const UpdateEmployee = () => {
     const {id_employee} = useParams();
@@ -52,9 +51,12 @@ const UpdateEmployee = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('employee')
-            .update({
+        const response = await fetch(`http://localhost:8081/employee/${id_employee}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 empl_surname,
                 empl_name,
                 empl_role,
@@ -66,28 +68,20 @@ const UpdateEmployee = () => {
                 street,
                 zip_code
             })
-            .eq('id_employee', id_employee);
+        });
 
-        if (error) {
-            console.log(error);
-            setFormError('Please fill in all fields correctly!');
-        } else {
-            setFormError(null);
+        if (response.ok) {
             navigate('/employees');
+        } else {
+            setFormError('Error updating employee');
         }
     };
 
     useEffect(() => {
         const fetchEmployee = async () => {
-            const {data, error} = await supabase
-                .from('employee')
-                .select()
-                .eq('id_employee', id_employee)
-                .single();
-
-            if (error) {
-                navigate('/employee', {replace: true});
-            } else {
+            const response = await fetch(`http://localhost:8081/employee/${id_employee}`);
+            if (response.ok) {
+                const [data] = await response.json();
                 setEmplSurname(data.empl_surname);
                 setEmplName(data.empl_name);
                 setEmplRole(data.empl_role);
@@ -98,6 +92,8 @@ const UpdateEmployee = () => {
                 setCity(data.city);
                 setStreet(data.street);
                 setZipCode(data.zip_code);
+            } else {
+                navigate('/employees');
             }
         };
         fetchEmployee();

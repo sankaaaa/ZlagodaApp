@@ -21,7 +21,7 @@ const Login = ({handleUserRole}) => {
                 const userRole = data[0].empl_role;
 
                 handleUserRole(userRole);
-                const storedPasswords = JSON.parse(localStorage.getItem("passwordsData"));
+                const storedPasswords = JSON.parse(localStorage.getItem("passwordData"));
                 const storedPassword = storedPasswords[username];
 
                 if (storedPassword === password) {

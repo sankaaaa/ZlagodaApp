@@ -42,11 +42,11 @@ const MyPage = () => {
         }
 
         try {
-            const currentPasswords = JSON.parse(localStorage.getItem("passwordsData")) || {};
+            const currentPasswords = JSON.parse(localStorage.getItem("passwordData")) || {};
 
             currentPasswords[employeeData.id_employee] = newPassword;
 
-            localStorage.setItem("passwordsData", JSON.stringify(currentPasswords));
+            localStorage.setItem("passwordData", JSON.stringify(currentPasswords));
 
             setSuccessMessage("Password updated successfully.");
         } catch (error) {

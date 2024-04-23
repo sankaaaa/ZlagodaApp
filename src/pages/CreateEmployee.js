@@ -7,7 +7,7 @@ const CreateEmployee = () => {
     const [id_employee, setIdEmployee] = useState('');
     const [empl_surname, setEmplSurname] = useState('');
     const [empl_name, setEmplName] = useState('');
-    const [empl_role, setEmplRole] = useState('');
+    const [empl_role, setEmplRole] = useState('cashier');
     const [date_of_birth, setDateOfBirth] = useState('');
     const [date_of_start, setDateOfStart] = useState('');
     const [salary, setSalary] = useState('');
@@ -39,21 +39,31 @@ const CreateEmployee = () => {
             return;
         }
 
-        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
-        const isSalaryValid = salary >= 0;
+        const isPhoneNumberValid = phone_number.length === 13 && /^\+?[0-9]{12}$/.test(phone_number);
 
         if (!isPhoneNumberValid) {
-            setFormError("Invalid phone number!");
+            setFormError("Phone number must be exactly 13 characters!");
             return;
         }
+
+        const isSalaryValid = salary > 0;
 
         if (!isSalaryValid) {
             setFormError("Invalid salary!");
             return;
         }
 
-        if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
-            || !date_of_start || !salary || !phone_number || !city || !street || !zip_code || !password) {
+        // Перевірка, чи date_of_start не раніше, ніж 18 років після date_of_birth
+        const dateOfBirth = new Date(date_of_birth);
+        const minDateOfStart = new Date(dateOfBirth.getFullYear() + 18, dateOfBirth.getMonth(), dateOfBirth.getDate());
+        const selectedDateOfStart = new Date(date_of_start);
+        if (selectedDateOfStart < minDateOfStart) {
+            setFormError("Date of start must be at least 18 years after the date of birth!");
+            return;
+        }
+
+        if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth ||
+            !date_of_start || !salary || !city || !street || !zip_code || !password) {
             setFormError("Please set all form fields correctly!");
             return;
         }
@@ -130,12 +140,14 @@ const CreateEmployee = () => {
                     onChange={(e) => setEmplName(e.target.value)}
                 />
                 <label htmlFor="empl_role">Role:</label>
-                <input
-                    type="text"
+                <select
                     id="empl_role"
                     value={empl_role}
                     onChange={(e) => setEmplRole(e.target.value)}
-                />
+                >
+                    <option value="cashier">Cashier</option>
+                    <option value="manager">Manager</option>
+                </select>
                 <label htmlFor="date_of_birth">Date of birth:</label>
                 <input
                     type="date"

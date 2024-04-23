@@ -156,3 +156,8 @@ input#total_sum {
 .success {
     color: green;
 }
+
+#empl_role {
+    height: 40px;
+    font-family: 'Poppins';
+}

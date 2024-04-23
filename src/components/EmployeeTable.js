@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
@@ -9,6 +9,12 @@ const EmployeeTable = ({employees, setEmployees}) => {
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
     const [searchSurname, setSearchSurname] = useState("");
     const [formError, setFormError] = useState(null);
+    const [userLogin, setUserLogin] = useState(null);
+
+    useEffect(() => {
+        const username = localStorage.getItem("userLogin");
+        setUserLogin(username);
+    }, []);
 
     const sortedEmployees = employees
         .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
@@ -127,7 +133,13 @@ const EmployeeTable = ({employees, setEmployees}) => {
                                     Edit
                                 </Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(employee.id_employee)}>Delete
+                            <button
+                                className="edit-button"
+                                onClick={() => handleDelete(employee.id_employee)}
+                                disabled={employee.id_employee === userLogin}
+                                style={employee.id_employee === userLogin ? {backgroundColor: "#BF863D"} : {}}
+                            >
+                                Delete
                             </button>
                         </td>
                     </tr>

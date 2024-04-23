@@ -1,13 +1,14 @@
-import { useState } from "react";
+import {useState} from "react";
 import Popup from "./EmployeePopup";
 import '../styles/employee-table.css';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
-const EmployeeTable = ({ employees, setEmployees }) => {
-    const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+const EmployeeTable = ({employees, setEmployees}) => {
+    const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedEmployee, setSelectedEmployee] = useState(null);
     const [showOnlyCashiers, setShowOnlyCashiers] = useState(false);
     const [searchSurname, setSearchSurname] = useState("");
+    const [formError, setFormError] = useState(null);
 
     const sortedEmployees = employees
         .filter(employee => !showOnlyCashiers || employee.empl_role === 'cashier')
@@ -29,7 +30,7 @@ const EmployeeTable = ({ employees, setEmployees }) => {
         if (sortConfig.key === key && sortConfig.direction === 'ascending') {
             direction = 'descending';
         }
-        setSortConfig({ key, direction });
+        setSortConfig({key, direction});
     };
 
     const handleRowClick = (employee) => {
@@ -48,12 +49,17 @@ const EmployeeTable = ({ employees, setEmployees }) => {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Could not delete employee');
+                throw new Error('Could not delete employee due to integration reasons');
             }
             const updatedEmpl = employees.filter(employee => employee.id_employee !== emplId);
             setEmployees(updatedEmpl);
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("Employee cannot be deleted due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
     };
 
@@ -91,6 +97,7 @@ const EmployeeTable = ({ employees, setEmployees }) => {
                     </label>
                 </div>
             </div>
+            {formError && <p className="error">{formError}</p>}
             <table className="employee-table">
                 <thead>
                 <tr>
@@ -106,7 +113,7 @@ const EmployeeTable = ({ employees, setEmployees }) => {
                 <tbody>
                 {sortedEmployees.map(employee => (
                     <tr key={employee.id_employee}>
-                        <td style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                        <td style={{cursor: 'pointer', fontWeight: 'bold'}}
                             onClick={() => handleRowClick(employee)}>{employee.id_employee}.
                         </td>
                         <td>{employee.empl_surname}</td>
@@ -120,13 +127,14 @@ const EmployeeTable = ({ employees, setEmployees }) => {
                                     Edit
                                 </Link>
                             </button>
-                            <button className="edit-button" onClick={() => handleDelete(employee.id_employee)}>Delete</button>
+                            <button className="edit-button" onClick={() => handleDelete(employee.id_employee)}>Delete
+                            </button>
                         </td>
                     </tr>
                 ))}
                 </tbody>
             </table>
-            {selectedEmployee && <Popup customer={selectedEmployee} onClose={handleClosePopup} />}
+            {selectedEmployee && <Popup customer={selectedEmployee} onClose={handleClosePopup}/>}
         </div>
     );
 }

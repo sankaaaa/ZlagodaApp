@@ -12,16 +12,12 @@ app.get('/cheque/user/:username', (req, res) => {
     db.any(
         `SELECT *
          FROM cheque
-         WHERE id_employee NOT IN (
-             SELECT id_employee
-             FROM employee
-             WHERE id_employee = $1
-         )
-         AND sum_total NOT IN (
-             SELECT sum_total
-             FROM cheque
-             WHERE sum_total >= 15
-         );`,
+         WHERE id_employee NOT IN (SELECT id_employee
+                                   FROM employee
+                                   WHERE id_employee = $1)
+           AND sum_total NOT IN (SELECT sum_total
+                                 FROM cheque
+                                 WHERE sum_total >= 15);`,
         [username]
     )
         .then(result1 => {
@@ -118,11 +114,71 @@ app.post('/employee', express.json(), (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+
 app.delete('/employee/:id', (req, res) => {
     const emplID = req.params.id;
     db.none('DELETE FROM employee WHERE id_employee = $1', emplID)
         .then(() => {
             res.json({message: 'Employee deleted successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/employee/search/:surname', (req, res) => {
+    const {surname} = req.params;
+    db.any('SELECT * FROM employee WHERE LOWER(empl_surname) = LOWER($1);', [surname])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.get('/employee/sort/id', (req, res) => {
+    db.any('SELECT * FROM employee ORDER BY id_employee;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/employee/sort/name', (req, res) => {
+    db.any('SELECT * FROM employee ORDER BY empl_name;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.get('/employee/sort/surname', (req, res) => {
+    db.any('SELECT * FROM employee ORDER BY empl_surname;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.get('/employee/sort/city', (req, res) => {
+    db.any('SELECT * FROM employee ORDER BY city;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+
+app.get('/employee/sort/salary', (req, res) => {
+    db.any('SELECT * FROM employee ORDER BY salary;')
+        .then(result => {
+            res.json(result);
         })
         .catch(error => {
             res.status(500).json({error: error.message});

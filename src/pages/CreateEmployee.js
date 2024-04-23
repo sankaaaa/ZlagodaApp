@@ -1,6 +1,5 @@
-import {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import supabase from "../config/supabaseClient";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../styles/create-form.css';
 
 const CreateEmployee = () => {
@@ -29,6 +28,7 @@ const CreateEmployee = () => {
         }
         return age;
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -57,31 +57,38 @@ const CreateEmployee = () => {
             return;
         }
 
-        const {data: existingEmployees, error: existingEmployeeError} = await supabase
-            .from('employee')
-            .select('id_employee')
-            .eq('id_employee', id_employee);
-
-        if (existingEmployeeError) {
-            console.error(existingEmployeeError.message);
+        const existingEmployeesResponse = await fetch(`http://localhost:8081/employee/${id_employee}`);
+        if (!existingEmployeesResponse.ok) {
+            console.error("Error checking for existing employee");
             setFormError("An error occurred while checking for existing employee.");
             return;
         }
 
-        if (existingEmployees.length > 0) {
+        const existingEmployee = await existingEmployeesResponse.json();
+        if (existingEmployee.length > 0) {
             setFormError("Employee with the same ID already exists in the table!");
             return;
         }
 
         try {
-            const requestOptions = {
+            const addResponse = await fetch('http://localhost:8081/employee', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({id_employee, empl_surname, empl_name, empl_role, date_of_birth, date_of_start,
-                    salary, phone_number, city, street, zip_code})
-            };
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_employee,
+                    empl_surname,
+                    empl_name,
+                    empl_role,
+                    date_of_birth,
+                    date_of_start,
+                    salary,
+                    phone_number,
+                    city,
+                    street,
+                    zip_code
+                })
+            });
 
-            const addResponse = await fetch('http://localhost:8081/employee', requestOptions);
             if (!addResponse.ok) {
                 throw new Error('Error adding employee');
             }

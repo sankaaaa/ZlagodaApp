@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import EmployeeTable from "../components/EmployeeTable";
 import '../styles/links-stuff.css';
+
 const Employees = () => {
     const [fetchError, setFetchError] = useState(null);
     const [employees, setEmployees] = useState(null);

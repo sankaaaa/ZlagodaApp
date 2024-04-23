@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
 import '../styles/create-form.css';
 
 const CreateEmployee = () => {
@@ -15,6 +15,7 @@ const CreateEmployee = () => {
     const [city, setCity] = useState('');
     const [street, setStreet] = useState('');
     const [zip_code, setZipCode] = useState('');
+    const [password, setPassword] = useState('');
 
     const [formError, setFormError] = useState(null);
 
@@ -52,7 +53,7 @@ const CreateEmployee = () => {
         }
 
         if (!id_employee || !empl_surname || !empl_name || !empl_role || !date_of_birth
-            || !date_of_start || !salary || !phone_number || !city || !street || !zip_code) {
+            || !date_of_start || !salary || !phone_number || !city || !street || !zip_code || !password) {
             setFormError("Please set all form fields correctly!");
             return;
         }
@@ -73,7 +74,7 @@ const CreateEmployee = () => {
         try {
             const addResponse = await fetch('http://localhost:8081/employee', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     id_employee,
                     empl_surname,
@@ -92,6 +93,10 @@ const CreateEmployee = () => {
             if (!addResponse.ok) {
                 throw new Error('Error adding employee');
             }
+
+            const currentPasswords = JSON.parse(localStorage.getItem("passwordData")) || {};
+            currentPasswords[id_employee] = password;
+            localStorage.setItem("passwordData", JSON.stringify(currentPasswords));
 
             navigate('/employees');
         } catch (error) {
@@ -180,6 +185,13 @@ const CreateEmployee = () => {
                     value={zip_code}
                     onChange={(e) => setZipCode(e.target.value)}
                 />
+                <label htmlFor="password">Password:</label>
+                <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
                 <button>Add Employee</button>
                 {formError && <p className="error">{formError}</p>}
             </form>
@@ -187,4 +199,4 @@ const CreateEmployee = () => {
     )
 }
 
-export default CreateEmployee
+export default CreateEmployee;

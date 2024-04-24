@@ -149,6 +149,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                         <tr>
                             <th>City</th>
                             <th>Number of Employees</th>
+                            <th>Employee IDs</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -156,6 +157,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
                             <tr key={row.city}>
                                 <td>{row.city}</td>
                                 <td>{row.num_employees}</td>
+                                <td>{row.employee_ids}</td>
                             </tr>
                         ))}
                         </tbody>

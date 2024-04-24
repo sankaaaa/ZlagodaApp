@@ -1,13 +1,13 @@
 import '../styles/employee-popup.css';
 
-const Popup = ({ customer, onClose }) => {
+const Popup = ({customer, onClose}) => {
     const formatDate = (date) => {
-        const options = { year: 'numeric', month: 'numeric', day: 'numeric' };
+        const options = {year: 'numeric', month: 'numeric', day: 'numeric'};
         return new Date(date).toLocaleDateString(undefined, options);
     };
 
     const formatSalary = (salary) => {
-        return new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(salary);
+        return new Intl.NumberFormat(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}).format(salary);
     };
 
     const handlePrint = () => {
@@ -26,7 +26,7 @@ const Popup = ({ customer, onClose }) => {
                 <p><strong>Role:</strong> {customer.empl_role}</p>
                 <p><strong>Date of birth:</strong> {formatDate(customer.date_of_birth)}</p>
                 <p><strong>Date of start:</strong> {formatDate(customer.date_of_start)}</p>
-                <p><strong>Salary:</strong> {formatSalary(customer.salary) +'$'}</p>
+                <p><strong>Salary:</strong> {formatSalary(customer.salary) + '$'}</p>
                 <p><strong>Phone Number:</strong> {customer.phone_number}</p>
                 <p><strong>City:</strong> {customer.city}</p>
                 <p><strong>Street:</strong> {customer.street}</p>

@@ -27,10 +27,12 @@ app.get('/cheque/user/:username', (req, res) => {
             res.status(500).json({error: error.message});
         });
 })
-
+//повертає працівників з зарплатою 1000+ та проданою вартістю 1+, згрупованих по містам (+ перелік їх айді)
 app.get('/employee/workers', (req, res) => {
     db.any(
-        `SELECT e.city, COUNT(*) AS num_employees
+        `SELECT e.city,
+                COUNT(DISTINCT e.id_employee) AS num_employees,
+                STRING_AGG(DISTINCT e.id_employee, ',') AS employee_ids
          FROM employee AS e
                   JOIN cheque AS c ON e.id_employee = c.id_employee
          WHERE e.salary >= 1000

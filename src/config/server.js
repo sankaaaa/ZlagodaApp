@@ -360,6 +360,43 @@ app.get('/customer_card', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/customer_card/:card_number', (req, res) => {
+    const categoryNumber = req.params.card_number;
+    db.any('SELECT * FROM customer_card WHERE card_number = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.post('/customer_card', express.json(), (req, res) => {
+    const {
+        card_number, cust_surname, cust_name, phone_number, city, street, zip_code, percent
+    } = req.body;
+    db.any('INSERT INTO customer_card (card_number, cust_surname, cust_name, phone_number, city, street, zip_code, percent) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        [card_number, cust_surname, cust_name, phone_number, city, street, zip_code, percent])
+        .then(() => {
+            res.json({message: 'Customer added successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.put('/customer_card/:card_number', express.json(), (req, res) => {
+    const {
+        cust_surname, cust_name, phone_number, city, street, zip_code, percent
+    } = req.body;
+    const {card_number} = req.params;
+    db.none('UPDATE customer_card SET cust_surname = $1, cust_name = $2, phone_number = $3, city = $4, street = $5, zip_code = $6, percent = $7 WHERE card_number = $8',
+        [cust_surname, cust_name, phone_number, city, street, zip_code, percent, card_number])
+        .then(() => {
+            res.json({message: 'Customer updated successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.delete('/customer_card/:id', (req, res) => {
     const catNum = req.params.id;
     db.none('DELETE FROM customer_card WHERE card_number = $1', catNum)

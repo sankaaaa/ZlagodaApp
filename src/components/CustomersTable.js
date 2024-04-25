@@ -7,6 +7,7 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
     const [selectedCustomers, setSelectedCustomers] = useState(null);
     const [searchSurname, setSearchSurname] = useState("");
+    const [formError, setFormError] = useState(null);
 
     const sortedEmployees = customers
         .filter(customer => searchSurname === "" || customer.cust_surname.toLowerCase().includes(searchSurname.toLowerCase()))
@@ -47,17 +48,26 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Could not delete product');
+                throw new Error('Customer cannot be deleted due to integration reasons');
             }
             const updatedProducts = customers.filter(customer => customer.card_number !== customerId);
             setCustomers(updatedProducts);
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("Customer cannot be deleted due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
     };
 
     const handleSearchChange = (e) => {
         setSearchSurname(e.target.value);
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -75,7 +85,9 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
                         onChange={handleSearchChange}
                     />
                 </div>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
+            {formError && <p className="error">{formError}</p>}
             <table className="employee-table">
                 <thead>
                 <tr>
@@ -104,7 +116,7 @@ const CustomersTable = ({customers, setCustomers, userRole}) => {
                                 </Link>
                             </button>
                             {userRole !== "manager" ? (
-                                <button className="edit-button" disabled style={{ backgroundColor: "#BF863D" }}>
+                                <button className="edit-button" disabled style={{backgroundColor: "#BF863D"}}>
                                     Delete
                                 </button>
                             ) : (

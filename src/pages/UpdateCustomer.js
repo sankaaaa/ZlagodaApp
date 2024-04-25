@@ -1,7 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
-import supabase from "../config/supabaseClient";
-
 const UpdateCustomer = () => {
     const {card_number} = useParams();
     const navigate = useNavigate();
@@ -30,39 +28,28 @@ const UpdateCustomer = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('customer_card')
-            .update({
-                cust_surname,
-                cust_name,
-                phone_number,
-                city,
-                street,
-                zip_code,
-                percent
+        const response = await fetch(`http://localhost:8081/customer_card/${card_number}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                cust_surname, cust_name, phone_number, city, street, zip_code, percent
             })
-            .eq('card_number', card_number);
+        });
 
-        if (error) {
-            console.log(error);
-            setFormError('Please fill in all fields correctly!');
-        } else {
-            setFormError(null);
+        if (response.ok) {
             navigate('/customers');
+        } else {
+            setFormError('Error updating customer');
         }
     };
 
     useEffect(() => {
         const fetchCustomer = async () => {
-            const {data, error} = await supabase
-                .from('customer_card')
-                .select()
-                .eq('card_number', card_number)
-                .single();
-
-            if (error) {
-                navigate('/customer_card', {replace: true});
-            } else {
+            const response = await fetch(`http://localhost:8081/customer_card/${card_number}`);
+            if (response.ok) {
+                const [data] = await response.json();
                 setCustSurname(data.cust_surname);
                 setCustName(data.cust_name);
                 setPhoneNumber(data.phone_number);
@@ -70,6 +57,8 @@ const UpdateCustomer = () => {
                 setStreet(data.street);
                 setZipCode(data.zip_code);
                 setPercent(data.percent);
+            } else {
+                navigate('/customers');
             }
         };
         fetchCustomer();

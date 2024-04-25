@@ -1,6 +1,5 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
 const CreateCustomer = () => {
@@ -19,10 +18,10 @@ const CreateCustomer = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
+        const isPhoneNumberValid = phone_number.length === 13 && /^\+?[0-9]{12}$/.test(phone_number);
 
         if (!isPhoneNumberValid) {
-            setFormError("Invalid phone number!");
+            setFormError("Phone number must be exactly 13 characters!");
             return;
         }
 
@@ -31,35 +30,44 @@ const CreateCustomer = () => {
             return;
         }
 
-        const {data: existingCustomers, error: existingCustomerError} = await supabase
-            .from('customer_card')
-            .select('card_number')
-            .eq('card_number', card_number);
-
-        if (existingCustomerError) {
-            console.error(existingCustomerError.message);
+        const existingCustomersResponse = await fetch(`http://localhost:8081/customer_card/${card_number}`);
+        if (!existingCustomersResponse.ok) {
+            console.error("Error checking for existing customer");
             setFormError("An error occurred while checking for existing customer.");
             return;
         }
 
+        const existingCustomers = await existingCustomersResponse.json();
         if (existingCustomers.length > 0) {
             setFormError("Customer with the same card number already exists in the table!");
             return;
         }
 
-        const {data, error} = await supabase
-            .from('customer_card')
-            .insert([{
-                card_number, cust_surname, cust_name, phone_number, percent, city, street, zip_code
-            }]);
+        try {
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    card_number,
+                    cust_surname,
+                    cust_name,
+                    phone_number,
+                    city,
+                    street,
+                    zip_code,
+                    percent
+                })
+            };
 
-        if (error) {
-            console.log(error);
-            setFormError("Please set all form fields correctly!");
-        } else {
-            console.log(data);
-            setFormError(null);
+            const addResponse = await fetch('http://localhost:8081/customer_card', requestOptions);
+            if (!addResponse.ok) {
+                throw new Error('Error adding customer');
+            }
+
             navigate('/customers');
+        } catch (error) {
+            console.error(error);
+            setFormError("Error adding customer");
         }
     }
 
@@ -120,7 +128,12 @@ const CreateCustomer = () => {
                     type="number"
                     id="percent"
                     value={percent}
-                    onChange={(e) => setPercent(e.target.value)}
+                    onChange={(e) => {
+                        const newPercent = e.target.value <= 99 ? e.target.value : 99;
+                        setPercent(newPercent);
+                    }}
+                    min={0}
+                    max={99}
                 />
                 <button>Add Customer</button>
                 {formError && <p className="error">{formError}</p>}

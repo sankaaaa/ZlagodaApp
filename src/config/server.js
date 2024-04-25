@@ -67,6 +67,16 @@ app.post('/product', express.json(), (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/product/:id_product', (req, res) => {
+    const categoryNumber = req.params.id_product;
+    db.any('SELECT * FROM product WHERE id_product = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.put('/products/:id', (req, res) => {
     const productNumber = req.params.id;
     const {product_id, product_name, category_number, characteristics} = req.body;
@@ -79,6 +89,20 @@ app.put('/products/:id', (req, res) => {
         .catch(error => {
             res.status(500).json({error: error.message});
         })
+});
+app.get('/product/cat/:id', (req, res) => {
+    const categoryId = req.params.id;
+    db.oneOrNone('SELECT category_name FROM category WHERE category_number = $1;', categoryId)
+        .then(result => {
+            if (result) {
+                res.json(result);
+            } else {
+                res.status(404).json({message: 'Category not found'});
+            }
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
 });
 app.delete('/product/:id', (req, res) => {
     const productId = req.params.id;
@@ -232,6 +256,15 @@ app.get('/employee/sort/salary', (req, res) => {
 //КАТЕГОРІЇ------------------------------------------------------------------------------------------------------------
 app.get('/category', (req, res) => {
     db.any('SELECT * FROM category;')
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/category/a', (req, res) => {
+    db.any('SELECT category_number, category_name FROM category ORDER BY category_number;')
         .then(result => {
             res.json(result);
         })

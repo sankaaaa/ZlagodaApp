@@ -157,7 +157,10 @@ input#total_sum {
     color: green;
 }
 
-#empl_role {
+#empl_role,
+#category_number {
     height: 40px;
     font-family: 'Poppins';
+    max-width: 300px;
 }
+

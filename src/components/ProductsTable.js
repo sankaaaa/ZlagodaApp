@@ -1,17 +1,39 @@
-import {useState} from "react";
-import "../styles/employee-table.css";
+import {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
+import "../styles/employee-table.css";
 
 const ProductsTable = ({products, setProducts, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: "ascending"});
-    const [setSelectedProduct] = useState(null);
     const [categoryFilter, setCategoryFilter] = useState("");
     const [nameFilter, setNameFilter] = useState("");
+    const [formError, setFormError] = useState(null);
+    const [categories, setCategories] = useState({});
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const categoryRequests = products.map(product => fetch(`http://localhost:8081/product/cat/${product.category_number}`));
+                const categoryResponses = await Promise.all(categoryRequests);
+                const categoryData = await Promise.all(categoryResponses.map(response => response.json()));
+                const categoriesMap = {};
+                categoryData.forEach((category, index) => {
+                    categoriesMap[products[index].category_number] = `${category.category_name}(${products[index].category_number})`;
+                });
+                setCategories(categoriesMap);
+            } catch (error) {
+                console.error(error);
+                setFormError("Could not fetch categories");
+            }
+        };
+        fetchCategories();
+    }, [products]);
 
     const sortedProducts = products
         .filter(
             (product) =>
-                (!categoryFilter || parseInt(product.category_number) === parseInt(categoryFilter)) &&
+                (!categoryFilter ||
+                    parseInt(product.category_number) === parseInt(categoryFilter) || // Фільтрація за ідентифікатором
+                    categories[product.category_number]?.toLowerCase().includes(categoryFilter.toLowerCase())) && // Фільтрація за назвою категорії
                 (!nameFilter || product.product_name.toLowerCase().includes(nameFilter.toLowerCase()))
         )
         .sort((a, b) => {
@@ -34,10 +56,6 @@ const ProductsTable = ({products, setProducts, userRole}) => {
         setSortConfig({key, direction});
     };
 
-    const handleRowClick = (product) => {
-        setSelectedProduct(product);
-    };
-
     const handleDelete = async (productId) => {
         const confirmed = window.confirm("Are you sure you want to delete this product?");
         if (!confirmed) return;
@@ -46,12 +64,17 @@ const ProductsTable = ({products, setProducts, userRole}) => {
                 method: "DELETE",
             });
             if (!response.ok) {
-                throw new Error("Could not delete product");
+                throw new Error("Could not delete product due to integration reasons");
             }
             const updatedProducts = products.filter((product) => product.id_product !== productId);
             setProducts(updatedProducts);
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("Could not delete product due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
     };
 
@@ -61,6 +84,10 @@ const ProductsTable = ({products, setProducts, userRole}) => {
 
     const handleNameFilterChange = (e) => {
         setNameFilter(e.target.value);
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -73,7 +100,6 @@ const ProductsTable = ({products, setProducts, userRole}) => {
                         </Link>
                     )}
                 </div>
-
                 <div>
                     <label htmlFor="categoryFilter">Category Filter:</label>
                     <input type="text" id="categoryFilter" value={categoryFilter}
@@ -83,7 +109,9 @@ const ProductsTable = ({products, setProducts, userRole}) => {
                     <label htmlFor="nameFilter">Name Filter:</label>
                     <input type="text" id="nameFilter" value={nameFilter} onChange={handleNameFilterChange}/>
                 </div>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
+            {formError && <p className="error">{formError}</p>}
             <table className="product-table">
                 <thead>
                 <tr>
@@ -97,10 +125,10 @@ const ProductsTable = ({products, setProducts, userRole}) => {
                 <tbody>
                 {sortedProducts.map((product) => (
                     <tr key={product.id_product}>
-                        <td style={{fontWeight: "bold"}} onClick={() => handleRowClick(product)}>
+                        <td style={{fontWeight: "bold"}}>
                             {product.id_product}.
                         </td>
-                        <td>{product.category_number}</td>
+                        <td>{categories[product.category_number] || 'Loading...'}</td>
                         <td>{product.product_name}</td>
                         <td>{product.characteristics}</td>
                         {userRole === "manager" ? (

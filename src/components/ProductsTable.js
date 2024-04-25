@@ -32,8 +32,8 @@ const ProductsTable = ({products, setProducts, userRole}) => {
         .filter(
             (product) =>
                 (!categoryFilter ||
-                    parseInt(product.category_number) === parseInt(categoryFilter) || // Фільтрація за ідентифікатором
-                    categories[product.category_number]?.toLowerCase().includes(categoryFilter.toLowerCase())) && // Фільтрація за назвою категорії
+                    parseInt(product.category_number) === parseInt(categoryFilter) ||
+                    categories[product.category_number]?.toLowerCase().includes(categoryFilter.toLowerCase())) &&
                 (!nameFilter || product.product_name.toLowerCase().includes(nameFilter.toLowerCase()))
         )
         .sort((a, b) => {

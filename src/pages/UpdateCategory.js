@@ -1,6 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
-import supabase from "../config/supabaseClient";
 
 const UpdateCategory = () => {
     const {category_number} = useParams();
@@ -16,34 +15,30 @@ const UpdateCategory = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('category')
-            .update({
+        const response = await fetch(`http://localhost:8081/category/${category_number}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 category_name
             })
-            .eq('category_number', category_number);
-
-        if (error) {
-            console.log(error);
-            setFormError('Please fill in all fields correctly!');
-        } else {
-            setFormError(null);
+        });
+        if (response.ok) {
             navigate('/categories');
+        } else {
+            setFormError('Error updating category');
         }
     };
 
     useEffect(() => {
         const fetchCats = async () => {
-            const {data, error} = await supabase
-                .from('category')
-                .select()
-                .eq('category_number', category_number)
-                .single();
-
-            if (error) {
-                navigate('/category', {replace: true});
-            } else {
+            const response = await fetch(`http://localhost:8081/category/${category_number}`);
+            if (response.ok) {
+                const [data] = await response.json();
                 setCatName(data.category_name);
+            } else {
+                navigate('/category');
             }
         };
         fetchCats();

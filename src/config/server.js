@@ -31,7 +31,7 @@ app.get('/cheque/user/:username', (req, res) => {
 app.get('/employee/workers', (req, res) => {
     db.any(
         `SELECT e.city,
-                COUNT(DISTINCT e.id_employee) AS num_employees,
+                COUNT(DISTINCT e.id_employee)           AS num_employees,
                 STRING_AGG(DISTINCT e.id_employee, ',') AS employee_ids
          FROM employee AS e
                   JOIN cheque AS c ON e.id_employee = c.id_employee
@@ -261,6 +261,60 @@ app.get('/category', (req, res) => {
     db.any('SELECT * FROM category;')
         .then(result => {
             res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/category/:category_number', (req, res) => {
+    const categoryNumber = req.params.category_number;
+    db.any('SELECT * FROM category WHERE category_number = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/category/a/:category_number', (req, res) => {
+    const categoryNumber = req.params.category_number;
+    db.any('SELECT * FROM product WHERE category_number = $1;', [categoryNumber])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/category/name/:category_name', (req, res) => {
+    const categoryName = req.params.category_name;
+    db.any('SELECT category_name FROM category WHERE category_name = $1;', [categoryName])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.post('/category', express.json(), (req, res) => {
+    const {category_number, category_name} = req.body;
+    db.any('INSERT INTO category (category_number, category_name) VALUES ($1, $2)', [category_number, category_name])
+        .then(() => {
+            res.json({message: 'Category added successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.put('/category/:category_number', express.json(), (req, res) => {
+    const {
+        category_name
+    } = req.body;
+    const {category_number} = req.params;
+    db.none('UPDATE category SET category_name = $1 WHERE category_number = $2',
+        [category_name, category_number])
+        .then(() => {
+            res.json({message: 'Category updated successfully'});
         })
         .catch(error => {
             res.status(500).json({error: error.message});

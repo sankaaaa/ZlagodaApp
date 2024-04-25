@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import '../styles/employee-table.css';
 import {Link} from "react-router-dom";
 
@@ -7,6 +7,7 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [productList, setProductList] = useState([]);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [formError, setFormError] = useState(null);
 
     const sortedCategories = categories.sort((a, b) => {
         if (sortConfig.key !== null) {
@@ -36,7 +37,7 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
 
     const fetchCategories = async (categoryNumber) => {
         try {
-            const response = await fetch(`http://localhost:8081/category/${categoryNumber}`);
+            const response = await fetch(`http://localhost:8081/category/a/${categoryNumber}`);
             if (!response.ok)
                 throw new Error('Could not fetch categories');
             const data = await response.json();
@@ -55,13 +56,22 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Could not delete category');
+                throw new Error('Could not delete category due to integration reasons');
             }
             const updatedCats = categories.filter(category => category.category_number !== catNumber);
             setCategories(updatedCats);
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("Could not delete category due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -85,7 +95,9 @@ const CategoriesTable = ({categories, setCategories, userRole}) => {
                         <Link to="/create-category" className="link-create-new">Create New Category</Link>
                     )}
                 </div>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
+            {formError && <p className="error">{formError}</p>}
             <table className="category-table">
                 <thead>
                 <tr>

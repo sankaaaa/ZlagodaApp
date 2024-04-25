@@ -1,14 +1,13 @@
 import {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
 const CreateCategory = () => {
     const navigate = useNavigate();
     const [category_number, setCategoryNumber] = useState('');
     const [category_name, setCatName] = useState('');
-
     const [formError, setFormError] = useState(null);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -22,45 +21,42 @@ const CreateCategory = () => {
             return;
         }
 
-        const { data: existingCat, error: existingCatError } = await supabase
-            .from('category')
-            .select('category_number')
-            .eq('category_number', category_number);
+        try {
+            const categoryExistsResponse = await fetch(`http://localhost:8081/category/${category_number}`);
+            if (!categoryExistsResponse.ok) {
+                throw new Error("Error checking if category exists");
+            }
+            const categoryExistsData = await categoryExistsResponse.json();
+            if (categoryExistsData.length > 0) {
+                setFormError("Category with the same ID already exists in the table!");
+                return;
+            }
 
-        const { data: existingCatName, error: existingCatNameError } = await supabase
-            .from('category')
-            .select('category_name')
-            .eq('category_name', category_name);
+            const categoryNameExistsResponse = await fetch(`http://localhost:8081/category/name/${category_name}`);
+            if (!categoryNameExistsResponse.ok) {
+                throw new Error("Error checking if category name exists");
+            }
+            const categoryNameExistsData = await categoryNameExistsResponse.json();
+            if (categoryNameExistsData.length > 0) {
+                setFormError("Category with the same name already exists in the table!");
+                return;
+            }
 
+            const requestOptions = {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({category_number, category_name})
+            };
 
-        if (existingCatError || existingCatNameError) {
-            console.error(existingCatError.message);
-            setFormError("An error occurred while checking for existing categories.");
-            return;
-        }
+            const addCategoryResponse = await fetch('http://localhost:8081/category', requestOptions);
+            if (!addCategoryResponse.ok) {
+                throw new Error("Error adding category");
+            }
 
-        if (existingCat.length > 0 ) {
-            setFormError("Category with the same ID already exists in the table!");
-            return;
-        }
-
-        if (existingCatName.length>0) {
-            setFormError("Category with the same name already exists in the table!");
-            return;
-        }
-        const {data, error} = await supabase
-            .from('category')
-            .insert([{
-                category_number, category_name
-            }]);
-
-        if (error) {
-            console.log(error);
-            setFormError("Please set all form fields correctly!");
-        } else {
-            console.log(data);
-            setFormError(null);
             navigate('/categories');
+        } catch (error) {
+            console.error(error);
+            setFormError("An error occurred while adding category");
         }
     }
 
@@ -85,7 +81,7 @@ const CreateCategory = () => {
                 {formError && <p className="error">{formError}</p>}
             </form>
         </div>
-    )
+    );
 }
 
-export default CreateCategory
+export default CreateCategory;

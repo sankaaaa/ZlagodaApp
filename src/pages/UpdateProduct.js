@@ -1,16 +1,31 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
-import supabase from "../config/supabaseClient";
-
 const UpdateProduct = () => {
     const {id_product} = useParams();
     const navigate = useNavigate();
     const [formError, setFormError] = useState(null);
-
+    const [categories, setCategories] = useState([]);
     const [category_number, setCategoryNumber] = useState('');
     const [product_name, setProdName] = useState('');
     const [characteristics, setCharact] = useState('');
 
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await fetch('http://localhost:8081/category/a');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch categories');
+                }
+                const data = await response.json();
+                setCategories(data);
+            } catch (error) {
+                console.error(error);
+                setFormError('Failed to fetch categories');
+            }
+        };
+
+        fetchCategories();
+    }, []);
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -24,38 +39,34 @@ const UpdateProduct = () => {
             return;
         }
 
-        const {data, error} = await supabase
-            .from('product')
-            .update({
-                product_name,
+        const response = await fetch(`http://localhost:8081/product/${id_product}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
                 category_number,
+                product_name,
                 characteristics
             })
-            .eq('id_product', id_product);
-
-        if (error) {
-            console.log(error);
-            setFormError('Please fill in all fields correctly!');
-        } else {
-            setFormError(null);
+        });
+        if (response.ok) {
             navigate('/products');
+        } else {
+            setFormError('Error updating product');
         }
     };
 
     useEffect(() => {
         const fetchProduct = async () => {
-            const {data, error} = await supabase
-                .from('product')
-                .select()
-                .eq('id_product', id_product)
-                .single();
-
-            if (error) {
-                navigate('/product', {replace: true});
-            } else {
+            const response = await fetch(`http://localhost:8081/product/${id_product}`);
+            if (response.ok) {
+                const [data] = await response.json();
                 setProdName(data.product_name);
                 setCategoryNumber(data.category_number);
                 setCharact(data.characteristics);
+            } else {
+                navigate('/product');
             }
         };
         fetchProduct();
@@ -73,12 +84,18 @@ const UpdateProduct = () => {
                     onChange={(e) => setProdName(e.target.value)}
                 />
                 <label htmlFor="category_number">Category number:</label>
-                <input
-                    type="number"
+                <select
                     id="category_number"
                     value={category_number}
                     onChange={(e) => setCategoryNumber(e.target.value)}
-                />
+                >
+                    <option value="">Select category number</option>
+                    {categories.map((category) => (
+                        <option key={category.category_number} value={category.category_number}>
+                            {`${category.category_number}, ${category.category_name}`}
+                        </option>
+                    ))}
+                </select>
                 <label htmlFor="characteristics">Characteristics:</label>
                 <input
                     type="text"

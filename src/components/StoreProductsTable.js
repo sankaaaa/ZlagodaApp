@@ -16,20 +16,23 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
 
     useEffect(() => {
         const fetchProductNames = async () => {
-            const productIds = storeProducts.map(product => product.id_product);
-            const {data, error} = await supabase
-                .from('product')
-                .select('id_product, product_name')
-                .in('id_product', productIds);
-
-            if (error) {
-                console.error("Error fetching product names:", error.message);
-            } else {
-                const nameMap = data.reduce((acc, curr) => {
-                    acc[curr.id_product] = curr.product_name;
+            try {
+                const promises = storeProducts.map(async product => {
+                    const response = await fetch(`http://localhost:8081/product/name/${product.id_product}`);
+                    if (!response.ok) {
+                        throw new Error('Error fetching product names');
+                    }
+                    const data = await response.json();
+                    return {id_product: product.id_product, product_name: data[0]?.product_name};
+                });
+                const results = await Promise.all(promises);
+                const nameMap = results.reduce((acc, curr) => {
+                    acc[curr.id_product] = curr.product_name || '';
                     return acc;
                 }, {});
                 setProductNames(nameMap);
+            } catch (error) {
+                console.error("Error fetching product names:", error.message);
             }
         };
 
@@ -80,10 +83,6 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
             direction = 'descending';
         }
         setSortConfig({key, direction});
-    };
-
-    const handleRowClick = (storeProduct) => {
-        setSelectedStoreProduct(storeProduct);
     };
 
     const handleDelete = async (storeProductId) => {
@@ -181,7 +180,7 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                     const pdv = (storeProduct.selling_price * 0.2).toFixed(2);
                     return (
                         <tr key={storeProduct.upc}>
-                            <td style={{fontWeight: 'bold'}} onClick={() => handleRowClick(storeProduct)}>
+                            <td style={{fontWeight: 'bold'}}>
                                 {storeProduct.upc}.
                             </td>
                             <td>{storeProduct.upc_prom ? storeProduct.upc_prom : '-'}</td>

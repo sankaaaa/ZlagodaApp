@@ -129,3 +129,9 @@ a {
     flex-direction: column;
     margin-bottom: 30px;
 }
+
+#createprom {
+    height: 40px;
+    font-family: 'Poppins';
+    max-width: 300px;
+}

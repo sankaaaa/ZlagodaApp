@@ -19,7 +19,7 @@ const PopupCust = ({customer, onClose}) => {
                 <p><strong>City:</strong> {customer.city}</p>
                 <p><strong>Street:</strong> {customer.street}</p>
                 <p><strong>Zip-code:</strong> {customer.zip_code}</p>
-                <p><strong>Percent:</strong> {customer.percent}</p>
+                <p><strong>Percent:</strong> {customer.percent}%</p>
                 <button className="printB" onClick={handlePrint}>Print</button>
             </div>
         </div>

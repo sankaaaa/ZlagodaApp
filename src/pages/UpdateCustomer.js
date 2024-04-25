@@ -1,5 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
+
 const UpdateCustomer = () => {
     const {card_number} = useParams();
     const navigate = useNavigate();
@@ -21,10 +22,10 @@ const UpdateCustomer = () => {
             return;
         }
 
-        const isPhoneNumberValid = /^\+?[0-9]{1,12}$/.test(phone_number);
+        const isPhoneNumberValid = phone_number.length === 13 && /^\+?[0-9]{12}$/.test(phone_number);
 
         if (!isPhoneNumberValid) {
-            setFormError("Please enter a valid phone number!");
+            setFormError("Phone number must be exactly 13 characters!");
             return;
         }
 
@@ -112,10 +113,15 @@ const UpdateCustomer = () => {
                 />
                 <label htmlFor="percent">Percent:</label>
                 <input
-                    type="text"
+                    type="number"
                     id="percent"
                     value={percent}
-                    onChange={(e) => setPercent(e.target.value)}
+                    onChange={(e) => {
+                        const newPercent = e.target.value <= 99 ? e.target.value : 99;
+                        setPercent(newPercent);
+                    }}
+                    min={0}
+                    max={99}
                 />
                 <button>Update customer</button>
                 {formError && <p className="error">{formError}</p>}

@@ -62,17 +62,31 @@ const CreateCheque = () => {
         async function fetchProdNames() {
             try {
                 const {data, error} = await supabase
-                    .from('product')
-                    .select('id_product, product_name');
+                    .from('store_product')
+                    .select('id_product, upc');
 
                 if (error)
                     // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 const productNamesObject = {};
-                data.forEach(product => {
-                    productNamesObject[product.id_product] = product.product_name;
-                });
+                for (const product of data) {
+                    const productId = product.id_product;
+                    const upc = product.upc;
+
+                    const {data: productData, error: productError} = await supabase
+                        .from('product')
+                        .select('product_name')
+                        .eq('id_product', productId)
+                        .single();
+
+                    if (productError)
+                        // noinspection ExceptionCaughtLocallyJS
+                        throw productError;
+
+                    productNamesObject[productId] = productData.product_name;
+                }
+
                 setProductNames(productNamesObject);
             } catch (error) {
                 console.error('Error fetching product names:', error.message);
@@ -81,6 +95,7 @@ const CreateCheque = () => {
 
         fetchProdNames();
     }, []);
+
 
     useEffect(() => {
         async function fetchProducts() {
@@ -110,14 +125,13 @@ const CreateCheque = () => {
                 try {
                     let hasDiscount = false;
 
-                    const {data: customerData, error: customerError} = await supabase
+                    const { data: customerData, error: customerError } = await supabase
                         .from('customer_card')
                         .select('percent')
                         .eq('card_number', card_number)
                         .single();
 
                     if (customerError)
-                        // noinspection ExceptionCaughtLocallyJS
                         throw customerError;
 
                     const customerPercent = customerData.percent / 100;
@@ -125,18 +139,37 @@ const CreateCheque = () => {
                     setCustPercent(customerPercent * 100);
 
                     const productData = await Promise.all(selectedProducts.map(async (product) => {
-                        const {data: productInfo, error} = await supabase
-                            .from('store_product')
-                            .select('selling_price, promotional_product')
-                            .eq('id_product', product.product)
-                            .single();
-                        if (error)
-                            throw error;
+                        try {
+                            const { data: productInfo, error } = await supabase
+                                .from('store_product')
+                                .select('selling_price, promotional_product')
+                                .eq('id_product', product.product)
+                                .single();
 
-                        if (productInfo.promotional_product)
-                            hasDiscount = true;
+                            if (error)
+                                throw error;
 
-                        return productInfo;
+                            if (productInfo.promotional_product)
+                                hasDiscount = true;
+
+                            return productInfo;
+                        } catch (error) {
+                            console.error('Error fetching product price:', error.message);
+                            const { data: allPricesData, error: allPricesError } = await supabase
+                                .from('store_product')
+                                .select('selling_price')
+                                .eq('id_product', product.product);
+                            if (allPricesError)
+                                throw allPricesError;
+
+                            if (allPricesData && allPricesData.length > 0) {
+                                const minPrice = allPricesData.reduce((min, curr) => Math.min(min, curr.selling_price), Infinity);
+                                const discountedPrice = minPrice * 0.8;
+                                return { selling_price: discountedPrice };
+                            } else {
+                                throw new Error('No prices found for the product');
+                            }
+                        }
                     }));
 
                     setHasDiscountProduct(hasDiscount);
@@ -162,6 +195,7 @@ const CreateCheque = () => {
             fetchProductInfo();
         }
     }, [selectedProducts, products, card_number]);
+
 
     const handleAddProduct = () => {
         setSelectedProducts([...selectedProducts, {product: '', quantity: 1}]);

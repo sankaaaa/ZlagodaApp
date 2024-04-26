@@ -13,6 +13,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
     const [endDate, setEndDate] = useState('');
     const [filteredCheques, setFilteredCheques] = useState(cheques);
     const [cashiers, setCashiers] = useState([]);
+    const [customers, setCustomers] = useState([]);
     const [filteredCount, setFilteredCount] = useState(0);
     const [filterApplied, setFilterApplied] = useState(false);
     const [totalSales, setTotalSales] = useState({});
@@ -22,6 +23,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
     const [employees, setEmployees] = useState([]);
     const [fetchEmployeesEnabled, setFetchEmployeesEnabled] = useState(false);
     const userId = localStorage.getItem("userLogin");
+    const [formError, setFormError] = useState(null);
 
     const handleFetchEmployeesToggle = async () => {
         setFetchEmployeesEnabled(!fetchEmployeesEnabled);
@@ -51,19 +53,36 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
             try {
                 const {data, error} = await supabase
                     .from('employee')
-                    .select('id_employee')
-                    .eq('empl_role', 'cashier');
+                    .select('id_employee, empl_surname');
 
                 if (error)
                     throw error;
 
-                setCashiers(data.map(cashier => cashier.id_employee));
+                setCashiers(data);
             } catch (error) {
                 console.error('Error fetching cashiers:', error.message);
             }
         }
 
         fetchCashiers();
+    }, []);
+    useEffect(() => {
+        async function fetchCustomers() {
+            try {
+                const {data, error} = await supabase
+                    .from('customer_card')
+                    .select('card_number, cust_surname');
+
+                if (error)
+                    throw error;
+
+                setCustomers(data);
+            } catch (error) {
+                console.error('Error fetching customers:', error.message);
+            }
+        }
+
+        fetchCustomers();
     }, []);
 
     useEffect(() => {
@@ -253,14 +272,23 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Could not delete cheque');
+                throw new Error('Could not delete cheque due to integration reasons');
             }
             const updatedProducts = cheques.filter(cheque => cheque.check_number !== chequeNum);
             setCheques(updatedProducts);
             window.location.reload();
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("cheque cannot be deleted due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -268,13 +296,14 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
             <div className="top-line">
                 <div className="fetch-employees-toggle">
                     <label>
-                        <p>View cashiers with sum total less than 15 (not me)</p>
+                        <p>Total less than 15 (not me)</p>
                         <input
                             type="checkbox"
                             checked={fetchEmployeesEnabled}
                             onChange={handleFetchEmployeesToggle}
                         />
                     </label>
+                    <button className="printB" onClick={handlePrint}>Print</button>
                 </div>
                 <div className="create-new-container" style={{display: userRole === "manager" ? "none" : "block"}}>
                     {userRole === "cashier" && (
@@ -288,7 +317,8 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                     >
                         <option value="">All Cashiers</option>
                         {cashiers.map(cashier => (
-                            <option key={cashier} value={cashier}>{cashier}</option>
+                            <option key={cashier.id_employee}
+                                    value={cashier.id_employee}>{cashier.id_employee}, {cashier.empl_surname}</option>
                         ))}
                     </select>
                     <input
@@ -320,6 +350,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                     <div>Total units sold: {totalUnitsSold}</div>
                 </div>
             )}
+            {formError && <p className="error">{formError}</p>}
             <table className="category-table">
                 <thead>
                 <tr>
@@ -338,8 +369,8 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                         <td style={{fontWeight: 'bold', cursor: 'pointer'}} onClick={() => handleRowClick(cheque)}>
                             {cheque.check_number}.
                         </td>
-                        <td>{cheque.id_employee}</td>
-                        <td>{cheque.card_number}</td>
+                        <td>{cheque.id_employee}, {cashiers.find(cashier => cashier.id_employee === cheque.id_employee)?.empl_surname}</td>
+                        <td>{cheque.card_number}, {customers.find(customer => customer.card_number === cheque.card_number)?.cust_surname}</td>
                         <td>
                             {new Date(cheque.print_date).toLocaleString('en-GB', {
                                 year: 'numeric',

@@ -1,4 +1,5 @@
 import '../styles/employee-table.css';
+import React from "react";
 
 const SalesTable = ({sales, setSales, userRole}) => {
     const handleDelete = async (upc, checkNumber) => {
@@ -19,8 +20,13 @@ const SalesTable = ({sales, setSales, userRole}) => {
         }
     };
 
+    const handlePrint = () => {
+        window.print();
+    };
+
     return (
         <div>
+            <button className="printB" onClick={handlePrint}>Print</button>
             <table className="product-table">
                 <thead>
                 <tr>

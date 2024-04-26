@@ -158,7 +158,8 @@ input#total_sum {
 }
 
 #empl_role,
-#category_number {
+#category_number,
+#id_product {
     height: 40px;
     font-family: 'Poppins';
     max-width: 300px;

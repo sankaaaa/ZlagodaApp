@@ -201,8 +201,10 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                             </td>
                             <td>{storeProduct.upc_prom ? storeProduct.upc_prom : '-'}</td>
                             <td>{storeProduct.id_product}</td>
-                            <td style={{cursor: 'pointer'}}
-                                onClick={() => handleProductNameClick(storeProduct)}>{productNames[storeProduct.id_product]}</td>
+                            <td style={{ cursor: 'pointer' }} onClick={() => handleProductNameClick(storeProduct)}>
+                                {productNames[storeProduct.id_product]} {storeProduct.promotional_product}
+                            </td>
+
                             <td>{storeProduct.products_number}</td>
                             <td>{storeProduct.selling_price} (VAT: {pdv})</td>
                             <td>{storeProduct.promotional_product ? `yes: ${promotionalPrice}` : 'no'}</td>

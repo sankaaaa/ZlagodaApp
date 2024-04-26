@@ -1,5 +1,5 @@
-import {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
@@ -61,7 +61,7 @@ const CreateStoreProduct = () => {
         }
 
         try {
-            const {data: existingProducts, error: existingProductError} = await supabase
+            const { data: existingProducts, error: existingProductError } = await supabase
                 .from('store_product')
                 .select('id_product, promotional_product')
                 .eq('id_product', id_product);
@@ -72,47 +72,33 @@ const CreateStoreProduct = () => {
                 return;
             }
 
-            if (existingProducts.length > 0) {
-                const hasNonPromotionalProduct = existingProducts.some(product => !product.promotional_product);
-                if (hasNonPromotionalProduct) {
-                    setFormError("A non-promotional product with the same ID already exists in the store product list!");
+            const nonPromotionalProductExists = existingProducts.some(product => !product.promotional_product);
+            if (!nonPromotionalProductExists) {
+                try {
+                    const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id_product, upc, upc_prom: upcPromValue,
+                            selling_price,
+                            products_number,
+                            promotional_product: false
+                        })
+                    };
+
+                    const addResponse = await fetch('http://localhost:8081/store_product', requestOptions);
+                    if (!addResponse.ok) {
+                        throw new Error('same UPC');
+                    }
+                } catch (error) {
+                    console.error(error);
+                    setFormError("Product with the same UPC already exists");
                     return;
-                } else {
-                    const existingUPCResponse = await fetch(`http://localhost:8081/store_product/k/${upc}`);
-                    if (!existingUPCResponse.ok) {
-                        throw new Error('Failed to fetch existing UPC');
-                    }
-                    const existingUPCData = await existingUPCResponse.json();
-                    if (existingUPCData) {
-                        setFormError("Product with the same UPC already exists in the table!");
-                        return;
-                    }
-
-
-                    try {
-                        const requestOptions = {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({
-                                id_product, upc, upc_prom: upcPromValue,
-                                selling_price,
-                                products_number,
-                                promotional_product: false
-                            })
-                        };
-
-                        const addResponse = await fetch('http://localhost:8081/store_product', requestOptions);
-                        if (!addResponse.ok) {
-                            throw new Error('Error adding store product');
-                        }
-
-                        navigate('/store-products');
-                    } catch (error) {
-                        console.error(error);
-                        setFormError("Error adding store product");
-                    }
                 }
             }
+
+            navigate('/store-products');
+
         } catch (error) {
             console.error(error);
             setFormError("An error occurred while inserting the product.");

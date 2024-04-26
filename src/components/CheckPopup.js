@@ -4,10 +4,13 @@ import '../styles/employee-popup.css';
 
 const Popup = ({cheque, onClose}) => {
     const [chequeProducts, setChequeProducts] = useState([]);
+    const [employeeSurname, setEmployeeSurname] = useState('');
+    const [customerSurname, setCustomerSurname] = useState('');
 
     useEffect(() => {
         fetchChequeProducts(cheque.check_number);
-    }, [cheque.check_number]);
+        fetchEmployeeSurname(cheque.id_employee);
+    }, [cheque.check_number, cheque.id_employee]);
 
     const fetchChequeProducts = async (chequeNumber) => {
         try {
@@ -52,6 +55,51 @@ const Popup = ({cheque, onClose}) => {
             console.error('Error fetching cheque products:', error.message);
         }
     };
+    useEffect(() => {
+        fetchCustomerSurname(cheque.card_number);
+    }, [cheque.card_number]);
+
+    const fetchCustomerSurname = async (cardNumber) => {
+        try {
+            const {data, error} = await supabase
+                .from('customer_card')
+                .select('cust_surname')
+                .eq('card_number', cardNumber)
+                .single();
+
+            if (error) {
+                throw error;
+            }
+
+            setCustomerSurname(data.cust_surname || 'Unknown');
+        } catch (error) {
+            console.error('Error fetching customer surname:', error.message);
+            setCustomerSurname('Unknown');
+        }
+    };
+
+    const fetchEmployeeSurname = async (employeeId) => {
+        try {
+            const {data, error} = await supabase
+                .from('employee')
+                .select('empl_surname')
+                .eq('id_employee', employeeId)
+                .single();
+
+            if (error) {
+                throw error;
+            }
+
+            setEmployeeSurname(data.empl_surname || 'Unknown');
+        } catch (error) {
+            console.error('Error fetching employee surname:', error.message);
+            setEmployeeSurname('Unknown');
+        }
+    };
+
+    const handlePrint = () => {
+        window.print();
+    };
 
     return (
         <div className="popup">
@@ -59,8 +107,8 @@ const Popup = ({cheque, onClose}) => {
                 <span className="close-ch" onClick={onClose}>&times;</span>
                 <h2>Cheque Details</h2>
                 <p><strong>Cheque Number:</strong> {cheque.check_number}</p>
-                <p><strong>ID employee:</strong> {cheque.id_employee}</p>
-                <p><strong>Card number:</strong> {cheque.card_number}</p>
+                <p><strong>ID employee:</strong> {cheque.id_employee}, {employeeSurname}</p>
+                <p><strong>Card number:</strong> {cheque.card_number}, {customerSurname}</p>
                 <p><strong>Print date:</strong> {new Date(cheque.print_date).toLocaleString('en-US', {
                     year: 'numeric',
                     month: '2-digit',
@@ -80,6 +128,7 @@ const Popup = ({cheque, onClose}) => {
                         </li>
                     ))}
                 </ul>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
         </div>
     );

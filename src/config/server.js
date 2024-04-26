@@ -86,7 +86,6 @@ app.get('/product/:id_product', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/product/name/:id_product', (req, res) => {
     const categoryNumber = req.params.id_product;
     db.any('SELECT id_product, product_name FROM product WHERE id_product = $1;', [categoryNumber])
@@ -148,7 +147,6 @@ app.get('/employee', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.put('/employee/:id_employee', express.json(), (req, res) => {
     const {
         empl_surname,
@@ -205,7 +203,6 @@ app.post('/employee', express.json(), (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.delete('/employee/:id', (req, res) => {
     const emplID = req.params.id;
     db.none('DELETE FROM employee WHERE id_employee = $1', emplID)
@@ -226,7 +223,6 @@ app.get('/employee/search/:surname', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/employee/sort/id', (req, res) => {
     db.any('SELECT * FROM employee ORDER BY id_employee;')
         .then(result => {
@@ -245,7 +241,6 @@ app.get('/employee/sort/name', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/employee/sort/surname', (req, res) => {
     db.any('SELECT * FROM employee ORDER BY empl_surname;')
         .then(result => {
@@ -255,7 +250,6 @@ app.get('/employee/sort/surname', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/employee/sort/city', (req, res) => {
     db.any('SELECT * FROM employee ORDER BY city;')
         .then(result => {
@@ -265,7 +259,6 @@ app.get('/employee/sort/city', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/employee/sort/salary', (req, res) => {
     db.any('SELECT * FROM employee ORDER BY salary;')
         .then(result => {
@@ -447,7 +440,6 @@ app.get('/store_product/s', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
 app.get('/store_product/lol/:id_product', (req, res) => {
     const id_product = req.params.id_product;
 
@@ -567,6 +559,7 @@ app.get('/store_product/:upc', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+
 //ЧЕКИ-----------------------------------------------------------------------------------------------------------------
 app.get('/cheque', (req, res) => {
     db.any('SELECT * FROM cheque;')
@@ -619,7 +612,7 @@ app.delete('/sale/:upc/:checkNumber', (req, res) => {
         });
 });
 
-
+//----------------------------------------------------------------------------------------------------------------------
 const PORT = 8081
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');

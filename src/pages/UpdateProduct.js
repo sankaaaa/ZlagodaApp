@@ -1,5 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useState, useEffect} from "react";
+
 const UpdateProduct = () => {
     const {id_product} = useParams();
     const navigate = useNavigate();

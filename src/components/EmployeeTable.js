@@ -11,7 +11,7 @@ const EmployeeTable = ({employees, setEmployees}) => {
     const [formError, setFormError] = useState(null);
     const [userLogin, setUserLogin] = useState(null);
     const [resultData, setResultData] = useState([]);
-    const [showResultTable, setShowResultTable] = useState(false); // Додаємо стан для відображення таблиці результатів запиту
+    const [showResultTable, setShowResultTable] = useState(false);
 
     useEffect(() => {
         const username = localStorage.getItem("userLogin");

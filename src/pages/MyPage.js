@@ -20,8 +20,8 @@ const MyPage = () => {
                 const data = await response.json();
                 setEmployeeData(data[0]);
             } catch (error) {
-                console.error("Error fetching employee data:", error.message);
-                setError("Error fetching employee data. Please try again later.");
+                console.error("Error fetching the employee data:", error.message);
+                setError("Error fetching employee data. Please try again.");
             }
         };
         fetchData();
@@ -57,6 +57,10 @@ const MyPage = () => {
 
     const formatSalary = (salary) => {
         return parseFloat(salary).toFixed(2);
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -104,6 +108,7 @@ const MyPage = () => {
                     />
                     <button onClick={handleChangePassword}>Change Password</button>
                     {successMessage && <p className="success">{successMessage}</p>}
+                    <button className="printB" onClick={handlePrint}>Print</button>
                 </div>
             </div>
             <img src={employeeImage} alt="Employee" className="employee-image"/>

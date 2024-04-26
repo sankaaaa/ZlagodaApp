@@ -1,11 +1,12 @@
 import pkg from 'bcryptjs';
-const { hashSync } = pkg;
-import { writeFile } from 'fs/promises';
+
+const {hashSync} = pkg;
+import {writeFile} from 'fs/promises';
 import supabase from "../config/supabaseClient.js";
 
 async function generatePasswordsJSON() {
     try {
-        const { data: employees, error } = await supabase
+        const {data: employees, error} = await supabase
             .from('employee')
             .select('id_employee, empl_role');
 
@@ -13,11 +14,11 @@ async function generatePasswordsJSON() {
 
         if (employees) {
             const passwords = employees.map(employee => {
-                const { id_employee, empl_role } = employee;
+                const {id_employee, empl_role} = employee;
                 const username = id_employee;
                 const password = id_employee + empl_role;
                 const hashedPassword = hashSync(password, 10);
-                return { username, password: hashedPassword };
+                return {username, password: hashedPassword};
             });
 
             await writeFile('passwords.json', JSON.stringify(passwords, null, 2));

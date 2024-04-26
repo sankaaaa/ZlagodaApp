@@ -20,7 +20,7 @@ const Popup = ({cheque, onClose}) => {
                 .eq('check_number', chequeNumber);
 
             if (error) {
-                console.error('Error fetching cheque products:', error.message);
+                console.error('Error while fetching cheque products:', error.message);
             } else {
                 const productsWithNames = await Promise.all(data.map(async (item) => {
                     const {data: productData, error: productError} = await supabase
@@ -71,10 +71,10 @@ const Popup = ({cheque, onClose}) => {
                 throw error;
             }
 
-            setCustomerSurname(data.cust_surname || 'Unknown');
+            setCustomerSurname(data.cust_surname || 'unknown');
         } catch (error) {
             console.error('Error fetching customer surname:', error.message);
-            setCustomerSurname('Unknown');
+            setCustomerSurname('unknown');
         }
     };
 
@@ -90,10 +90,10 @@ const Popup = ({cheque, onClose}) => {
                 throw error;
             }
 
-            setEmployeeSurname(data.empl_surname || 'Unknown');
+            setEmployeeSurname(data.empl_surname || 'unknown');
         } catch (error) {
             console.error('Error fetching employee surname:', error.message);
-            setEmployeeSurname('Unknown');
+            setEmployeeSurname('unknown');
         }
     };
 

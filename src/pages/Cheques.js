@@ -10,7 +10,8 @@ const Cheques = () => {
         const storedRole = localStorage.getItem("userRole");
         if (storedRole) {
             setUserRole(storedRole);
-        }        const fetchProducts = async () => {
+        }
+        const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:8081/cheque');
                 if (!response.ok) {

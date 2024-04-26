@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import supabase from "../config/supabaseClient";
 import '../styles/create-form.css';
 
@@ -61,7 +61,7 @@ const CreateStoreProduct = () => {
         }
 
         try {
-            const { data: existingProducts, error: existingProductError } = await supabase
+            const {data: existingProducts, error: existingProductError} = await supabase
                 .from('store_product')
                 .select('id_product, promotional_product')
                 .eq('id_product', id_product);
@@ -77,7 +77,7 @@ const CreateStoreProduct = () => {
                 try {
                     const requestOptions = {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
+                        headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             id_product, upc, upc_prom: upcPromValue,
                             selling_price,

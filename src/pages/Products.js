@@ -11,7 +11,6 @@ const Products = () => {
         if (storedRole) {
             setUserRole(storedRole);
         }
-
         const fetchProducts = async () => {
             try {
                 const response = await fetch('http://localhost:8081/product');

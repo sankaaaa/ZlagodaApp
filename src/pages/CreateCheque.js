@@ -26,7 +26,6 @@ const CreateCheque = () => {
                     .eq('empl_role', 'cashier');
 
                 if (error)
-                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setCashiers(data.map(cashier => cashier.id_employee));
@@ -46,7 +45,6 @@ const CreateCheque = () => {
                     .select('card_number');
 
                 if (error)
-                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setCustomers(data.map(customer => customer.card_number));
@@ -66,7 +64,6 @@ const CreateCheque = () => {
                     .select('id_product, upc');
 
                 if (error)
-                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 const productNamesObject = {};
@@ -81,7 +78,6 @@ const CreateCheque = () => {
                         .single();
 
                     if (productError)
-                        // noinspection ExceptionCaughtLocallyJS
                         throw productError;
 
                     productNamesObject[productId] = productData.product_name;
@@ -105,7 +101,6 @@ const CreateCheque = () => {
                     .select('id_product');
 
                 if (error)
-                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
 
                 setProducts(data.map(product => product.id_product));
@@ -125,7 +120,7 @@ const CreateCheque = () => {
                 try {
                     let hasDiscount = false;
 
-                    const { data: customerData, error: customerError } = await supabase
+                    const {data: customerData, error: customerError} = await supabase
                         .from('customer_card')
                         .select('percent')
                         .eq('card_number', card_number)
@@ -140,7 +135,7 @@ const CreateCheque = () => {
 
                     const productData = await Promise.all(selectedProducts.map(async (product) => {
                         try {
-                            const { data: productInfo, error } = await supabase
+                            const {data: productInfo, error} = await supabase
                                 .from('store_product')
                                 .select('selling_price, promotional_product')
                                 .eq('id_product', product.product)
@@ -155,7 +150,7 @@ const CreateCheque = () => {
                             return productInfo;
                         } catch (error) {
                             console.error('Error fetching product price:', error.message);
-                            const { data: allPricesData, error: allPricesError } = await supabase
+                            const {data: allPricesData, error: allPricesError} = await supabase
                                 .from('store_product')
                                 .select('selling_price')
                                 .eq('id_product', product.product);
@@ -165,7 +160,7 @@ const CreateCheque = () => {
                             if (allPricesData && allPricesData.length > 0) {
                                 const minPrice = allPricesData.reduce((min, curr) => Math.min(min, curr.selling_price), Infinity);
                                 const discountedPrice = minPrice * 0.8;
-                                return { selling_price: discountedPrice };
+                                return {selling_price: discountedPrice};
                             } else {
                                 throw new Error('No prices found for the product');
                             }
@@ -215,7 +210,6 @@ const CreateCheque = () => {
                     .single();
 
                 if (error) {
-                    // noinspection ExceptionCaughtLocallyJS
                     throw error;
                 }
 
@@ -256,7 +250,7 @@ const CreateCheque = () => {
 
             const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
-            const {data:insertedCheque, error: chequeError} = await supabase
+            const {data: insertedCheque, error: chequeError} = await supabase
                 .from('cheque')
                 .insert([{
                     check_number,
@@ -268,7 +262,6 @@ const CreateCheque = () => {
                 }]);
 
             if (chequeError)
-                // noinspection ExceptionCaughtLocallyJS
                 throw chequeError;
 
             for (const selectedProduct of selectedProducts) {
@@ -325,7 +318,6 @@ const CreateCheque = () => {
                 .single();
 
             if (productError)
-                // noinspection ExceptionCaughtLocallyJS
                 throw productError;
 
             const currentQuantity = productData.products_number;
@@ -337,7 +329,6 @@ const CreateCheque = () => {
                 .eq('id_product', productId);
 
             if (error) {
-                // noinspection ExceptionCaughtLocallyJS
                 throw error;
             }
 

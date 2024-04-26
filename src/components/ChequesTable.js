@@ -35,7 +35,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
                 try {
                     const response = await fetch(`http://localhost:8081/cheque/user/${userId}`);
                     if (!response.ok)
-                        throw new Error('Could not fetch employees');
+                        throw new Error('Could not fetch needed employees');
                     const data = await response.json();
                     console.log(data)
                     setEmployees(data);
@@ -95,9 +95,9 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
 
             filteredCheques.forEach(cheque => {
                 const cashierId = cheque.id_employee;
-                if (!salesByCashier[cashierId]) {
+                if (!salesByCashier[cashierId])
                     salesByCashier[cashierId] = 0;
-                }
+
                 salesByCashier[cashierId] += parseFloat(cheque.sum_total);
             });
 

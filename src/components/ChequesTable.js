@@ -296,7 +296,7 @@ const ChequesTable = ({cheques, setCheques, userRole}) => {
             <div className="top-line">
                 <div className="fetch-employees-toggle">
                     <label>
-                        <p>Total less than 15 (not me)</p>
+                        <label>Total less than 15 (not me)</label>
                         <input
                             type="checkbox"
                             checked={fetchEmployeesEnabled}

@@ -45,20 +45,19 @@ const CreateStoreProduct = () => {
 
         let upcPromValue = null;
 
-        const {data: promotionalProduct, error: promotionalProductError} = await supabase
-            .from('store_product')
-            .select('upc')
-            .eq('id_product', id_product)
-            .eq('promotional_product', true);
-
-        if (promotionalProductError) {
-            console.error(promotionalProductError);
+        try {
+            const promotionalProductResponse = await fetch(`http://localhost:8081/store_product/f/${id_product}`);
+            if (!promotionalProductResponse.ok) {
+                throw new Error('Failed to fetch promotional product');
+            }
+            const promotionalProductData = await promotionalProductResponse.json();
+            if (promotionalProductData && promotionalProductData.upc) {
+                upcPromValue = promotionalProductData.upc;
+            }
+        } catch (error) {
+            console.error(error);
             setFormError("An error occurred while checking for promotional product.");
             return;
-        }
-
-        if (promotionalProduct && promotionalProduct.length > 0) {
-            upcPromValue = promotionalProduct[0].upc;
         }
 
         try {
@@ -79,40 +78,39 @@ const CreateStoreProduct = () => {
                     setFormError("A non-promotional product with the same ID already exists in the store product list!");
                     return;
                 } else {
-                    const {data: existingUPCs, error: existingUPCsError} = await supabase
-                        .from('store_product')
-                        .select('upc')
-                        .eq('upc', upc);
-
-                    if (existingUPCsError) {
-                        console.error(existingUPCsError.message);
-                        setFormError("An error occurred while checking for existing UPCs.");
-                        return;
+                    const existingUPCResponse = await fetch(`http://localhost:8081/store_product/k/${upc}`);
+                    if (!existingUPCResponse.ok) {
+                        throw new Error('Failed to fetch existing UPC');
                     }
-
-                    if (existingUPCs && existingUPCs.length > 0) {
+                    const existingUPCData = await existingUPCResponse.json();
+                    if (existingUPCData) {
                         setFormError("Product with the same UPC already exists in the table!");
                         return;
                     }
 
-                    const {data: insertedData, error: insertError} = await supabase
-                        .from('store_product')
-                        .insert({
-                            id_product,
-                            upc,
-                            upc_prom: upcPromValue,
-                            selling_price,
-                            products_number,
-                            promotional_product: false
-                        });
 
-                    if (insertError) {
-                        throw new Error("An error occurred while inserting the product.");
+                    try {
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: {'Content-Type': 'application/json'},
+                            body: JSON.stringify({
+                                id_product, upc, upc_prom: upcPromValue,
+                                selling_price,
+                                products_number,
+                                promotional_product: false
+                            })
+                        };
+
+                        const addResponse = await fetch('http://localhost:8081/store_product', requestOptions);
+                        if (!addResponse.ok) {
+                            throw new Error('Error adding store product');
+                        }
+
+                        navigate('/store-products');
+                    } catch (error) {
+                        console.error(error);
+                        setFormError("Error adding store product");
                     }
-
-                    console.log(insertedData);
-                    setFormError(null);
-                    navigate('/store-products');
                 }
             }
         } catch (error) {

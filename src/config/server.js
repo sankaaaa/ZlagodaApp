@@ -459,7 +459,39 @@ app.get('/store_product/lol/:id_product', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/store_product/f/:id_product', (req, res) => {
+    const id_product = req.params.id_product;
 
+    db.oneOrNone('SELECT upc FROM store_product WHERE id_product = $1 AND promotional_product = true;', [id_product])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/store_product/p/:id_product', (req, res) => {
+    const id_product = req.params.id_product;
+
+    db.oneOrNone('SELECT id_product, promotional_product FROM store_product WHERE id_product = $1;', [id_product])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.get('/product/char/:id_product', (req, res) => {
+    const id_product = req.params.id_product;
+
+    db.oneOrNone('SELECT characteristics FROM product WHERE id_product = $1 ;', [id_product])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.get('/store_product/l/:upc', (req, res) => {
     const upc = req.params.upc;
 
@@ -471,7 +503,37 @@ app.get('/store_product/l/:upc', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
+app.get('/store_product/k/:upc', (req, res) => {
+    const upc = req.params.upc;
 
+    db.oneOrNone('SELECT upc FROM store_product WHERE upc = $1 ;', [upc])
+        .then(result => {
+            res.json(result);
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
+app.put('/store_product/:upc', express.json(), (req, res) => {
+    const {
+        upc_prom,
+        selling_price,
+        products_number,
+        promotional_product
+    } = req.body;
+    const {upc} = req.params;
+    db.none('UPDATE store_product SET upc_prom = $1, selling_price = $2, products_number = $3, promotional_product = $4 WHERE upc = $5',
+        [upc_prom,
+            selling_price,
+            products_number,
+            promotional_product])
+        .then(() => {
+            res.json({message: 'Product updated successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.delete('/store_product/:id', (req, res) => {
     const catNum = req.params.id;
     db.none('DELETE FROM store_product WHERE upc = $1', catNum)
@@ -482,8 +544,19 @@ app.delete('/store_product/:id', (req, res) => {
             res.status(500).json({error: error.message});
         });
 });
-
-
+app.post('/store_product', express.json(), (req, res) => {
+    const {
+        id_product, upc, upc_prom, selling_price, products_number, promotional_product
+    } = req.body;
+    db.any('INSERT INTO store_product (id_product, upc, upc_prom, selling_price, products_number, promotional_product) VALUES ($1, $2, $3, $4, $5, $6)',
+        [id_product, upc, upc_prom, selling_price, products_number, promotional_product])
+        .then(() => {
+            res.json({message: 'Product added successfully'});
+        })
+        .catch(error => {
+            res.status(500).json({error: error.message});
+        });
+});
 app.get('/store_product/:upc', (req, res) => {
     const categoryNumber = req.params.upc;
     db.any('SELECT * FROM store_product WHERE upc = $1;', [categoryNumber])

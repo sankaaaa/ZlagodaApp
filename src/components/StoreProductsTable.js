@@ -2,17 +2,16 @@ import {useState, useEffect} from "react";
 import '../styles/employee-table.css';
 import '../styles/employee-popup.css';
 import {Link} from "react-router-dom";
-import supabase from "../config/supabaseClient";
 
 const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
     const [sortConfig, setSortConfig] = useState({key: null, direction: 'ascending'});
-    const [setSelectedStoreProduct] = useState(null);
     const [productNames, setProductNames] = useState({});
     const [showPromotionalOnly, setShowPromotionalOnly] = useState(false);
     const [showNonPromotionalOnly, setShowNonPromotionalOnly] = useState(false);
     const [selectedProductCharacteristics, setSelectedProductCharacteristics] = useState(null);
     const [showCharacteristicsPopup, setShowCharacteristicsPopup] = useState(false);
-    const [searchUPC, setSearchUPC] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+    const [formError, setFormError] = useState(null);
 
     useEffect(() => {
         const fetchProductNames = async () => {
@@ -39,7 +38,17 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
         fetchProductNames();
     }, [storeProducts]);
 
-    const sortedProducts = storeProducts
+    const filteredProducts = storeProducts.filter(storeProduct => {
+        const idProduct = storeProduct.id_product.toString();
+        return (
+            idProduct.toLowerCase().includes(searchInput.toLowerCase()) ||
+            storeProduct.upc.toLowerCase().includes(searchInput.toLowerCase()) ||
+            productNames[storeProduct.id_product].toLowerCase().includes(searchInput.toLowerCase())
+        );
+    });
+
+
+    const sortedProducts = filteredProducts
         .filter(storeProduct => {
             if (showPromotionalOnly && showNonPromotionalOnly) {
                 return true;
@@ -50,9 +59,6 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
             } else {
                 return true;
             }
-        })
-        .filter(storeProduct => {
-            return storeProduct.upc.toLowerCase().includes(searchUPC.toLowerCase());
         })
         .sort((a, b) => {
             if (sortConfig.key !== null) {
@@ -93,28 +99,36 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                 method: 'DELETE',
             });
             if (!response.ok) {
-                throw new Error('Could not delete store product');
+                throw new Error('Could not delete store product due to integration reasons');
             }
             const updatedProducts = storeProducts.filter(sproduct => sproduct.upc !== storeProductId);
             setStoreProducts(updatedProducts);
         } catch (error) {
             console.error(error);
+            if (error.message.includes("500")) {
+                setFormError("product cannot be deleted due to integration reasons");
+            } else {
+                setFormError(error.message);
+            }
         }
     }
 
     const handleProductNameClick = async (storeProduct) => {
-        const {data, error} = await supabase
-            .from('product')
-            .select('characteristics')
-            .eq('id_product', storeProduct.id_product)
-            .single();
-
-        if (error) {
-            console.error("Error fetching product characteristics:", error.message);
-        } else {
+        try {
+            const response = await fetch(`http://localhost:8081/product/char/${storeProduct.id_product}`);
+            if (!response.ok) {
+                throw new Error('Error fetching product characteristics');
+            }
+            const data = await response.json();
             setSelectedProductCharacteristics(data.characteristics);
             setShowCharacteristicsPopup(true);
+        } catch (error) {
+            console.error("Error fetching product characteristics:", error.message);
         }
+    };
+
+    const handlePrint = () => {
+        window.print();
     };
 
     return (
@@ -135,11 +149,11 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                     )}
                 </div>
                 <div className="search-box">
-                    <label htmlFor="searchUPC">Search by UPC:</label>
+                    <label htmlFor="searchInput">Search by UPC, ID or Product Name:</label>
                     <input
                         type="text"
-                        value={searchUPC}
-                        onChange={(e) => setSearchUPC(e.target.value)}
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
                     />
                 </div>
                 <div className="checkboxs">
@@ -160,7 +174,9 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                         Show non-promotional only
                     </label>
                 </div>
+                <button className="printB" onClick={handlePrint}>Print</button>
             </div>
+            {formError && <p className="error">{formError}</p>}
             <table className="product-table">
                 <thead>
                 <tr>
@@ -211,7 +227,6 @@ const StoreProductsTable = ({storeProducts, setStoreProducts, userRole}) => {
                                     </>
                                 )}
                             </td>
-
                         </tr>
                     );
                 })}
